@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 
 void main(){
@@ -30,7 +31,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var projects = [' Phrases',
+  var projects = ['This system is specifically designed to control temperature',
     'The ENYE Phrases',
     'The ENYE Water By-pass system',
     'The ENYE Temperature and Humidity Control and Monitoring System',
@@ -125,7 +126,7 @@ class _HomeState extends State<Home> {
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                "PROJECTS OF ENYE CONTROLS3333333333333333333",
+                "PROJECTS OF ENYE CONTROLS",
                 style: TextStyle(
                   color: Colors.deepOrange,
                   fontWeight: FontWeight.bold,
@@ -134,18 +135,22 @@ class _HomeState extends State<Home> {
             ),
             CarouselSlider(
                 items: imgList.map((item) => Container(
-                  child: Center(child: Image.network(
+                  margin: EdgeInsets.all(8),
+                  width: 280,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
                     item,
-                    fit: BoxFit.cover,
-                    width: 200,
+                    fit: BoxFit.fill,
                   ),
                   ),
                 )).toList(),
                 options: CarouselOptions(
+                  height: 270,
                   autoPlay: true,
                   aspectRatio: 2.0,
                   enlargeCenterPage: true,
-
+                  enlargeStrategy: CenterPageEnlargeStrategy.height,
                 )),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -215,6 +220,28 @@ class _HomeState extends State<Home> {
             }).toList(),
             ),
           ],
+        ),
+      ),
+
+      bottomNavigationBar: Container(
+        color: Colors.deepOrange,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+          child: GNav(
+            backgroundColor: Colors.deepOrange,
+            color: Colors.white,
+            activeColor: Colors.white,
+            tabBackgroundColor: Colors.deepOrange.shade200,
+            padding: EdgeInsets.all(6),
+            gap: 10,
+            tabs: const [
+              GButton(icon: Icons.home, text: 'Home',),
+              GButton(icon: Icons.settings, text: 'Systems',),
+              GButton(icon: Icons.shop, text: 'Products',),
+              GButton(icon: Icons.hvac, text: 'Projects',),
+              GButton(icon: Icons.contacts, text: 'About',),
+            ],
+          ),
         ),
       ),
     );
