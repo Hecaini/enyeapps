@@ -2,7 +2,6 @@ import 'package:enye_app/products.dart';
 import 'package:enye_app/projects.dart';
 import 'package:enye_app/systems.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'about.dart';
