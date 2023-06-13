@@ -187,32 +187,36 @@ class _HomeState extends State<Home> {
                     height: 200,
                     margin: const EdgeInsets.symmetric(horizontal: 5.0),
 
-                      child: Column(
-                        children: [
-                          Image.asset(i, height: 200,),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Image.asset(i, height: 200,),
 
-                          const SizedBox(height: 10,),
-                          if(i=='images/images_2/pic1.jpg')
-                             Text(projects[0], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic2.jpg')
-                            Text(projects[1], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic3.jpg')
-                            Text(projects[2], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic4.jpg')
-                            Text(projects[3], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic5.jpg')
-                            Text(projects[4], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic6.jpg')
-                            Text(projects[5], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic7.jpg')
-                            Text(projects[6], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic8.jpg')
-                            Text(projects[7], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic3.jpg')
-                            Text(projects[8], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic10.jpg')
-                            Text(projects[9], style: const TextStyle(fontWeight: FontWeight.normal),),
-                        ],
+                            const SizedBox(height: 10,),
+                            if(i=='images/images_2/pic1.jpg')
+                               Text(projects[0], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic2.jpg')
+                              Text(projects[1], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic3.jpg')
+                              Text(projects[2], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic4.jpg')
+                              Text(projects[3], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic5.jpg')
+                              Text(projects[4], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic6.jpg')
+                              Text(projects[5], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic7.jpg')
+                              Text(projects[6], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic8.jpg')
+                              Text(projects[7], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic3.jpg')
+                              Text(projects[8], style: const TextStyle(fontWeight: FontWeight.normal),),
+                            if(i=='images/images_2/pic10.jpg')
+                              Text(projects[9], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          ],
+                        ),
                       ),
                     );
             }
