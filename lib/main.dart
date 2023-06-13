@@ -134,18 +134,22 @@ class _HomeState extends State<Home> {
             ),
             CarouselSlider(
                 items: imgList.map((item) => Container(
-                  child: Center(child: Image.network(
+                  margin: EdgeInsets.all(8),
+                  width: 280,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
                     item,
-                    fit: BoxFit.cover,
-                    width: 200,
+                    fit: BoxFit.fill,
                   ),
                   ),
                 )).toList(),
                 options: CarouselOptions(
+                  height: 270,
                   autoPlay: true,
                   aspectRatio: 2.0,
                   enlargeCenterPage: true,
-
+                  enlargeStrategy: CenterPageEnlargeStrategy.height,
                 )),
             const Padding(
               padding: EdgeInsets.all(20),
