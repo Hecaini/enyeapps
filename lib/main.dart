@@ -31,7 +31,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var projects = ['This system is specifically designed to control temperature by controlling the volume of chilled water inside the pipe. It maintains the temperature based from set point by calculating the output position based on the proven PI control algorithms. For monitoring purposes, displays both for the temperature reading and set point are provided.',
+  var projects = ['This system is specifically designed to control temperature',
     'The ENYE Phrases',
     'The ENYE Water By-pass system',
     'The ENYE Temperature and Humidity Control and Monitoring System',
