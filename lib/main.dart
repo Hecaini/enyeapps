@@ -30,7 +30,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var projects = ['This system is specifically designed to control temperature.',
+  var projects = ['This system is specifically designed to control temperature',
     'The ENYE Phrases',
     'The ENYE Water By-pass system',
     'The ENYE Temperature and Humidity Control and Monitoring System',
