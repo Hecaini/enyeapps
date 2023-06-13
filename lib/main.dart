@@ -125,7 +125,7 @@ class _HomeState extends State<Home> {
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                "PROJECTS OF ENYE CONTROLS",
+                "PROJECTS OF ENYE CONTROLSSSSSSS",
                 style: TextStyle(
                   color: Colors.deepOrange,
                   fontWeight: FontWeight.bold,
