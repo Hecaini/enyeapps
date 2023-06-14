@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        CarouselSlider(
+        /*CarouselSlider(
             items: imgList.map((item) => Container(
               margin: const EdgeInsets.all(8),
               width: 280,
@@ -68,7 +68,68 @@ class _HomePageState extends State<HomePage> {
               aspectRatio: 2.0,
               enlargeCenterPage: true,
               enlargeStrategy: CenterPageEnlargeStrategy.height,
-            )),
+            )),*/
+        CarouselSlider(
+          options: CarouselOptions(
+            autoPlay: true,
+            aspectRatio: 2.0,
+            enlargeCenterPage: true,
+            height: 200,
+          ),
+          items: ['images/images_1/pix1.png',
+            'images/images_1/pix2.png',
+            'images/images_1/pix3.png',
+            'images/images_1/pix4.png',
+            'images/images_1/pix5.png',
+            'images/images_1/pix6.png',
+            'images/images_1/pix7.png',
+            'images/images_1/pix8.png',
+            'images/images_1/pix3.png',
+            'images/images_1/pix10.png'
+          ].map((i) {
+            return Builder(
+                builder : (BuildContext context){
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Image.asset(i, height: 200,),
+
+                          const SizedBox(height: 10,),
+                          if(i=='images/images_1/pix1.png')
+                            Text(projects[0], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix2.png')
+                            Text(projects[1], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix3.png')
+                            Text(projects[2], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix4.png')
+                            Text(projects[3], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix5.png')
+                            Text(projects[4], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix6.png')
+                            Text(projects[5], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix7.png')
+                            Text(projects[6], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix8.png')
+                            Text(projects[7], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix9.png')
+                            Text(projects[8], style: const TextStyle(fontWeight: FontWeight.normal),),
+                          if(i=='images/images_1/pix10.png')
+                            Text(projects[9], style: const TextStyle(fontWeight: FontWeight.normal),),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+            );
+          }).toList(),
+        ),
         const Padding(
           padding: EdgeInsets.all(20),
           child: Text(
