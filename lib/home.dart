@@ -1,5 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:enye_app/projects.dart';
+import 'package:enye_app/systems.dart';
 import 'package:flutter/material.dart';
+
+import 'about.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,6 +13,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final List <Map<String, dynamic>> gridCategories = [
+    {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": SystemsPage()},
+    {"title": "Projects", "images": "images/icons/projects.png", "path": ProjectsPage()},
+    {"title": "EC Bills", "images": "images/icons/ec-bills.png", "path": AboutPage()},
+    {"title": "Contact Us", "images": "images/icons/contact-us.png", "path": AboutPage()},
+  ];
 
   final List<String> imgList = [
     'https://enyecontrols.com/ec_cpanel/images/systems/1653447224.png',
@@ -69,77 +80,57 @@ class _HomePageState extends State<HomePage> {
               enlargeCenterPage: true,
               enlargeStrategy: CenterPageEnlargeStrategy.height,
             )),
-        const Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            "PRODUCTS OF ENYE CONTROLS",
-            style: TextStyle(
-              color: Colors.deepOrange,
-              fontWeight: FontWeight.bold,
+
+        //GRID VIEW HOME
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(21.0),
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 21.0,
+                mainAxisSpacing: 21.0,
+                mainAxisExtent: 125,
+              ),
+              itemCount: gridCategories.length,
+              itemBuilder: (context, index){
+                return GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      Navigator.push(
+                        context,
+                        new MaterialPageRoute(builder: (BuildContext context){ return gridCategories[index]['path']; }),
+                      );
+                    });
+                  },
+
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      color: Colors.orange[100],
+                    ),
+                    child: Column(
+                      children: [
+
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Image.asset("${gridCategories.elementAt(index)['images']}", color: Colors.deepOrange, height: 60, width: 60, fit: BoxFit.fill,),
+                        ),
+                        Text(
+                          "${gridCategories.elementAt(index)['title']}",
+                          style: TextStyle(fontSize: 16.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ),
-        CarouselSlider(
-          options: CarouselOptions(
-            autoPlay: true,
-            aspectRatio: 2.0,
-            enlargeCenterPage: true,
-            height: 300,
-          ),
-          items: ['images/images_2/pic1.jpg',
-            'images/images_2/pic2.jpg',
-            'images/images_2/pic3.jpg',
-            'images/images_2/pic4.jpg',
-            'images/images_2/pic5.jpg',
-            'images/images_2/pic6.jpg',
-            'images/images_2/pic7.jpg',
-            'images/images_2/pic8.jpg',
-            'images/images_2/pic3.jpg',
-            'images/images_2/pic10.jpg'
-          ].map((i) {
-            return Builder(
-                builder : (BuildContext context){
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+        )
 
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Image.asset(i, height: 200,),
-
-                          const SizedBox(height: 10,),
-                          if(i=='images/images_2/pic1.jpg')
-                            Text(projects[0], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic2.jpg')
-                            Text(projects[1], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic3.jpg')
-                            Text(projects[2], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic4.jpg')
-                            Text(projects[3], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic5.jpg')
-                            Text(projects[4], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic6.jpg')
-                            Text(projects[5], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic7.jpg')
-                            Text(projects[6], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic8.jpg')
-                            Text(projects[7], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic3.jpg')
-                            Text(projects[8], style: const TextStyle(fontWeight: FontWeight.normal),),
-                          if(i=='images/images_2/pic10.jpg')
-                            Text(projects[9], style: const TextStyle(fontWeight: FontWeight.normal),),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-            );
-          }).toList(),
-        ),
       ],
     );
   }
