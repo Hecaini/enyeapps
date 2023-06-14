@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 21.0,
                 mainAxisSpacing: 21.0,
-                mainAxisExtent: 125,
+                mainAxisExtent: 100,
               ),
               itemCount: gridCategories.length,
               itemBuilder: (context, index){
@@ -116,11 +116,11 @@ class _HomePageState extends State<HomePage> {
 
                         Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Image.asset("${gridCategories.elementAt(index)['images']}", color: Colors.deepOrange, height: 60, width: 60, fit: BoxFit.fill,),
+                          child: Image.asset("${gridCategories.elementAt(index)['images']}", color: Colors.deepOrange, height: 50, width: 50, fit: BoxFit.fill,),
                         ),
                         Text(
                           "${gridCategories.elementAt(index)['title']}",
-                          style: TextStyle(fontSize: 16.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 12.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
