@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
             autoPlay: true,
             aspectRatio: 2.0,
             enlargeCenterPage: true,
-            height: 300,
+            height: 200,
           ),
           items: ['images/images_2/pic1.jpg',
             'images/images_2/pic2.jpg',
