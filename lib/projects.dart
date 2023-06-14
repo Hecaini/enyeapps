@@ -33,7 +33,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               crossAxisCount: 2,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
-              mainAxisExtent: 300,
+              mainAxisExtent: 270,
             ),
             itemCount: gridProjects.length,
             itemBuilder: (context, index){
@@ -45,7 +45,41 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 child: Column(
                   children: [
                     ClipRRect(borderRadius: BorderRadius.circular(12.0),
-                        child: Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,),
+                        child: Container(
+                          height: 270,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(image: NetworkImage("${gridProjects.elementAt(index)['images']}"), fit: BoxFit.cover),
+                          ),
+
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.6)],
+                                stops: [0.0, 1],
+                                begin: Alignment.topCenter,
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                width: 150,
+                                margin: EdgeInsets.only(top: 50.0),
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Colors.deepOrange.shade300, Colors.deepOrange.withOpacity(0)],
+                                  ),
+                                ),
+                                child: Text(
+                                  "${gridProjects.elementAt(index)['title']}",
+                                  style: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
                     ),
 
                   ],
