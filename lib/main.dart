@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:enye_app/products.dart';
 import 'package:enye_app/projects.dart';
 import 'package:enye_app/systems.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.system,
         home: Home()
 
+
     );
   }
 }
@@ -36,7 +38,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List pages = [HomePage(), SystemsPage(), ProductsPage(), ProjectsPage(), AboutPage()];
+  List pages = [HomePage(), SystemsPage(), AboutPage()];
 
   int _selectedIndex = 0;
 
@@ -55,7 +57,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Image.asset("images/logo/enyecontrols.png", height: 30),
         actions: [
           IconButton(
@@ -82,13 +84,14 @@ class _HomeState extends State<Home> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     image: DecorationImage(
+                      fit: BoxFit.fill,
                         image: AssetImage("images/images_1/wallpaper.jpg"))),
                 child: const Text(
                   "ronfrancia.enye@gmail.com",
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
-                      color: Colors.white),
+                      color: Colors.black87),
                 ),
               ),
             ),
@@ -112,26 +115,41 @@ class _HomeState extends State<Home> {
               child: Text("Labels"),
             ),
             ListTile(
-              leading: const Icon(Icons.label),
-              title: const Text("Systems"),
+              leading: const Icon(Icons.app_registration),
+              title: const Text("Sign Up"),
               onTap: () {},
             ),
             ListTile(
-              leading: const Icon(Icons.label),
-              title: const Text("Projects"),
+              leading: const Icon(Icons.login_outlined),
+              title: const Text("Log In"),
               onTap: () {},
             ),
             ListTile(
-              leading: const Icon(Icons.label),
-              title: const Text("Products"),
+              leading: const Icon(Icons.logout_outlined),
+              title: const Text("Logout"),
               onTap: () {},
             ),
           ],
         ),
-      ),
+      ),*/
+
       body: pages[_selectedIndex],
 
-      bottomNavigationBar: Container(
+      bottomNavigationBar: CurvedNavigationBar(
+        color: Colors.deepOrange,
+          items: <Widget>[
+            Icon(Icons.home, size: 30, color: Colors.white),
+            Icon(Icons.settings, size: 30, color: Colors.white,),
+            Icon(Icons.contact_support_outlined, size: 30, color: Colors.white),
+          ],
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+      ),
+
+      /*bottomNavigationBar: Container(
         color: Colors.deepOrange,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
@@ -151,13 +169,12 @@ class _HomeState extends State<Home> {
             tabs: const [
               GButton(icon: Icons.home, text: 'Home',),
               GButton(icon: Icons.settings, text: 'Systems',),
-              GButton(icon: Icons.shop, text: 'Products',),
               GButton(icon: Icons.hvac, text: 'Projects',),
               GButton(icon: Icons.contacts, text: 'About',),
             ],
           ),
         ),
-      ),
+      ),*/
     );
   }
 }
