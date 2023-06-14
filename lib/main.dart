@@ -136,6 +136,7 @@ class _HomeState extends State<Home> {
       body: pages[_selectedIndex],
 
       bottomNavigationBar: CurvedNavigationBar(
+        height: 60,
         backgroundColor: Colors.white,
         color: Colors.deepOrange,
           items: <Widget>[
