@@ -54,7 +54,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                           child: Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.6)],
+                                colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.3)],
                                 stops: [0.0, 1],
                                 begin: Alignment.topCenter,
                               ),
