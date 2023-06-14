@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final List <Map<String, dynamic>> gridCategories = [
     {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": SystemsPage()},
     {"title": "Projects", "images": "images/icons/projects.png", "path": ProjectsPage()},
-    {"title": "EC Bills", "images": "images/icons/ec-bills.png", "path": AboutPage()},
+    {"title": "Company Profile", "images": "images/icons/website.png", "path": AboutPage()},
     {"title": "Contact Us", "images": "images/icons/contact-us.png", "path": AboutPage()},
   ];
 
@@ -109,14 +109,14 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.0),
-                      color: Colors.orange[100],
+                      color: Colors.white30,
                     ),
                     child: Column(
                       children: [
 
                         Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Image.asset("${gridCategories.elementAt(index)['images']}", color: Colors.deepOrange, height: 50, width: 50, fit: BoxFit.fill,),
+                          child: Image.asset("${gridCategories.elementAt(index)['images']}", height: 50, width: 50, fit: BoxFit.fill,),
                         ),
                         Text(
                           "${gridCategories.elementAt(index)['title']}",
