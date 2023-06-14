@@ -82,13 +82,14 @@ class _HomeState extends State<Home> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     image: DecorationImage(
+                      fit: BoxFit.fill,
                         image: AssetImage("images/images_1/wallpaper.jpg"))),
                 child: const Text(
                   "ronfrancia.enye@gmail.com",
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
-                      color: Colors.white),
+                      color: Colors.black87),
                 ),
               ),
             ),
@@ -112,18 +113,18 @@ class _HomeState extends State<Home> {
               child: Text("Labels"),
             ),
             ListTile(
-              leading: const Icon(Icons.label),
-              title: const Text("Systems"),
+              leading: const Icon(Icons.app_registration),
+              title: const Text("Sign Up"),
               onTap: () {},
             ),
             ListTile(
-              leading: const Icon(Icons.label),
-              title: const Text("Projects"),
+              leading: const Icon(Icons.login_outlined),
+              title: const Text("Log In"),
               onTap: () {},
             ),
             ListTile(
-              leading: const Icon(Icons.label),
-              title: const Text("Products"),
+              leading: const Icon(Icons.logout_outlined),
+              title: const Text("Logout"),
               onTap: () {},
             ),
           ],
