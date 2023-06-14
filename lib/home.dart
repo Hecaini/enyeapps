@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             options: CarouselOptions(
               height: 270,
               autoPlay: true,
-            //  aspectRatio: .5,
+              aspectRatio: .5,
               enlargeCenterPage: false,
              // enlargeStrategy: CenterPageEnlargeStrategy.height,
             )),
