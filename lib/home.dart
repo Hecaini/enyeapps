@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Padding(
+        /*const Padding(
           padding: EdgeInsets.all(20),
           child: Text(
             "PROJECTS OF ENYE CONTROLS",
@@ -60,10 +60,10 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-        ),
+        ),*/
         CarouselSlider(
             items: imgList.map((item) => Container(
-              margin: const EdgeInsets.all(8),
+            //  margin: const EdgeInsets.all(8),
               width: 280,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
@@ -76,9 +76,9 @@ class _HomePageState extends State<HomePage> {
             options: CarouselOptions(
               height: 270,
               autoPlay: true,
-              aspectRatio: 2.0,
-              enlargeCenterPage: true,
-              enlargeStrategy: CenterPageEnlargeStrategy.height,
+            //  aspectRatio: .5,
+              enlargeCenterPage: false,
+             // enlargeStrategy: CenterPageEnlargeStrategy.height,
             )),
 
         //GRID VIEW HOME
