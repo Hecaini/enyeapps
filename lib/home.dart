@@ -11,16 +11,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   final List<String> imgList = [
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653447224.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448162.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448199.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448274.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448353.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448438.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653449023.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653458552.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653458587.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448038.png',
+    'images/images_2/pix1.png',
+    'images/images_2/pix2.png',
+    'images/images_2/pix3.png',
+    'images/images_2/pix4.png',
+    'images/images_2/pix5.png',
+    'images/images_2/pix6.png',
+    'images/images_2/pix7.png',
+    'images/images_2/pix8.png',
+    'images/images_2/pix9.png',
+    'images/images_2/pix10.png',
 
   ];
 
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               width: 280,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.network(
+                child: Image.asset(
                   item,
                   fit: BoxFit.fill,
                 ),
