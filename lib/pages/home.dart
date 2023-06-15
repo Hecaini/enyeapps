@@ -61,19 +61,18 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.all(20),
-            child: Text(
+            padding: EdgeInsets.all(2),
+            /*child: Text(
               "PROJECTS OF ENYE CONTROLS",
               style: TextStyle(
                 color: Colors.deepOrange,
                 fontWeight: FontWeight.bold,
               ),
-            ),
+            ),*/
           ),
           CarouselSlider(
               items: imgList.map((item) => Container(
                 margin: const EdgeInsets.all(8),
-                width: 280,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.network(
@@ -83,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               )).toList(),
               options: CarouselOptions(
-                height: 270,
+                height: 380,
                 autoPlay: true,
                 aspectRatio: 2.0,
                 enlargeCenterPage: true,
