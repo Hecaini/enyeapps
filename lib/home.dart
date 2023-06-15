@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       Navigator.push(
                         context,
-                        new MaterialPageRoute(builder: (BuildContext context){ return gridCategories[index]['path']; }),
+                        MaterialPageRoute(builder: (BuildContext context){ return gridCategories[index]['path']; }),
                       );
                     });
                   },

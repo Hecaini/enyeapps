@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProjectsPage extends StatefulWidget {
@@ -8,6 +9,8 @@ class ProjectsPage extends StatefulWidget {
 }
 
 class _ProjectsPageState extends State<ProjectsPage> {
+  int _selectedIndex = 0;
+
   final List _categories = ['assets/icons/hvac.png', 'assets/icons/motorizedvalve.png', 'assets/icons/sensors.png', 'assets/icons/valve.png', 'assets/icons/software.png'];
 
   final List <Map<String, dynamic>> gridProjects = [
@@ -23,28 +26,30 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(12.0),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12.0,
-              mainAxisSpacing: 12.0,
-              mainAxisExtent: 270,
-            ),
-            itemCount: gridProjects.length,
-            itemBuilder: (context, index){
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  color: Colors.orange[200],
-                ), //no function??nasasapawan ng pictures
-                child: Column(
-                  children: [
-                    ClipRRect(borderRadius: BorderRadius.circular(12.0),
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(12.0),
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
+                mainAxisExtent: 270,
+              ),
+              itemCount: gridProjects.length,
+              itemBuilder: (context, index){
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: Colors.orange[200],
+                  ), //no function??nasasapawan ng pictures
+                  child: Column(
+                    children: [
+                      ClipRRect(borderRadius: BorderRadius.circular(12.0),
                         child: Container(
                           height: 270,
                           decoration: BoxDecoration(
@@ -79,16 +84,20 @@ class _ProjectsPageState extends State<ProjectsPage> {
                           ),
                         ),
 
-                      /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
-                    ),
+                        /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
+                      ),
 
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
+      ),
     );
+
+
 
       /*Center(child: Text('Projects Page'),),*/
 
@@ -104,6 +113,8 @@ class _ProjectsPageState extends State<ProjectsPage> {
             },
           ),
         ),*/
+
+
 
   }
 }

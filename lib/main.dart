@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:enye_app/products.dart';
 import 'package:enye_app/projects.dart';
 import 'package:enye_app/systems.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -23,7 +24,6 @@ class MyApp extends StatelessWidget {
         title: 'Enye App',
         themeMode: ThemeMode.system,
         home: Home()
-
 
     );
   }
@@ -56,8 +56,40 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      /*appBar: AppBar(
+    return CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(icon: Icon(Icons.home)),
+              BottomNavigationBarItem(icon: Icon(Icons.settings)),
+              BottomNavigationBarItem(icon: Icon(Icons.contact_support_outlined)),
+            ],
+        ),
+        tabBuilder: (context, index){
+          switch(index){
+            case 0:
+              return CupertinoTabView(builder: (context){
+                return CupertinoPageScaffold(child: HomePage());
+              });
+
+            case 1:
+              return CupertinoTabView(builder: (context){
+                return CupertinoPageScaffold(child: SystemsPage());
+              });
+
+            case 2:
+              return CupertinoTabView(builder: (context){
+                return CupertinoPageScaffold(child: AboutPage());
+              });
+
+            default: return CupertinoTabView(builder: (context){
+              return CupertinoPageScaffold(child: HomePage());
+            });
+          }
+        },
+    );
+
+      /*Scaffold(
+      *//*appBar: AppBar(
         title: Image.asset("images/logo/enyecontrols.png", height: 30),
         actions: [
           IconButton(
@@ -131,7 +163,7 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-      ),*/
+      ),*//*
 
       body: pages[_selectedIndex],
 
@@ -151,7 +183,7 @@ class _HomeState extends State<Home> {
           },
       ),
 
-      /*bottomNavigationBar: Container(
+      *//*bottomNavigationBar: Container(
         color: Colors.deepOrange,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
@@ -176,7 +208,7 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-      ),*/
-    );
+      ),*//*
+    );*/
   }
 }
