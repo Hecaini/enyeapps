@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:enye_app/products.dart';
 import 'package:enye_app/projects.dart';
+import 'package:enye_app/sample_form/systemsform.dart';
 import 'package:enye_app/systems.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -22,7 +23,14 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
         title: 'Enye App',
         themeMode: ThemeMode.system,
-        home: Home()
+       /* initialRoute: '/',
+        routes: {
+          '/': (context) => Home(),
+          '/other': (context) => SystemsForm(),
+          '/others': (context) => ProjectsPage(),
+        },*/
+      home: Home(),
+
 
 
     );
@@ -38,7 +46,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List pages = [HomePage(), SystemsPage(), AboutPage()];
+  List pages = [HomePage(), SystemsForm(), AboutPage()];
 
   int _selectedIndex = 0;
 
@@ -136,13 +144,13 @@ class _HomeState extends State<Home> {
       body: pages[_selectedIndex],
 
       bottomNavigationBar: CurvedNavigationBar(
-        height: 60,
+        height: 45,
         backgroundColor: Colors.white,
         color: Colors.deepOrange,
           items: <Widget>[
-            Icon(Icons.home, size: 30, color: Colors.white),
-            Icon(Icons.settings, size: 30, color: Colors.white,),
-            Icon(Icons.contact_support_outlined, size: 30, color: Colors.white),
+            Icon(Icons.home, size: 25, color: Colors.white),
+            Icon(Icons.settings, size: 25, color: Colors.white,),
+            Icon(Icons.contact_support_outlined, size: 25, color: Colors.white),
           ],
           onTap: (index) {
             setState(() {
@@ -180,3 +188,5 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+

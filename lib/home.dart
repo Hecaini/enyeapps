@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:enye_app/projects.dart';
+import 'package:enye_app/sample_form/systemsform.dart';
 import 'package:enye_app/systems.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   final List <Map<String, dynamic>> gridCategories = [
-    {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": SystemsPage()},
+    {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": SystemsForm()},
     {"title": "Projects", "images": "images/icons/projects.png", "path": ProjectsPage()},
     {"title": "Company Profile", "images": "images/icons/website.png", "path": AboutPage()},
     {"title": "Contact Us", "images": "images/icons/contact-us.png", "path": AboutPage()},
