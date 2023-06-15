@@ -58,40 +58,40 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(2),
-            /*child: Text(
-              "PROJECTS OF ENYE CONTROLS",
-              style: TextStyle(
-                color: Colors.deepOrange,
-                fontWeight: FontWeight.bold,
-              ),
-            ),*/
-          ),
-          CarouselSlider(
-              items: imgList.map((item) => Container(
-                margin: const EdgeInsets.all(8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    item,
-                    fit: BoxFit.fill,
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(2),
+              /*child: Text(
+                "PROJECTS OF ENYE CONTROLS",
+                style: TextStyle(
+                  color: Colors.deepOrange,
+                  fontWeight: FontWeight.bold,
                 ),
-              )).toList(),
-              options: CarouselOptions(
-                height: 380,
-                autoPlay: true,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
-                enlargeStrategy: CenterPageEnlargeStrategy.height,
-              )),
+              ),*/
+            ),
+            CarouselSlider(
+                items: imgList.map((item) => Container(
+                  margin: const EdgeInsets.all(8),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
+                      item,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                )).toList(),
+                options: CarouselOptions(
+                  height: 1000,
+                  autoPlay: true,
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                  enlargeStrategy: CenterPageEnlargeStrategy.height,
+                )),
 
-          //GRID VIEW HOME
-          SingleChildScrollView(
-            child: Padding(
+            //GRID VIEW HOME
+            Padding(
               padding: EdgeInsets.all(21.0),
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -137,9 +137,9 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
