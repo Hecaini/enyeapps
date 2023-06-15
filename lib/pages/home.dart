@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               )).toList(),
               options: CarouselOptions(
-                height: 380,
+                height: 450,
                 autoPlay: true,
                 aspectRatio: 2.0,
                 enlargeCenterPage: true,
