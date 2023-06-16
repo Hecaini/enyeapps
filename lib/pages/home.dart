@@ -25,8 +25,7 @@ class _HomePageState extends State<HomePage> {
   final List <Map<String, dynamic>> gridCategories = [
     {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": 1},
     {"title": "Projects", "images": "images/icons/projects.png", "path": 2},
-    {"title": "Company Profile", "images": "images/icons/website.png", "path": 3},
-    {"title": "Contact Us", "images": "images/icons/contact-us.png", "path": 3},
+
   ];
 
   final List<String> imgList = [
@@ -73,7 +72,7 @@ class _HomePageState extends State<HomePage> {
             ),
             CarouselSlider(
                 items: imgList.map((item) => Container(
-                  margin: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(.5),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Image.network(
@@ -83,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )).toList(),
                 options: CarouselOptions(
-                  height: 1000,
+                  height: 470,
                   autoPlay: true,
                   aspectRatio: 2.0,
                   enlargeCenterPage: true,
