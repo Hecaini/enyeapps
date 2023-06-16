@@ -115,7 +115,7 @@ class _HomeNavigatorState extends State<_homeNavigator> {
             settings: settings,
             builder: (BuildContext context) {
               if (settings.name == "/company") {
-                return const CompProfilePage();
+                return CompProfilePage();
               }else if (settings.name == "/socialmedia") {
                 return const SocialmediaPage();
               }

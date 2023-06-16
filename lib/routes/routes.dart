@@ -16,7 +16,7 @@ class AppPage{
       GetPage(name: projects, page: ()=> const ProjectsPage()),
     ]),
     GetPage(name: aboutus, page: ()=> const AboutPage()),
-    GetPage(name: comprofile, page: ()=> const CompProfilePage()),
+    GetPage(name: comprofile, page: ()=> CompProfilePage()),
     GetPage(name: socialmedia, page: ()=> const SocialmediaPage()),
   ];
 
