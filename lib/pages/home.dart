@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
   final controller = Get.put(NavBarController());
 
   final List <Map<String, dynamic>> gridCategories = [
-    {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": 1},
-    {"title": "Projects", "images": "images/icons/projects.png", "path": 2},
+    {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": 2},
+    {"title": "Projects", "images": "images/icons/projects.png", "path": 1},
 
   ];
 

@@ -7,6 +7,7 @@ import 'package:iconly/iconly.dart';
 import '../pages/home.dart';
 import '../pages/projects.dart';
 import '../pages/systems.dart';
+import '../sample_form/systemsform.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -24,7 +25,7 @@ class _NavBarState extends State<NavBar> {
       return Scaffold(
         body: IndexedStack(
           index: controller.tabIndex,
-          children: const [HomePage(), ProjectsPage(), SystemsPage()],
+          children: const [HomePage(), ProjectsPage(), SystemsForm()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.deepOrange,

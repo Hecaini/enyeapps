@@ -1,10 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:enye_app/projects.dart';
-import 'package:enye_app/systems.dart';
 import 'package:flutter/material.dart';
-
-import '../about.dart';
-import 'home1.dart';
 //import 'about.dart';
 
 class SystemsForm extends StatelessWidget {
