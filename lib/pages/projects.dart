@@ -26,7 +26,13 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
+      extendBody: true,
+      body: Center(child: Text("Projects Page",
+        style: TextStyle(fontSize: 24.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),),),
+    );
+
+      /*Scaffold(
       extendBody: true,
       body: SingleChildScrollView(
       child: Padding(
@@ -84,7 +90,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       ),
                     ),
 
-                    /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
+                    *//*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*//*
                   ),
 
                 ],
@@ -94,26 +100,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
         ),
       ),
     ),
-    );
-
-
-
-      /*Center(child: Text('Projects Page'),),*/
-
-      /* SizedBox(
-          height: 90,
-          child: ListView.builder(
-            itemCount: _categories.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index){
-              return projCategories(
-                iconShow: _categories[index],
-              );
-            },
-          ),
-        ),*/
-
-
+    );*/
 
   }
 }

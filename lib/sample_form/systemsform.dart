@@ -6,7 +6,13 @@ class SystemsForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
+      extendBody: true,
+      body: Center(child: Text("Systems Page",
+        style: TextStyle(fontSize: 24.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),),),
+    );
+
+      /*Scaffold(
       body: CustomScrollView(
         slivers: [
           const SliverAppBar(
@@ -39,7 +45,7 @@ class SystemsForm extends StatelessWidget {
             ),
 
           ),
-          /*SliverList(
+          *//*SliverList(
             delegate: SliverChildListDelegate([
               Container(
                 height: 120.0,
@@ -77,7 +83,7 @@ class SystemsForm extends StatelessWidget {
               ),
               ),
             ]),
-          ),*/
+          ),*//*
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -288,7 +294,7 @@ class SystemsForm extends StatelessWidget {
           ),
         ],
       ),
-    );
+    );*/
   }
 }
 

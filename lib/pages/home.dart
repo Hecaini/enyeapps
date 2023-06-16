@@ -107,6 +107,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: (){
                       setState(() {
                         controller.changeTabIndex(gridCategories[index]['path']);
+
                         /*Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context){ return Scaffold(body: gridCategories[index]['path']); }),
@@ -127,7 +128,6 @@ class _HomePageState extends State<HomePage> {
                             child: Image.asset("${gridCategories.elementAt(index)['images']}", height: 75, width: 85, fit: BoxFit.fill,),
                           ),
                           Text(
-                            textAlign: TextAlign.center,
                             "${gridCategories.elementAt(index)['title']}",
                             style: TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.bold),
                           ),
