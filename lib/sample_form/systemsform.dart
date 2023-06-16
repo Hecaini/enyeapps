@@ -13,7 +13,6 @@ class SystemsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const NavBarStay(),
       body: CustomScrollView(
         slivers: [
           const SliverAppBar(
