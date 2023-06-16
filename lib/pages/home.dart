@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../controller/controller.dart';
+import '../navbar/navbar.dart';
+import '../sample_form/systemsform.dart';
 import 'about.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,16 +31,19 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final List<String> imgList = [
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653447224.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448162.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448199.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448274.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448353.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448438.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653449023.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653458552.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653458587.png',
-    'https://enyecontrols.com/ec_cpanel/images/systems/1653448038.png',
+    'images/images_1/pix1.png',
+    'images/images_1/pix2.png',
+    'images/images_1/pix3.png',
+    'images/images_1/pix4.png',
+    'images/images_1/pix5.png',
+    'images/images_1/pix6.png',
+    'images/images_1/pix6.2.png',
+    'images/images_1/pix6.3.png',
+    'images/images_1/pix7.png',
+    'images/images_1/pix8.png',
+    'images/images_1/pix9.png',
+    'images/images_1/pix10.png',
+    'images/images_1/pix11.png',
 
   ];
 
@@ -57,6 +62,88 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Image.asset("images/logo/enyecontrols.png", height: 30),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
+        centerTitle: true,
+        backgroundColor: Colors.deepOrange,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                //color: Colors.deepOrange,
+                alignment: Alignment.bottomLeft,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    image: DecorationImage(
+                        image: AssetImage("images/images_1/wallpaper.jpg"), fit: BoxFit.cover)),
+                child: const Text(
+                  "Hi",
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> NavBar(),));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_box),
+              title: const Text("Account"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_emergency),
+              title: const Text("Contact Us"),
+              onTap: () {},
+            ),
+            const Padding(
+              padding: EdgeInsets.all(14.0),
+              child: Text("Informations"),
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_balance_outlined),
+              title: const Text("Systems"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> SystemsForm(),));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.air),
+              title: const Text("Projects"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProjectsPage(),));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.label),
+              title: const Text("About"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.power_settings_new),
+              title: const Text("Log Out"),
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -75,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                   margin: const EdgeInsets.all(.5),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image.network(
+                    child: Image.asset(
                       item,
                       fit: BoxFit.fill,
                     ),

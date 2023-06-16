@@ -1,3 +1,7 @@
+import 'package:enye_app/navbar/navbar.dart';
+import 'package:enye_app/pages/home.dart';
+import 'package:enye_app/pages/projects.dart';
+import 'package:enye_app/sample_form/systemsformdescrip.dart';
 import 'package:flutter/material.dart';
 //import 'about.dart';
 
@@ -7,13 +11,95 @@ class SystemsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+      title: Image.asset("images/logo/enyecontrols.png", height: 30),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {},
+        ),
+      ],
+      centerTitle: true,
+      backgroundColor: Colors.deepOrange,
+    ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                //color: Colors.deepOrange,
+                alignment: Alignment.bottomLeft,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    image: DecorationImage(
+                        image: AssetImage("images/images_1/wallpaper.jpg"), fit: BoxFit.cover)),
+                child: const Text(
+                  "Hi",
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
+              onTap: () {
+             //   Navigator.push(context, MaterialPageRoute(builder: (context)=> NavBar(),));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_box),
+              title: const Text("Account"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_emergency),
+              title: const Text("Contact Us"),
+              onTap: () {},
+            ),
+            const Padding(
+              padding: EdgeInsets.all(14.0),
+              child: Text("Informations"),
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_balance_outlined),
+              title: const Text("Systems"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> SystemsForm(),));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.air),
+              title: const Text("Projects"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProjectsPage(),));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.label),
+              title: const Text("About"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.power_settings_new),
+              title: const Text("Log Out"),
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
-            leading: Icon(Icons.menu),
+         const SliverAppBar(
+            leading: Text(''),
            // title: Image.asset("images/logo/enyecontrols.png", height: 30),
-            backgroundColor: Colors.deepOrange,
-            expandedHeight: 100,
+            backgroundColor: Colors.deepOrangeAccent,
+            expandedHeight: 70,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
@@ -23,10 +109,10 @@ class SystemsForm extends StatelessWidget {
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
-                fontStyle: FontStyle.italic,
+                //fontStyle: FontStyle.italic,
                 decorationColor: Colors.red,
                 decorationThickness: 5.0,
-                letterSpacing: 1.0,
+                letterSpacing: .2,
                 shadows: [
                   Shadow(
                     color: Colors.black12,
@@ -79,6 +165,10 @@ class SystemsForm extends StatelessWidget {
             ]),
           ),*/
           SliverToBoxAdapter(
+          child: GestureDetector(
+          onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> NavBarStay(),));
+          },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -89,28 +179,39 @@ class SystemsForm extends StatelessWidget {
                   margin: EdgeInsets.all(15.0),
                   child: Image.asset(
                       'images/images_1/pix1.png',
-                      fit: BoxFit.cover),
+                      fit: BoxFit.cover
+                  ),
+                ),
+              ),
+            ),
+          ),
+          ),
+          SliverToBoxAdapter(
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> System2(),));
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    height: 400,
+                    color: Colors.deepOrange,
+                    margin: EdgeInsets.all(15.0),
+                    child: Image.asset(
+                       'images/images_1/pix2.png',
+                         fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  height: 400,
-                  color: Colors.deepOrange,
-                  margin: EdgeInsets.all(15.0),
-                  child: Image.asset(
-                     'images/images_1/pix2.png',
-                       fit: BoxFit.cover),
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
+             child: GestureDetector(
+               onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> System3(),));
+               },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -126,7 +227,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+           child: GestureDetector(
+            onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> System4(),));
+            },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -142,7 +248,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+           child: GestureDetector(
+           onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> System5(),));
+            },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -158,7 +269,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+           child: GestureDetector(
+            onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> System6(),));
+           },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -174,7 +290,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+            child: GestureDetector(
+            onTap: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=> System66(),));
+             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -190,7 +311,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+           child: GestureDetector(
+           onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> System666(),));
+            },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -206,7 +332,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+            child: GestureDetector(
+             onTap: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=> System7(),));
+             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -222,7 +353,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+            child: GestureDetector(
+             onTap: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=> System8(),));
+             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -238,7 +374,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+            child: GestureDetector(
+             onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> System9(),));
+             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -254,7 +395,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+            child: GestureDetector(
+             onTap: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=> System10(),));
+             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -270,7 +416,12 @@ class SystemsForm extends StatelessWidget {
               ),
             ),
           ),
+          ),
           SliverToBoxAdapter(
+            child: GestureDetector(
+             onTap: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=> System11(),));
+             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ClipRRect(
@@ -285,6 +436,7 @@ class SystemsForm extends StatelessWidget {
                 ),
               ),
             ),
+          ),
           ),
         ],
       ),
