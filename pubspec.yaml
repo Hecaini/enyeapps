@@ -38,6 +38,8 @@ dependencies:
   carousel_slider:
   curved_navigation_bar: ^1.0.3
   google_nav_bar: ^5.0.6
+  get: ^4.6.5
+  iconly: ^1.0.1
 
 dev_dependencies:
   flutter_test:

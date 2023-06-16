@@ -1,6 +1,4 @@
 import 'package:enye_app/gdview/picnum1.dart';
-import 'package:enye_app/home.dart';
-import 'package:enye_app/products.dart';
 import 'package:flutter/material.dart';
 
 class SystemsPage extends StatefulWidget {
@@ -26,21 +24,23 @@ class _SystemsPageState extends State<SystemsPage> {
 
     @override
     Widget build(BuildContext context) {
-      return SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(12.0),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12.0,
-              mainAxisSpacing: 12.0,
-              mainAxisExtent: 270,
-            ),
-            itemCount: gridProjects.length,
-            itemBuilder: (context, index){
-              return GestureDetector(
+      return Scaffold(
+        extendBody: true,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(12.0),
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
+                mainAxisExtent: 270,
+              ),
+              itemCount: gridProjects.length,
+              itemBuilder: (context, index){
+                return GestureDetector(
                   onTap: (){
                     if (index == 0) {
                       Navigator.push(
@@ -92,50 +92,51 @@ class _SystemsPageState extends State<SystemsPage> {
                     }
                   },
 
-                child: Column(
-                  children: [
-                    ClipRRect(borderRadius: BorderRadius.circular(12.0),
-                      child: Container(
-                        height: 270,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(image: NetworkImage("${gridProjects.elementAt(index)['images']}"), fit: BoxFit.cover),
-                        ),
-
+                  child: Column(
+                    children: [
+                      ClipRRect(borderRadius: BorderRadius.circular(12.0),
                         child: Container(
+                          height: 270,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.2)],
-                              stops: [0.0,1],
-                              begin: Alignment.topCenter,
-                            ),
+                            image: DecorationImage(image: NetworkImage("${gridProjects.elementAt(index)['images']}"), fit: BoxFit.cover),
                           ),
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              width: 150,
-                              margin: EdgeInsets.only(top: 50.0),
-                              padding: EdgeInsets.all(16.0),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [Colors.deepOrange.shade300, Colors.deepOrange.withOpacity(0)],
+
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.2)],
+                                stops: [0.0,1],
+                                begin: Alignment.topCenter,
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: 150,
+                                margin: EdgeInsets.only(top: 50.0),
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Colors.deepOrange.shade300, Colors.deepOrange.withOpacity(0)],
+                                  ),
+                                ),
+                                child: Text(
+                                  "${gridProjects.elementAt(index)['title']}",
+                                  style: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              child: Text(
-                                "${gridProjects.elementAt(index)['title']}",
-                                style: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.bold),
-                              ),
                             ),
                           ),
                         ),
+
+                        /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
                       ),
 
-                      /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
-                    ),
-
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       );
