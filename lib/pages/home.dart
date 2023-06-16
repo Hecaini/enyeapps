@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
   final controller = Get.put(NavBarController());
 
   final List <Map<String, dynamic>> gridCategories = [
-    {"title": "Systems", "images": "images/icons/hvac-systems.png", "path": 2},
-    {"title": "Projects", "images": "images/icons/projects.png", "path": 1},
+    {"title": "Systems", "images": "images/icons/thermostat.png", "path": 2},
+    {"title": "Projects", "images": "images/icons/skyscraper.png", "path": 1},
 
   ];
 
@@ -96,10 +96,10 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 21.0,
-                  mainAxisSpacing: 21.0,
-                  mainAxisExtent: 100,
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 16.0,
+                  mainAxisExtent: 120,
                 ),
                 itemCount: gridCategories.length,
                 itemBuilder: (context, index){
@@ -117,18 +117,19 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
-                        color: Colors.white30,
+                        color: Colors.orange[800]?.withOpacity(0.8),
                       ),
-                      child: Column(
+                      child: Row(
                         children: [
 
                           Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Image.asset("${gridCategories.elementAt(index)['images']}", height: 50, width: 50, fit: BoxFit.fill,),
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 50),
+                            child: Image.asset("${gridCategories.elementAt(index)['images']}", height: 75, width: 85, fit: BoxFit.fill,),
                           ),
                           Text(
+                            textAlign: TextAlign.center,
                             "${gridCategories.elementAt(index)['title']}",
-                            style: TextStyle(fontSize: 12.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
