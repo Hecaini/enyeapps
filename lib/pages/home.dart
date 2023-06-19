@@ -2,8 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controller/controller.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -12,10 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  //List pages = [SystemsPage(), HomePage(), AboutPage()];
-
-  final controller = Get.put(NavBarController());
 
   final List <Map<String, dynamic>> gridCategories = [
     {"title": "Systems", "images": "images/icons/thermostat.png", "path": 2},
@@ -100,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   return GestureDetector(
                     onTap: (){
                       setState(() {
-                        controller.changeTabIndex(gridCategories[index]['path']);
+                        /*controller.changeTabIndex(gridCategories[index]['path']);*/
                         /*Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context){ return Scaffold(body: gridCategories[index]['path']); }),
