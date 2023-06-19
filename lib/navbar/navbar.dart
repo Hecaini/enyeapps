@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
+import '../pages/about.dart';
 import '../pages/home.dart';
 import '../pages/projects.dart';
 import '../pages/systems.dart';
@@ -25,7 +26,7 @@ class _NavBarState extends State<NavBar> {
       return Scaffold(
         body: IndexedStack(
           index: controller.tabIndex,
-          children: const [HomePage(), ProjectsPage(), SystemsForm()],
+          children: const [HomePage(), ProjectsPage(), SystemsPage(), AboutPage()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.deepOrange,

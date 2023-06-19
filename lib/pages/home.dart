@@ -1,13 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:enye_app/pages/projects.dart';
-import 'package:enye_app/pages/systems.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../controller/controller.dart';
-import 'about.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -91,14 +86,13 @@ class _HomePageState extends State<HomePage> {
 
             //GRID VIEW HOME
             Padding(
-              padding: EdgeInsets.all(21.0),
+              padding: const EdgeInsets.all(21.0),
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 16.0,
+                  mainAxisSpacing: 21.0,
                   mainAxisExtent: 120,
                 ),
                 itemCount: gridCategories.length,
@@ -116,8 +110,17 @@ class _HomePageState extends State<HomePage> {
 
                     child: Container(
                       decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent,
+                            offset: Offset(2.0, 2.0),
+                            blurRadius: 3.0,
+                            spreadRadius: 1.0,
+                          ),
+                        ],
+                        border: Border.all(width: 2.0, color: Colors.deepOrange),
                         borderRadius: BorderRadius.circular(12.0),
-                        color: Colors.orange[800]?.withOpacity(0.8),
+                        color: Colors.white,
                       ),
                       child: Row(
                         children: [
@@ -129,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             textAlign: TextAlign.center,
                             "${gridCategories.elementAt(index)['title']}",
-                            style: TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 24.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),

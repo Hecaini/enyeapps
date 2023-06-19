@@ -1,5 +1,6 @@
 import 'package:enye_app/gdview/picnum1.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
 
 class SystemsPage extends StatefulWidget {
   const SystemsPage({super.key});
@@ -19,12 +20,19 @@ class _SystemsPageState extends State<SystemsPage> {
       {"title": "System Info #5", "images": "https://enyecontrols.com/ec_cpanel/images/systems/1653448353.png"},
       {"title": "System Info #6", "images": "https://enyecontrols.com/ec_cpanel/images/systems/1653448438.png"},
       {"title": "System Info #7", "images": "https://enyecontrols.com/ec_cpanel/images/systems/1653449023.png"},
-      {"title": "System Info #8", "images": "https://enyecontrols.com/ec_cpanel/images/systems/1653458552.png"}
+      {"title": "System Info #8", "images": "https://enyecontrols.com/ec_cpanel/images/systems/1653458552.png"},
     ];
 
     @override
     Widget build(BuildContext context) {
-      return Scaffold(
+      return const Scaffold(
+        extendBody: true,
+        body: Center(child: Text("Systems Page",
+          style: TextStyle(fontSize: 24.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),),),
+
+      );
+
+        /*Scaffold(
         extendBody: true,
         body: SingleChildScrollView(
           child: Padding(
@@ -129,7 +137,7 @@ class _SystemsPageState extends State<SystemsPage> {
                           ),
                         ),
 
-                        /*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*/
+                        *//*Image.network("${gridProjects.elementAt(index)['images']}", height: 300, fit: BoxFit.cover,)*//*
                       ),
 
                     ],
@@ -139,7 +147,7 @@ class _SystemsPageState extends State<SystemsPage> {
             ),
           ),
         ),
-      );
+      );*/
 }
 }
 

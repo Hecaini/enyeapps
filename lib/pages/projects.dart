@@ -21,7 +21,9 @@ class _ProjectsPageState extends State<ProjectsPage> {
     {"title": "Ayala Land Vermosa BLDG.", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622687669.jpg"},
     {"title": "Ayala Triangle Gardens", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622620781.jpg"},
     {"title": "BA Lepanto Building", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622621124.jpg"},
-    {"title": "BDO Tower", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622621376.jpg"}
+    {"title": "BDO Tower", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622621376.jpg"},
+    {"title": "Capital One", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622621548.jpg"},
+    {"title": "Cebu Exchange", "images": "https://enyecontrols.com/ec_cpanel/images/projects/1622621788.jpg"}
   ];
 
   @override
@@ -30,7 +32,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       extendBody: true,
       body: SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12.0),
         child: GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -59,7 +61,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.3)],
+                            colors: [Colors.blue.withOpacity(0.2), Colors.deepOrange.shade100.withOpacity(0.2)],
                             stops: [0.0, 1],
                             begin: Alignment.topCenter,
                           ),
