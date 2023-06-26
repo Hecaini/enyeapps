@@ -1,3 +1,4 @@
+import 'package:enye_app/widget/mybutton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ class loginPage extends StatelessWidget {
   //text editing controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  void signUserIn(){}
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +56,8 @@ class loginPage extends StatelessWidget {
               ),
 
               //sign-in button
-              GestureDetector(
-
+              MyButton(
+                onTap: signUserIn,
               ),
             ],
           ),
