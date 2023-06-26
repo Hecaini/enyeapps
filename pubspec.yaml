@@ -37,9 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   carousel_slider:
   curved_navigation_bar: ^1.0.3
-  google_nav_bar: ^5.0.6
-  get: ^4.6.5
-  iconly: ^1.0.1
+  persistent_bottom_nav_bar: ^5.0.2
+  url_launcher: ^6.1.11
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -65,11 +65,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - images/images_1/
-   - images/images_2/
-   - images/images_1/wallpaper.jpg
-   - images/logo/
-   - images/icons/
+    - assets/backgrounds/
+    - assets/images_1/
+    - assets/images_2/
+    - assets/logo/
+    - assets/icons/
+    - assets/homepage/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -84,9 +85,15 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-   - family: Dashboardicon
-     fonts:
-       - asset: assets/fonts/Dashboardicon.ttf
+    - family: Dashboardicon
+      fonts:
+        - asset: assets/fonts/Dashboardicon.ttf
+
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway-Regular.ttf
+        - asset: assets/fonts/Raleway-Italic.ttf
+          style: italic
 
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
