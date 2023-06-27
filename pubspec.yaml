@@ -40,6 +40,7 @@ dependencies:
   persistent_bottom_nav_bar: ^5.0.2
   url_launcher: ^6.1.11
   smooth_page_indicator: ^1.1.0
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:

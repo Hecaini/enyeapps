@@ -1,3 +1,6 @@
+export 'login/loginpage.dart';
+export 'login/registerpage.dart';
+
 export 'home/homepage.dart';
 export 'home/homepage2.dart';
 
