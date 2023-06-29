@@ -25,6 +25,7 @@ class _loginPageState extends State<loginPage> {
   final _formKey = GlobalKey<FormState>();
 
   Future<void> signUserIn() async {
+
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
 
@@ -65,7 +66,7 @@ class _loginPageState extends State<loginPage> {
                   children: [
                     Icon(Icons.close, color: Colors.white,),
                     const SizedBox(width: 10,),
-                    Text("Wrong email or password !"),
+                    Text("Incorrect email or password !"),
                   ],
                 ),
               ),

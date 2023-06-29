@@ -7,4 +7,7 @@ class API {
 
   //login admin user
   static const loginAdmin = "$hostConnect/admin/login.php";
+
+  //check session start
+  static const userSession = "$hostConnect/admin/config.php";
 }

@@ -1,9 +1,9 @@
 class userAdmin {
-  String name;
-  String email;
-  String password;
+  final String name;
+  final String email;
+  final String password;
 
-  userAdmin(this.name, this.email, this.password);
+  userAdmin({required this.name,required this.email,required this.password});
 
   Map <String, dynamic> toJson() => {
 

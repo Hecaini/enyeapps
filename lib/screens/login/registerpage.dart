@@ -63,9 +63,9 @@ class _registerPageState extends State<registerPage> {
       } else {
         //useradmin.dart transfering to json
         userAdmin userAdminModel = userAdmin(
-          nameController.text.trim(),
-          emailController.text.trim(),
-          passwordController.text.trim(),
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
         );
 
         try {

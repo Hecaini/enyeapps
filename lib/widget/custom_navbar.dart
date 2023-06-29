@@ -101,7 +101,7 @@ class CustomNavBar extends StatelessWidget {
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),
       ),
-      navBarStyle: NavBarStyle.style15, // Choose the nav bar style with this property.
+      navBarStyle: NavBarStyle.style9, // Choose the nav bar style with this property.
     );
 
       BottomAppBar(
