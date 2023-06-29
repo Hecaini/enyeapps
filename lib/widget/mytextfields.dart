@@ -61,8 +61,11 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Required !';
+          } else if (value.length < 6) {
+            return 'Contains at least 6 characters !';
+          } else {
+            return null;
           }
-          return null;
         },
         controller: widget.controller,
         obscureText: passToggle,

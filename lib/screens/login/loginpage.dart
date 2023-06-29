@@ -1,8 +1,12 @@
-import 'package:enye_app/screens/login/registerpage.dart';
-import 'package:enye_app/widget/mybutton.dart';
-import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'dart:convert';
 
+import 'package:enye_app/screens/screens.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:http/http.dart' as http;
+
+import '../../config/api_connection.dart';
 import '../../widget/widgets.dart';
 
 class loginPage extends StatefulWidget {
@@ -20,14 +24,59 @@ class _loginPageState extends State<loginPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  void signUserIn(){
+  Future<void> signUserIn() async {
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
-      // If the form is valid, display a snackbar. In the real world,
-      // you'd often call a server or save the information in a database.
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
-      );
+
+      try {
+        var res = await http.post( //pasiing value to result
+          Uri.parse(API.loginAdmin),
+          body: {
+            'email' : emailController.text.trim(),
+            'password' : passwordController.text.trim(),
+          },
+        );
+
+        if (res.statusCode == 200){ //from flutter app the connection with API to server  - success
+          var resBodyOfLogin = jsonDecode(res.body);
+
+          if(resBodyOfLogin['login'] == true){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                content: Row(
+                  children: [
+                    Icon(Icons.check, color: Colors.greenAccent,),
+                    const SizedBox(width: 10,),
+                    Text("Congratulations, Login Successfully."),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.redAccent,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                content: Row(
+                  children: [
+                    Icon(Icons.close, color: Colors.white,),
+                    const SizedBox(width: 10,),
+                    Text("Wrong email or password !"),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+
+      } catch(e) {
+        print(e.toString());
+        Fluttertoast.showToast(msg: e.toString());
+      }
     }
   }
 
@@ -82,7 +131,7 @@ class _loginPageState extends State<loginPage> {
                   ),
 
                   //or continue with
-                  const SizedBox(height: 30,),
+                  /*const SizedBox(height: 30,),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
@@ -103,10 +152,10 @@ class _loginPageState extends State<loginPage> {
                         ),
                       ],
                     ),
-                  ),
+                  ),*/
 
                   //gmail + facebook sign in
-                  SizedBox(height: 25,),
+                  /*SizedBox(height: 25,),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -114,7 +163,7 @@ class _loginPageState extends State<loginPage> {
                       SizedBox(width: 25,),
                       Image(image: AssetImage('assets/icons/facebook-v2.png'), height: 40, width: 40,),
                     ],
-                  ),
+                  ),*/
 
                   //not a member sign up
                   const SizedBox(height: 10,),

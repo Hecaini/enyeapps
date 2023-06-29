@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:enye_app/config/api_connection.dart';
-import 'package:enye_app/screens/login/useradmin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:enye_app/widget/mybutton.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/widgets.dart';
+import '../screens.dart';
 
 class registerPage extends StatefulWidget {
   static const String routeName = '/register';
@@ -41,46 +39,102 @@ class _registerPageState extends State<registerPage> {
 
 
   Future<void> signUserUp() async {
+
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
-      userAdmin userAdminModel = userAdmin(
+
+      //password doesn't match with confirmation password
+      if (passwordController.text.trim() != conpasswordController.text.trim()){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+            content: Row(
+              children: [
+                Icon(Icons.close, color: Colors.white,),
+                const SizedBox(width: 10,),
+                Text("Password doesn't match !"),
+              ],
+            ),
+          ),
+        );
+
+      } else {
+        //useradmin.dart transfering to json
+        userAdmin userAdminModel = userAdmin(
           nameController.text.trim(),
           emailController.text.trim(),
           passwordController.text.trim(),
-      );
-      try {
-        var res = await http.post( //pasiing value to result
-          Uri.parse(API.signUpAdmin),
-          body: userAdminModel.toJson(),
         );
 
-        if (res.statusCode == 200){ //from flutter app the connection with API to server  - success
-          var resBodyOfSignUp = jsonDecode(res.body);
-          if(resBodyOfSignUp['email_taken'] == true){
-            Fluttertoast.showToast(
-              msg: "Email is already taken.",
-              gravity: ToastGravity.TOP,
-              backgroundColor: Colors.red.shade100,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
-          } else if(resBodyOfSignUp['user_add'] == true){
-            successToast();
-            Fluttertoast.showToast(msg: "Congratulations, SignUp Successfully.");
-          } else {
-            Fluttertoast.showToast(msg: "Error Occured.");
+        try {
+          var res = await http.post( //pasiing value to result
+            Uri.parse(API.signUpAdmin),
+            body: userAdminModel.toJson(),
+          );
+
+          if (res.statusCode == 200){ //from flutter app the connection with API to server  - success
+            var resBodyOfSignUp = jsonDecode(res.body);
+
+            //if email is already taken
+            if(resBodyOfSignUp['email_taken'] == true){
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Colors.orangeAccent,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                  content: Row(
+                    children: [
+                      Icon(Icons.info, color: Colors.orange,),
+                      const SizedBox(width: 10,),
+                      Text("Warning: Email is already taken."),
+                    ],
+                  ),
+                ),
+              );
+              _formKey.currentState?.reset();
+
+            } else if(resBodyOfSignUp['user_add'] == true){ //registration success
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Colors.green,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                  content: Row(
+                    children: [
+                      Icon(Icons.check, color: Colors.greenAccent,),
+                      const SizedBox(width: 10,),
+                      Text("Congratulations, SignUp Successfully."),
+                    ],
+                  ),
+                ),
+              );
+              _formKey.currentState?.reset();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar( //registration failed
+                const SnackBar(
+                  backgroundColor: Colors.redAccent,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                  content: Row(
+                    children: [
+                      Icon(Icons.close, color: Colors.white,),
+                      const SizedBox(width: 10,),
+                      Text("Error occured!"),
+                    ],
+                  ),
+                ),
+              );
+            }
           }
+
+        } catch(e) {
+          print(e.toString());
+          Fluttertoast.showToast(msg: e.toString());
         }
-
-      } catch(e) {
-
       }
 
-      // If the form is valid, display a snackbar. In the real world,
-      // you'd often call a server or save the information in a database.
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
-      );
     }
   }
 
@@ -144,7 +198,7 @@ class _registerPageState extends State<registerPage> {
                   ),
 
                   //or continue with
-                  const SizedBox(height: 30,),
+                  /*const SizedBox(height: 30,),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
@@ -165,10 +219,10 @@ class _registerPageState extends State<registerPage> {
                         ),
                       ],
                     ),
-                  ),
+                  ),*/
 
                   //gmail + facebook sign in
-                  const SizedBox(height: 25,),
+                  /*const SizedBox(height: 25,),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -176,7 +230,7 @@ class _registerPageState extends State<registerPage> {
                       SizedBox(width: 25,),
                       Image(image: AssetImage('assets/icons/facebook-v2.png'), height: 40, width: 40,),
                     ],
-                  ),
+                  ),*/
 
                   //already have an account
                   const SizedBox(height: 10,),

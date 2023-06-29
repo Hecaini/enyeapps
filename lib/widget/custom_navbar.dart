@@ -24,46 +24,47 @@ class CustomNavBar extends StatelessWidget {
 
     List<Widget> _buildScreens() {
       return [
-        HomePage(),
-        SystemsPage(),
-        ProjectsPage(),
-        ContactsPage()
+        DashboardPage(),
+        OrdersPage(),
+        AppointmentPage(),
+        CatalogsPage(),
+        AccountPage(),
       ];
     }
 
     List<PersistentBottomNavBarItem> _navBarsItems() {
       return [
         PersistentBottomNavBarItem(
-          icon: Icon(Dashboardicon.home_nav),
-          title: ("Home"),
+          icon: Icon(Icons.dashboard),
+          title: ("Dashboard"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Dashboardicon.systems_nav),
-          title: ("Systems"),
+          icon: Icon(Icons.list),
+          title: ("Orders"),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.white70,
+          textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+        PersistentBottomNavBarItem(
+          icon: Icon(Icons.book),
+          title: ("Appointment"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.shop),
-          title: ("Systems"),
+          title: ("Products"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Dashboardicon.projects_nav),
-          title: ("Projects"),
-          activeColorPrimary: Colors.white,
-          inactiveColorPrimary: Colors.white70,
-          textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
-        PersistentBottomNavBarItem(
-          icon: Icon(Dashboardicon.contact_us_nav),
-          title: ("Contacts"),
+          icon: Icon(Icons.person),
+          title: ("Account"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),

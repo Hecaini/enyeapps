@@ -4,4 +4,7 @@ class API {
 
   //sign-up admin user
   static const signUpAdmin = "$hostConnect/admin/signup.php";
+
+  //login admin user
+  static const loginAdmin = "$hostConnect/admin/login.php";
 }

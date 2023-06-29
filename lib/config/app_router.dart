@@ -1,6 +1,4 @@
-import 'package:enye_app/screens/home/homepage.dart';
 import 'package:enye_app/screens/screens.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/custom_navbar.dart';
@@ -12,18 +10,16 @@ class AppRouter{
     switch (settings.name){
       case '/':
         return CustomNavBar.route();
-      case HomePage.routeName:
-        return HomePage.route();
-      case SecondScreen.routeName:
-        return SecondScreen.route();
-      case SystemsPage.routeName:
-        return SystemsPage.route();
-      case ProjectsPage.routeName:
-        return ProjectsPage.route();
-      case detailedProjPage.routeName:
-        return detailedProjPage.route();
-      case ContactsPage.routeName:
-        return ContactsPage.route();
+      case DashboardPage.routeName:
+        return DashboardPage.route();
+      case OrdersPage.routeName:
+        return OrdersPage.route();
+      case AppointmentPage.routeName:
+        return AppointmentPage.route();
+      case CatalogsPage.routeName:
+        return CatalogsPage.route();
+      case AccountPage.routeName:
+        return AccountPage.route();
 
       default: 
         return _errorRoute();
