@@ -47,7 +47,22 @@ class _CategoriesPageState extends State<CategoriesPage> {
   }
 
   _showSnackbar(context, message){
-    //_scaffoldKey.currentState?.showSnackbar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.greenAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.check, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
   }
 
   _getCategories(){
@@ -68,6 +83,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
         if('success' == result){
           _getCategories();
           _clearValues();
+          _showSnackbar(context, "Successfully added.");
         }
       });
     }
@@ -85,6 +101,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           setState(() {
             _isUpdating = false;
           });
+          _showSnackbar(context, "Edited Successfully");
           _clearValues();
         }
 
