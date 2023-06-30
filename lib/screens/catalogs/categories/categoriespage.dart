@@ -93,22 +93,22 @@ class _CategoriesPageState extends State<CategoriesPage> {
   }
 
   _delCategories(Categories category){
-    if (_formKey.currentState!.validate()) {
-      _showProgress('Deleting Category...');
-      Services.deleteCategories(category.id).then((result) {
-        if('success' == result){
-          _getCategories();
-          _clearValues();
-        }
-
-      });
-    }
+    _showProgress('Deleting Category...');
+    Services.deleteCategories(category.id).then((result) {
+      if('success' == result){
+        _getCategories();
+        _clearValues();
+      }
+    });
   }
 
   _clearValues(){
     categoryName.text = '';
   }
 
+  _showValues(Categories category){
+    categoryName.text = category.name;
+  }
   SingleChildScrollView _dataBody(){
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -116,12 +116,33 @@ class _CategoriesPageState extends State<CategoriesPage> {
         scrollDirection: Axis.horizontal,
         child: DataTable(
           columns: [
-            DataColumn(label: Text('ID')),
-            DataColumn(label: Text('Category Name')),
+            DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Category Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
           ],
           rows: _categories.map((categories) => DataRow(cells: [
-            DataCell(Text(categories.id.toString())),
-            DataCell(Text(categories.name.toString())),
+            DataCell(Text(categories.id.toString()),
+              onTap: (){
+                _showValues(categories);
+                _selectedCategory = categories;
+                setState(() {
+                  _isUpdating = true; //set flag updating to show buttons
+                });
+              }),
+            DataCell(Text(categories.name.toString()),
+              onTap: (){
+                _showValues(categories);
+                _selectedCategory = categories; //set the selected category to update
+                setState(() {
+                  _isUpdating = true; //set flag updating to show buttons
+                });
+              }),
+            DataCell(IconButton(
+              icon: Icon(Icons.delete, color: Colors.red,),
+              onPressed: (){
+                _delCategories(categories);
+              },
+            )),
           ])).toList(),
         ),
       ),
@@ -153,12 +174,15 @@ class _CategoriesPageState extends State<CategoriesPage> {
 
                 const SizedBox(height: 20,),
                 NormalTextField(controller: categoryName, hintText: "Category Name"),
+
+                const SizedBox(height: 20,),
                 _isUpdating ?
                 Row(
                   children: <Widget>[
+                    const SizedBox(width: 20,),
                     editButton(
                       onTap: () {
-                        //_editCategories();
+                        _editCategories(_selectedCategory);
                       },
                       text: 'UPDATE',
                     ),
@@ -175,6 +199,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
                   ],
                 )
                 : Container(),
+
+                const SizedBox(height: 20,),
                 Expanded(
                   child: _dataBody(),
                 ),

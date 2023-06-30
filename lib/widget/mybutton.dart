@@ -36,14 +36,14 @@ class addButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(12.0),
-        margin: EdgeInsets.symmetric(horizontal: 18.0),
+        padding: EdgeInsets.all(16.0),
+        margin: EdgeInsets.symmetric(horizontal: 6.0),
         decoration: BoxDecoration(
           color: Colors.greenAccent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
-          child: Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+          child: Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),),
         ),
       ),
     );
@@ -61,14 +61,14 @@ class editButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(12.0),
-        margin: EdgeInsets.symmetric(horizontal: 18.0),
+        padding: EdgeInsets.all(16.0),
+        margin: EdgeInsets.symmetric(horizontal: 6.0),
         decoration: BoxDecoration(
           color: Colors.orangeAccent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
-          child: Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+          child: Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),),
         ),
       ),
     );
@@ -86,14 +86,14 @@ class delButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(12.0),
-        margin: EdgeInsets.symmetric(horizontal: 18.0),
+        padding: EdgeInsets.all(16.0),
+        margin: EdgeInsets.symmetric(horizontal: 6.0),
         decoration: BoxDecoration(
           color: Colors.redAccent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
-          child: Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+          child: Text(text, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),),
         ),
       ),
     );
