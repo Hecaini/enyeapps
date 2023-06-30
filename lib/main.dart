@@ -8,7 +8,7 @@ void main(){
   runApp( MaterialApp(
     title: 'ADMIN ENYE',
     theme: ThemeData(
-      primarySwatch: Colors.orange,
+      primarySwatch: Colors.deepOrange,
       fontFamily: 'Raleway',
     ),
     onGenerateRoute: AppRouter.onGenerateRoute,

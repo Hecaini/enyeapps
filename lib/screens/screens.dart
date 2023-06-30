@@ -7,10 +7,16 @@ export 'account/accountpage.dart';
 export 'appointment/appointmentpage.dart';
 
 export 'catalogs/catalogspage.dart';
-export 'catalogs/categoriespage.dart';
-export 'catalogs/subcategoriespage.dart';
-export 'catalogs/productspage.dart';
-export 'catalogs/manufacturerpage.dart';
+
+export 'catalogs/categories/categoriespage.dart';
+export 'catalogs/categories/categories.dart';
+export 'catalogs/categories/services.dart';
+
+export 'catalogs/sub_categories/subcategoriespage.dart';
+
+export 'catalogs/products/productspage.dart';
+
+export 'catalogs/manufacturer/manufacturerpage.dart';
 
 export 'dashboard/dashboardpage.dart';
 
