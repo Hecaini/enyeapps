@@ -7,6 +7,10 @@ export 'account/accountpage.dart';
 export 'appointment/appointmentpage.dart';
 
 export 'catalogs/catalogspage.dart';
+export 'catalogs/categoriespage.dart';
+export 'catalogs/subcategoriespage.dart';
+export 'catalogs/productspage.dart';
+export 'catalogs/manufacturerpage.dart';
 
 export 'dashboard/dashboardpage.dart';
 
