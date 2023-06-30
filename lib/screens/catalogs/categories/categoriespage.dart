@@ -46,7 +46,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     });
   }
 
-  _showSnackbar(context, message){
+  _successSnackbar(context, message){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
@@ -83,7 +83,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
         if('success' == result){
           _getCategories();
           _clearValues();
-          _showSnackbar(context, "Successfully added.");
+          _successSnackbar(context, "Successfully added.");
         }
       });
     }
@@ -101,7 +101,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           setState(() {
             _isUpdating = false;
           });
-          _showSnackbar(context, "Edited Successfully");
+          _successSnackbar(context, "Edited Successfully");
           _clearValues();
         }
 
