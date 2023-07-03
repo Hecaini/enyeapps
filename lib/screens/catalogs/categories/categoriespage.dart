@@ -65,9 +65,28 @@ class _CategoriesPageState extends State<CategoriesPage> {
     );
   }
 
+  _errorSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
   _getCategories(){
     _showProgress('Loading Categories...');
-    Services.getCategories().then((categories){
+    categoriesServices.getCategories().then((categories){
       setState(() {
         _categories = categories;
       });
@@ -79,11 +98,15 @@ class _CategoriesPageState extends State<CategoriesPage> {
   _addCategories(){
     if (_formKey.currentState!.validate()) {
       _showProgress('Adding Category...');
-      Services.addCategories(categoryName.text).then((result) {
+      categoriesServices.addCategories(categoryName.text).then((result) {
         if('success' == result){
           _getCategories();
           _clearValues();
           _successSnackbar(context, "Successfully added.");
+        } else if('exist' == result){
+          _errorSnackbar(context, "Category name EXIST in database.");
+        } else {
+          _errorSnackbar(context, "Error occured...");
         }
       });
     }
@@ -95,7 +118,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     });
     if (_formKey.currentState!.validate()) {
       _showProgress('Updating Category...');
-      Services.editCategories(category.id, categoryName.text).then((result) {
+      categoriesServices.editCategories(category.id, categoryName.text).then((result) {
         if('success' == result){
           _getCategories(); //refresh the list after update
           setState(() {
@@ -103,29 +126,42 @@ class _CategoriesPageState extends State<CategoriesPage> {
           });
           _successSnackbar(context, "Edited Successfully");
           _clearValues();
+        }  else if('exist' == result){
+          _errorSnackbar(context, "Category name EXIST in database.");
+        } else {
+          _errorSnackbar(context, "Error occured...");
         }
 
       });
     }
   }
 
+  //delete data by getting classes in services.dart
   _delCategories(Categories category){
     _showProgress('Deleting Category...');
-    Services.deleteCategories(category.id).then((result) {
+    categoriesServices.deleteCategories(category.id).then((result) {
+      //if echo json from PHP is success
       if('success' == result){
+        _successSnackbar(context, "Deleted Successfully");
         _getCategories();
         _clearValues();
+      } else {
+        _errorSnackbar(context, "Error occured...");
       }
     });
   }
 
+  //emptying textfields
   _clearValues(){
     categoryName.text = '';
   }
 
+  //show data to textfield when datatable is clicked
   _showValues(Categories category){
     categoryName.text = category.name;
   }
+
+  //data table select all
   SingleChildScrollView _dataBody(){
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,

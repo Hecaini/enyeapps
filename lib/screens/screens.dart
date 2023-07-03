@@ -10,9 +10,11 @@ export 'catalogs/catalogspage.dart';
 
 export 'catalogs/categories/categoriespage.dart';
 export 'catalogs/categories/categories.dart';
-export 'catalogs/categories/services.dart';
+export 'catalogs/categories/categoriesservices.dart';
 
 export 'catalogs/sub_categories/subcategoriespage.dart';
+export 'catalogs/sub_categories/subcategories.dart';
+export 'catalogs/sub_categories/subcatservices.dart';
 
 export 'catalogs/products/productspage.dart';
 

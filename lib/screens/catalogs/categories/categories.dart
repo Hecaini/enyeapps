@@ -1,3 +1,4 @@
+//values na meron si categories
 class Categories {
   String id;
   String name;

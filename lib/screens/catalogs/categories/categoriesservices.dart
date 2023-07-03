@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import '../../../config/api_connection.dart';
 import '../../screens.dart';
 
-class Services {
+class categoriesServices {
+  //this is same as in PHP code action made by the user CRUD
   static const GET_ALL_CATEGORIES = 'get_all_cat';
   static const ADD_CATEGORIES = 'add_cat';
   static const EDIT_CATEGORIES = 'edit_cat';
@@ -16,6 +17,7 @@ class Services {
       var map = Map<String, dynamic>();
       map['action'] = GET_ALL_CATEGORIES;
 
+      //get all data of categories
       final res = await http.post(Uri.parse(API.categories), body: map); //passing value to result
       print('getCategories Response: ${res.body}');
 
@@ -33,6 +35,7 @@ class Services {
   }
 
   static List<Categories> parseResponse(String responseBody){
+    //conversion from web server into data by using categories.dart
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<Categories>((json) => Categories.fromJson(json)).toList();
   }
@@ -41,13 +44,18 @@ class Services {
   static Future<String> addCategories(String name) async {
     try{
       var map = Map<String, dynamic>();
+      //get the action do by the user transfer it to POST method
       map['action'] = ADD_CATEGORIES;
+      //name of category entered by user
       map['name'] = name;
 
+      //config API to connect web server
       final res = await http.post(Uri.parse(API.categories), body: map); //passing value to result
       print('addCategories Response: ${res.body}');
 
+      //if status is okay in web server
       if(res.statusCode == 200){
+        //return result from PHP backend
         return res.body;
       } else {
         return "error";
@@ -85,10 +93,14 @@ class Services {
       map['action'] = DEL_CATEGORIES;
       map['id'] = id;
 
+      //config API to connect web server
       final res = await http.post(Uri.parse(API.categories), body: map); //passing value to result
       print('deleteCategories Response: ${res.body}');
 
+      //if status is okay in web server
       if(res.statusCode == 200){
+
+        //return result from PHP backend
         return res.body;
       } else {
         return "error";
