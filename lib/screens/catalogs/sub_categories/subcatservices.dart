@@ -75,6 +75,7 @@ class subCatServices {
       map['name'] = name;
       map['category_id'] = category_id;
 
+      print('category id: ${category_id}');
       final res = await http.post(Uri.parse(API.subcategories), body: map); //passing value to result
       print('editSubCategories Response: ${res.body}');
 
