@@ -52,7 +52,7 @@ class _AccountPageState extends State<AccountPage> {
             if(snapshot.hasError) print(snapshot.error);
               return snapshot.hasData
                 ? ListView.builder(
-                  itemCount: snapshot.data!.length,
+                  itemCount: 1,
                   itemBuilder: (context, index){
                     List list = snapshot.data;
                     return Row(

@@ -16,11 +16,14 @@ class subCategoriesPage extends StatefulWidget {
 
   final String title = 'Sub Categories';
 
+
   @override
   _subCategoriesPageState createState() => _subCategoriesPageState();
 }
 
-class _subCategoriesPageState extends State<CategoriesPage> {
+class _subCategoriesPageState extends State<subCategoriesPage> {
+
+  late List<Categories> _categories;
   late List<subCategories> _subcategories;
   late GlobalKey<ScaffoldState> _scaffoldKey;
   late TextEditingController subCategoryName;
@@ -33,11 +36,13 @@ class _subCategoriesPageState extends State<CategoriesPage> {
   void initState(){
     super.initState();
     _subcategories = [];
+    _categories = [];
     _isUpdating = false;
     _titleProgess = widget.title;
     _scaffoldKey = GlobalKey(); //key to get the context to show a Snackbar
     subCategoryName = TextEditingController();
     _getSubCategories();
+    _getCategories();
   }
 
   _showProgress(String message){
@@ -84,6 +89,17 @@ class _subCategoriesPageState extends State<CategoriesPage> {
     );
   }
 
+  _getCategories(){
+    _showProgress('Loading Categories...');
+    categoriesServices.getCategories().then((categories){
+      setState(() {
+        _categories = categories;
+      });
+      _showProgress(widget.title);
+      print("Length ${categories.length}");
+    });
+  }
+
   _getSubCategories(){
     _showProgress('Loading Sub Categories...');
     subCatServices.getSubCategories().then((subCategories){
@@ -96,29 +112,34 @@ class _subCategoriesPageState extends State<CategoriesPage> {
   }
 
   _addSubCategories(){
-    /*if (_formKey.currentState!.validate()) {
-      _showProgress('Adding Category...');
-      subCatServices.addSubCategories(subCategoryName.text).then((result) {
-        if('success' == result){
-          _getSubCategories();
-          _clearValues();
-          _successSnackbar(context, "Successfully added.");
-        } else if('exist' == result){
-          _errorSnackbar(context, "Sub Category name EXIST in database.");
-        } else {
-          _errorSnackbar(context, "Error occured...");
-        }
-      });
-    }*/
+    if (_formKey.currentState!.validate()) {
+      if (valueChoose == null) {
+        setState(() => _dropdownError = "Please select an option!");
+      } else {
+        setState(() => _dropdownError = "");
+        _showProgress('Adding Sub Category...');
+        subCatServices.addSubCategories(subCategoryName.text, valueChoose.toString()).then((result) {
+          if('success' == result){
+            _getSubCategories();
+            _clearValues();
+            _successSnackbar(context, "Successfully added.");
+          } else if('exist' == result){
+            _errorSnackbar(context, "Sub Category name EXIST in database.");
+          } else {
+            _errorSnackbar(context, "Error occured...");
+          }
+        });
+      }
+    }
   }
 
   _editSubCategories(subCategories subcategory){
     setState(() {
       _isUpdating = true;
     });
-    /*if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {
       _showProgress('Updating Category...');
-      subCatServices.editCategories(category.id, subCategoryName.text).then((result) {
+      subCatServices.editSubCategories(subcategory.id, subCategoryName.text, valueChoose.toString()).then((result) {
         if('success' == result){
           _getCategories(); //refresh the list after update
           setState(() {
@@ -127,13 +148,13 @@ class _subCategoriesPageState extends State<CategoriesPage> {
           _successSnackbar(context, "Edited Successfully");
           _clearValues();
         }  else if('exist' == result){
-          _errorSnackbar(context, "Category name EXIST in database.");
+          _errorSnackbar(context, "Sub Category name EXIST in database.");
         } else {
-          _errorSnackbar(context, "Error occured...");
+          _errorSnackbar(context, valueChoose.toString());
         }
 
       });
-    }*/
+    }
   }
 
   //delete data by getting classes in services.dart
@@ -159,6 +180,31 @@ class _subCategoriesPageState extends State<CategoriesPage> {
   //show data to textfield when datatable is clicked
   _showValues(subCategories subcategory){
     subCategoryName.text = subcategory.name;
+    valueChoose = subcategory.category_id;
+    _getCategories();
+  }
+
+  String? valueChoose;
+  String? _dropdownError;
+  //category list
+  DropdownButton _categoryList(){
+    return DropdownButton(
+      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      iconSize: 36,
+      iconEnabledColor: Colors.deepOrange,
+      isExpanded: true,
+      value: valueChoose,
+      onChanged: (value) {
+        setState(() {
+          valueChoose = value;
+        });
+      },
+      hint: Text("Select Category"),
+      items: _categories.map((categories) => DropdownMenuItem(
+        value: categories.id.toString(),
+        child: Text(categories.name.toString()),
+      )).toList(),
+    );
   }
 
   //data table select all
@@ -191,7 +237,7 @@ class _subCategoriesPageState extends State<CategoriesPage> {
                     _isUpdating = true; //set flag updating to show buttons
                   });
                 }),
-            DataCell(Text(subCategories.category_id.toString()),
+            DataCell(Text(subCategories.category_name.toString()),
                 onTap: (){
                   _showValues(subCategories);
                   _selectedSubCategory = subCategories; //set the selected category to update
@@ -213,6 +259,7 @@ class _subCategoriesPageState extends State<CategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -236,6 +283,15 @@ class _subCategoriesPageState extends State<CategoriesPage> {
 
                 const SizedBox(height: 20,),
                 NormalTextField(controller: subCategoryName, hintText: "Sub Category Name"),
+
+                const SizedBox(height: 10,),
+                _categoryList(),
+                _dropdownError == null
+                    ? SizedBox.shrink()
+                    : Text(
+                  _dropdownError ?? "",
+                  style: TextStyle(color: Colors.red),
+                ),
 
                 const SizedBox(height: 20,),
                 _isUpdating ?
