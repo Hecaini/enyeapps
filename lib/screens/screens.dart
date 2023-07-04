@@ -17,6 +17,8 @@ export 'catalogs/sub_categories/subcategories.dart';
 export 'catalogs/sub_categories/subcatservices.dart';
 
 export 'catalogs/products/productspage.dart';
+export 'catalogs/products/products.dart';
+export 'catalogs/products/prodservices.dart';
 
 export 'catalogs/manufacturer/manufacturerpage.dart';
 

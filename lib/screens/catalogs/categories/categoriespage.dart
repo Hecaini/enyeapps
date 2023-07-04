@@ -1,5 +1,5 @@
-import 'package:enye_app/widget/widgets.dart';
 import 'package:flutter/material.dart';
+import '../../../widget/widgets.dart';
 import '../../screens.dart';
 
 class CategoriesPage extends StatefulWidget {

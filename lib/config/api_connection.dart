@@ -16,4 +16,7 @@ class API {
 
   //sub categories actions
   static const subcategories = "$hostConnect/admin/subCategories.php";
+
+  //sub categories actions
+  static const products = "$hostConnect/admin/products.php";
 }

@@ -1,5 +1,5 @@
-import 'package:enye_app/widget/widgets.dart';
 import 'package:flutter/material.dart';
+import '../../../widget/widgets.dart';
 import '../../screens.dart';
 
 class subCategoriesPage extends StatefulWidget {
@@ -102,7 +102,8 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
 
   _getSubCategories(){
     _showProgress('Loading Sub Categories...');
-    subCatServices.getSubCategories().then((subCategories){
+
+    subCatServices.getSubCategories().then((subCategories){ //para pumunta sa PHP file na subCategories at hindi sa PRODUCTS
       setState(() {
         _subcategories = subCategories;
       });
@@ -156,7 +157,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
           } else if ('exist' == result) {
             _errorSnackbar(context, "Sub Category name EXIST in database.");
           } else {
-            _errorSnackbar(context, valueChoose.toString());
+            _errorSnackbar(context, "Error occured...");
           }
         });
       }
@@ -243,7 +244,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
                     _isUpdating = true; //set flag updating to show buttons
                   });
                 }),
-            DataCell(Text(subCategories.category_name.toString()),
+            DataCell(Text(_categories.where((categories) => categories.id.toString() == subCategories.category_id.toString()).elementAt(0).name),
                 onTap: (){
                   _showValues(subCategories);
                   _selectedSubCategory = subCategories; //set the selected category to update
