@@ -25,7 +25,7 @@ class CustomNavBar extends StatelessWidget {
     List<Widget> _buildScreens() {
       return [
         DashboardPage(),
-        OrdersPage(),
+        //OrdersPage(),
         AppointmentPage(),
         CatalogsPage(),
         AccountPage(),
@@ -41,13 +41,13 @@ class CustomNavBar extends StatelessWidget {
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
-        PersistentBottomNavBarItem(
+        /*PersistentBottomNavBarItem(
           icon: Icon(Icons.list),
           title: ("Orders"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
+        ),*/
         PersistentBottomNavBarItem(
           icon: Icon(Icons.book),
           title: ("Appointment"),
@@ -104,7 +104,7 @@ class CustomNavBar extends StatelessWidget {
       navBarStyle: NavBarStyle.style9, // Choose the nav bar style with this property.
     );
 
-      BottomAppBar(
+      /*BottomAppBar(
       color: Colors.deepOrange,
       child: SizedBox(
         height: 70,
@@ -142,6 +142,6 @@ class CustomNavBar extends StatelessWidget {
           ],
         ),
       ),
-    );
+    );*/
   }
 }

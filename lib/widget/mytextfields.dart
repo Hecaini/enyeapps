@@ -19,6 +19,8 @@ class NormalTextField extends StatelessWidget {
           }
           return null;
         },
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
         controller: controller,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(

@@ -250,7 +250,6 @@ class _ProductsPageState extends State<ProductsPage> {
     });
   }
 
-
   String? valueChooseSubCategory;
   DropdownButton _subcategoryList(){
     return DropdownButton(

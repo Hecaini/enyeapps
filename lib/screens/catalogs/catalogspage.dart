@@ -1,6 +1,8 @@
-import 'package:enye_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
+import '../../widget/widgets.dart';
+import '../screens.dart';
 
 class CatalogsPage extends StatefulWidget {
   static const String routeName = '/catalogs';
@@ -12,11 +14,102 @@ class CatalogsPage extends StatefulWidget {
     );
   }
 
+  final String title = 'Catalogs';
+
   @override
-  State<CatalogsPage> createState() => _CatalogsPageState();
+  _CatalogsPageState createState() => _CatalogsPageState();
 }
 
 class _CatalogsPageState extends State<CatalogsPage> {
+  late String _titleProgess;
+  late List<Catalogs> _catalogs;
+  late TextEditingController searchBox;
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState(){
+    super.initState();
+    _titleProgess = widget.title;
+    searchBox = TextEditingController();
+    _catalogs = [];
+    _getCatalogs();
+  }
+
+  _showProgress(String message){
+    setState(() {
+      _titleProgess = message;
+    });
+  }
+
+  _getCatalogs(){
+    _showProgress('Loading Catalogs...');
+    catalogsServices.getCatalogs().then((Catalogs){
+      setState(() {
+        _catalogs = Catalogs;
+      });
+      _showProgress(widget.title);
+      print("Length ${Catalogs.length}");
+    });
+  }
+
+  //data table select all
+  SingleChildScrollView _dataBody(){
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columns: [
+            DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Model Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Sized', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Sale Price', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Product', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Manufacturer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+          ],
+          rows: _catalogs.map((Catalogs) => DataRow(cells: [
+            DataCell(Text(Catalogs.id.toString()),
+                onTap: (){
+                  /*_showValues(Products);
+                  _selectedProduct = Products;
+                  setState(() {
+                    _isUpdating = true; //set flag updating to show buttons
+                  });*/
+                }),
+            DataCell(Text(Catalogs.model_name.toString()),
+                onTap: (){
+
+                }),
+            DataCell(Text(Catalogs.sized.toString()),
+                onTap: (){
+
+                }),
+            DataCell(Text(Catalogs.sale_price.toString()),
+                onTap: (){
+
+                }),
+            DataCell(Text(Catalogs.products_id.toString()),
+                onTap: (){
+
+                }),
+            DataCell(Text(Catalogs.manufacturer_id.toString()),
+                onTap: (){
+
+                }),
+            DataCell(IconButton(
+              icon: Icon(Icons.delete, color: Colors.red,),
+              onPressed: (){
+                //_delProducts(_selectedProduct);
+              },
+            )),
+          ])).toList(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,8 +117,15 @@ class _CatalogsPageState extends State<CatalogsPage> {
           backgroundColor: Colors.deepOrange,
           elevation: 0,
           centerTitle: true,
-          title: Text('Catalogs', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+          title: Text(_titleProgess, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
           actions: [
+            IconButton(
+                onPressed: (){
+                  _getCatalogs();
+                },
+                icon: Icon(Icons.refresh)
+            ),
+
             PopupMenuButton(
               icon: Icon(Icons.menu, color: Colors.white,),
               onSelected: (value){
@@ -75,9 +175,38 @@ class _CatalogsPageState extends State<CatalogsPage> {
           ],
         ),
         /*drawer: CustomDrawer(),*/
-        body: Container(
-          child: Text("Catalogs Page"),
-        )
+        body: SafeArea(
+          child: Center(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  const SizedBox(height: 20,),
+                  NormalTextField(controller: searchBox, hintText: ""),
+
+                  const SizedBox(height: 5,),
+                  Expanded(
+                    child: _dataBody(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+              context,
+              settings: RouteSettings(name: addCatalogsPage.routeName,),
+              screen: addCatalogsPage(),
+              withNavBar: true,
+              pageTransitionAnimation: PageTransitionAnimation.cupertino,
+            );
+          },
+          child: Icon(Icons.add),
+        ),
     );
   }
 }
