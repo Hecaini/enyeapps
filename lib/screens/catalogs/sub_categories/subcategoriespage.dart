@@ -54,7 +54,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
   _successSnackbar(context, message){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.75,),
         duration: Duration(seconds: 2),
         backgroundColor: Colors.greenAccent,
         behavior: SnackBarBehavior.floating,
@@ -73,7 +73,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
   _errorSnackbar(context, message){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.75,),
         duration: Duration(seconds: 2),
         backgroundColor: Colors.redAccent,
         behavior: SnackBarBehavior.floating,
@@ -138,38 +138,44 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
       _isUpdating = true;
     });
     if (_formKey.currentState!.validate()) {
-      _showProgress('Updating Category...');
-      subCatServices.editSubCategories(subcategory.id, subCategoryName.text, valueChoose.toString()).then((result) {
-        if('success' == result){
-          _getCategories(); //refresh the list after update
-          setState(() {
-            _isUpdating = false;
-          });
-          _successSnackbar(context, "Edited Successfully");
-          _clearValues();
-        }  else if('exist' == result){
-          _errorSnackbar(context, "Sub Category name EXIST in database.");
-        } else {
-          _errorSnackbar(context, valueChoose.toString());
-        }
-
-      });
+      if (valueChoose == null) {
+        setState(() => _dropdownError = "Please select an option!");
+      } else {
+        _showProgress('Updating Category...');
+        subCatServices.editSubCategories(
+            subcategory.id, subCategoryName.text, valueChoose.toString()).then((
+            result) {
+          if ('success' == result) {
+            _getCategories();
+            _getSubCategories(); //refresh the list after update
+            setState(() {
+              _isUpdating = false;
+            });
+            _successSnackbar(context, "Edited Successfully");
+            _clearValues();
+          } else if ('exist' == result) {
+            _errorSnackbar(context, "Sub Category name EXIST in database.");
+          } else {
+            _errorSnackbar(context, valueChoose.toString());
+          }
+        });
+      }
     }
   }
 
   //delete data by getting classes in services.dart
   _delSubCategories(subCategories subcategory){
     _showProgress('Deleting Category...');
-    /*subCatServices.deleteCategories(category.id).then((result) {
+    subCatServices.deleteSubCategories(subcategory.id).then((result) {
       //if echo json from PHP is success
       if('success' == result){
         _successSnackbar(context, "Deleted Successfully");
-        _getCategories();
+        _getSubCategories();
         _clearValues();
       } else {
         _errorSnackbar(context, "Error occured...");
       }
-    });*/
+    });
   }
 
   //emptying textfields
@@ -293,7 +299,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
                   style: TextStyle(color: Colors.red),
                 ),
 
-                const SizedBox(height: 20,),
+                const SizedBox(height: 5,),
                 _isUpdating ?
                 Row(
                   children: <Widget>[
@@ -318,7 +324,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
                 )
                     : Container(),
 
-                const SizedBox(height: 20,),
+                const SizedBox(height: 5,),
                 Expanded(
                   child: _dataBody(),
                 ),
