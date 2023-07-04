@@ -11,6 +11,9 @@ class API {
   //check session start
   static const userSession = "$hostConnect/admin/config.php";
 
+  //sub categories actions
+  static const manufacturer = "$hostConnect/admin/manufacturer.php";
+
   //categories actions
   static const categories = "$hostConnect/admin/categories.php";
 

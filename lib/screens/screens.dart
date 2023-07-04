@@ -21,6 +21,8 @@ export 'catalogs/products/products.dart';
 export 'catalogs/products/prodservices.dart';
 
 export 'catalogs/manufacturer/manufacturerpage.dart';
+export 'catalogs/manufacturer/manufacturer.dart';
+export 'catalogs/manufacturer/mfrservices.dart';
 
 export 'dashboard/dashboardpage.dart';
 
