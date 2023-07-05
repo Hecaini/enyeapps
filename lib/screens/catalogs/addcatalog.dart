@@ -114,8 +114,14 @@ class _addCatalogsPageState extends State<addCatalogsPage> {
 
   _addCatalogs(){
     if (_formKey.currentState!.validate()) {
-      if (valueChooseCategory == null || valueChooseSubCategory == null) {
-        setState(() => _dropdownError = "Please select an option!");
+      if (valueChooseCategory == null) {
+        setState(() => _dropdownError = "Please select a CATEGORY !");
+      } else if (valueChooseSubCategory == null) {
+        setState(() => _dropdownError = "Please select a SUB CATEGORY !");
+      } else if (valueChooseProduct == null) {
+        setState(() => _dropdownError = "Please select a PRODUCT !");
+      } else if (valueChooseMfr == null) {
+        setState(() => _dropdownError = "Please select a MANUFACTURER !");
       } else {
         setState(() => _dropdownError = "");
         _showProgress('Adding Catalogs...');
@@ -321,6 +327,13 @@ class _addCatalogsPageState extends State<addCatalogsPage> {
 
                 const SizedBox(height: 20,),
                 _manufacturerList(),
+
+                _dropdownError == null
+                    ? SizedBox.shrink()
+                    : Text(
+                  _dropdownError ?? "",
+                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
+                ),
 
               ],
             ),
