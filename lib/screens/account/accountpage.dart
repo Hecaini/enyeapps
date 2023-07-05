@@ -46,7 +46,19 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
         appBar: CustomAppBar(title: 'Account', imagePath: 'assets/logo/enyecontrols.png',),
         /*drawer: CustomDrawer(),*/
-        body: FutureBuilder(
+        body: Container(
+          child: Center(
+            child: (Text(
+              "Account Page",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.grey
+              ),
+            )),
+          ),
+        ),
+
+        /*FutureBuilder(
           future: fetchUserInfo(),
           builder: (context, snapshot){
             if(snapshot.hasError) print(snapshot.error);
@@ -65,7 +77,7 @@ class _AccountPageState extends State<AccountPage> {
                   }
               ) : CircularProgressIndicator();
           }
-        ),
+        ),*/
     );
   }
 }

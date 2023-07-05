@@ -17,8 +17,16 @@ class AppointmentPage extends StatelessWidget {
         appBar: CustomAppBar(title: 'Appointment', imagePath: 'assets/logo/enyecontrols.png',),
         /*drawer: CustomDrawer(),*/
         body: Container(
-          child: Text("Appointment Page"),
-        )
+          child: Center(
+            child: (Text(
+              "Appointment Page",
+              style: TextStyle(
+                  fontSize: 40,
+                  color: Colors.grey
+              ),
+            )),
+          ),
+        ),
     );
   }
 }

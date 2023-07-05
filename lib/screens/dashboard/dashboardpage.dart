@@ -17,8 +17,16 @@ class DashboardPage extends StatelessWidget {
       appBar: CustomAppBar(title: 'Dashboard', imagePath: 'assets/logo/enyecontrols.png',),
       /*drawer: CustomDrawer(),*/
       body: Container(
-        child: Text("Dashboard Page"),
-      )
+        child: Center(
+          child: (Text(
+            "Dashboard Page",
+            style: TextStyle(
+                fontSize: 40,
+                color: Colors.grey
+            ),
+          )),
+        ),
+      ),
     );
   }
 }
