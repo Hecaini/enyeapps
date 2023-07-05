@@ -116,9 +116,6 @@ class _ProductsPageState extends State<ProductsPage> {
         _showProgress('Adding Products...');
         productServices.addProducts(productName.text, productDescription.text, valueChooseCategory.toString(), valueChooseSubCategory.toString()).then((result) {
           if('success' == result){
-            _getCategories();
-            _getSubCategories();
-            _getProducts();
             _clearValues();
             _successSnackbar(context, "Successfully added.");
           } else if('exist' == result){
@@ -144,9 +141,6 @@ class _ProductsPageState extends State<ProductsPage> {
             products.id, productName.text, productDescription.text, valueChooseCategory.toString(), valueChooseSubCategory.toString()).then((
             result) {
           if ('success' == result) {
-            _getCategories();
-            _getSubCategories();
-            _getProducts(); //refresh the list after update
             setState(() {
               _isUpdating = false;
             });
@@ -168,10 +162,7 @@ class _ProductsPageState extends State<ProductsPage> {
     productServices.deleteProducts(products.id).then((result) {
       //if echo json from PHP is success
       if('success' == result){
-        _successSnackbar(context, "Deleted Successfully");
-        _getCategories();
-        _getSubCategories();
-        _getProducts(); //refresh the list after update
+        _successSnackbar(context, "Deleted Successfully");//refresh the list after update
         _clearValues();
       } else {
         _errorSnackbar(context, "Error occured...");
@@ -181,10 +172,14 @@ class _ProductsPageState extends State<ProductsPage> {
 
   //emptying textfields
   _clearValues(){
+    _getCategories();
+    _getSubCategories();
+    _getProducts(); //refresh the list after update
     productName.text = '';
     productDescription.text = '';
     _filteredsubcategories.clear();
     valueChooseSubCategory = null;
+    valueChooseCategory = null;
   }
 
   //show data to textfield when datatable is clicked

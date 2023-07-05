@@ -121,7 +121,6 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
         _showProgress('Adding Sub Category...');
         subCatServices.addSubCategories(subCategoryName.text, valueChoose.toString()).then((result) {
           if('success' == result){
-            _getSubCategories();
             _clearValues();
             _successSnackbar(context, "Successfully added.");
           } else if('exist' == result){
@@ -147,8 +146,6 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
             subcategory.id, subCategoryName.text, valueChoose.toString()).then((
             result) {
           if ('success' == result) {
-            _getCategories();
-            _getSubCategories(); //refresh the list after update
             setState(() {
               _isUpdating = false;
             });
@@ -171,7 +168,6 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
       //if echo json from PHP is success
       if('success' == result){
         _successSnackbar(context, "Deleted Successfully");
-        _getSubCategories();
         _clearValues();
       } else {
         _errorSnackbar(context, "Error occured...");
@@ -182,6 +178,9 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
   //emptying textfields
   _clearValues(){
     subCategoryName.text = '';
+    valueChoose = null;
+    _getCategories();
+    _getSubCategories(); //refresh the list after update
   }
 
   //show data to textfield when datatable is clicked
