@@ -97,9 +97,15 @@ class _addCatalogsPageState extends State<addCatalogsPage> {
   }
 
   _clearValues(){
+    _getCategories();
+    _getSubCategories();
+    _getProducts();
+    _getMfr();
     modelName.text = '';
     sized.text = '';
     salePrice.text = '';
+    valueChooseCategory = null;
+    valueChooseMfr = null;
     _filteredsubcategories.clear();
     valueChooseSubCategory = null;
     _filteredproducts.clear();
