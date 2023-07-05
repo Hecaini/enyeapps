@@ -125,12 +125,19 @@ class _addCatalogsPageState extends State<addCatalogsPage> {
       } else {
         setState(() => _dropdownError = "");
         _showProgress('Adding Catalogs...');
-        catalogsServices.addCatalogs(modelName.text, sized.text, salePrice.text, valueChooseCategory.toString(), valueChooseSubCategory.toString()).then((result) {
+        catalogsServices.addCatalogs(
+            modelName.text, sized.text,
+            salePrice.text,
+            valueChooseCategory.toString(),
+            valueChooseSubCategory.toString(),
+            valueChooseProduct.toString(),
+            valueChooseMfr.toString()
+        ).then((result) {
           if('success' == result){
             _clearValues();
             _successSnackbar(context, "Successfully added.");
           } else if('exist' == result){
-            _errorSnackbar(context, "Product Name EXIST in database.");
+            _errorSnackbar(context, "Catalog Name EXIST in database.");
           } else {
             _errorSnackbar(context, "Error occured...");
           }

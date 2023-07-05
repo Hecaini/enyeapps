@@ -42,7 +42,7 @@ class catalogsServices {
 
   //add categories in database
   static Future<String> addCatalogs(
-      String model_name, String sized, String sale_price, String products_id, String manufacturer_id) async {
+      String model_name, String sized, String sale_price, String category_id, String subCat_id, String products_id, String manufacturer_id) async {
     try{
       var map = Map<String, dynamic>();
       //get the action do by the user transfer it to POST method
@@ -51,6 +51,8 @@ class catalogsServices {
       map['model_name'] = model_name;
       map['sized'] = sized;
       map['sale_price'] = sale_price;
+      map['category_id'] = category_id;
+      map['subCat_id'] = subCat_id;
       map['products_id'] = products_id;
       map['manufacturer_id'] = manufacturer_id;
 
@@ -72,7 +74,7 @@ class catalogsServices {
 
   //edit categories in database
   static Future<String> editCatalogs(
-      String id, String model_name, String sized, String sale_price, String products_id, String manufacturer_id) async {
+      String id, String model_name, String sized, String sale_price, String category_id, String subCat_id, String products_id, String manufacturer_id) async {
     try{
       var map = Map<String, dynamic>();
       map['action'] = EDIT_CATALOGS;
@@ -80,6 +82,8 @@ class catalogsServices {
       map['model_name'] = model_name;
       map['sized'] = sized;
       map['sale_price'] = sale_price;
+      map['category_id'] = category_id;
+      map['subCat_id'] = subCat_id;
       map['products_id'] = products_id;
       map['manufacturer_id'] = manufacturer_id;
 

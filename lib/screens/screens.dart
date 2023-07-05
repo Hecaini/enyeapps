@@ -10,6 +10,7 @@ export 'catalogs/catalogspage.dart';
 export 'catalogs/catalogs.dart';
 export 'catalogs/catalogservices.dart';
 export 'catalogs/addcatalog.dart';
+export 'catalogs/editcatalog.dart';
 
 export 'catalogs/categories/categoriespage.dart';
 export 'catalogs/categories/categories.dart';

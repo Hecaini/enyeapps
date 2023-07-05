@@ -42,6 +42,56 @@ class _CatalogsPageState extends State<CatalogsPage> {
     });
   }
 
+  _successSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.75,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.greenAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.check, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _errorSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.75,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _delCatalogs(Catalogs catalogs){
+    catalogsServices.deleteCatalogs(catalogs.id).then((result) {
+      //if echo json from PHP is success
+      if('success' == result){
+        _successSnackbar(context, "Deleted Successfully");//refresh the list after update
+        _getCatalogs();
+      } else {
+        _errorSnackbar(context, "Error occured...");
+      }
+    });
+  }
+
   _getCatalogs(){
     _showProgress('Loading Catalogs...');
     catalogsServices.getCatalogs().then((Catalogs){
@@ -61,47 +111,64 @@ class _CatalogsPageState extends State<CatalogsPage> {
         scrollDirection: Axis.horizontal,
         child: DataTable(
           columns: [
-            DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            //DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Model Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Sized', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Sale Price', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
-            DataColumn(label: Text('Product', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
-            DataColumn(label: Text('Manufacturer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
           ],
           rows: _catalogs.map((Catalogs) => DataRow(cells: [
-            DataCell(Text(Catalogs.id.toString()),
-                onTap: (){
-                  /*_showValues(Products);
-                  _selectedProduct = Products;
-                  setState(() {
-                    _isUpdating = true; //set flag updating to show buttons
-                  });*/
-                }),
-            DataCell(Text(Catalogs.model_name.toString()),
-                onTap: (){
-
-                }),
-            DataCell(Text(Catalogs.sized.toString()),
-                onTap: (){
-
-                }),
+            /*DataCell(
+              ConstrainedBox(constraints: BoxConstraints(maxWidth: 10, minWidth: 5),
+                  child: Text(Catalogs.id.toString(), maxLines: 2, overflow: TextOverflow.ellipsis, softWrap: true,)),
+              onTap: (){
+                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: editCatalogsPage.routeName, arguments: {'catalogs': Catalogs}),
+                  screen: editCatalogsPage(catalogs: Catalogs,),
+                  withNavBar: true,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              }),*/
+            DataCell(
+              ConstrainedBox(constraints: BoxConstraints(maxWidth: 100, minWidth: 50),
+                  child: Text(Catalogs.model_name.toString(), maxLines: 2, overflow: TextOverflow.ellipsis, softWrap: true,)),
+              onTap: (){
+                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: editCatalogsPage.routeName, arguments: {'catalogs': Catalogs}),
+                  screen: editCatalogsPage(catalogs: Catalogs,),
+                  withNavBar: true,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              }),
+            DataCell(
+              ConstrainedBox(constraints: BoxConstraints(maxWidth: 150, minWidth: 50),
+              child: Text(Catalogs.sized.toString(), maxLines: 3, overflow: TextOverflow.ellipsis, softWrap: true,)),
+              onTap: (){
+                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: editCatalogsPage.routeName, arguments: {'catalogs': Catalogs}),
+                  screen: editCatalogsPage(catalogs: Catalogs,),
+                  withNavBar: true,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              }),
             DataCell(Text(Catalogs.sale_price.toString()),
-                onTap: (){
+              onTap: (){
+                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: editCatalogsPage.routeName, arguments: {'catalogs': Catalogs}),
+                  screen: editCatalogsPage(catalogs: Catalogs,),
+                  withNavBar: true,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              }),
 
-                }),
-            DataCell(Text(Catalogs.products_id.toString()),
-                onTap: (){
-
-                }),
-            DataCell(Text(Catalogs.manufacturer_id.toString()),
-                onTap: (){
-
-                }),
             DataCell(IconButton(
               icon: Icon(Icons.delete, color: Colors.red,),
               onPressed: (){
-                //_delProducts(_selectedProduct);
+                _delCatalogs(Catalogs);
               },
             )),
           ])).toList(),
@@ -199,7 +266,7 @@ class _CatalogsPageState extends State<CatalogsPage> {
           onPressed: (){
             PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
               context,
-              settings: RouteSettings(name: addCatalogsPage.routeName,),
+              settings: RouteSettings(name: addCatalogsPage.routeName),
               screen: addCatalogsPage(),
               withNavBar: true,
               pageTransitionAnimation: PageTransitionAnimation.cupertino,
