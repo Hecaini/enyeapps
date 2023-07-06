@@ -41,7 +41,7 @@ class productServices {
   }
 
   //add categories in database
-  static Future<String> addProducts(String name, String desc, String category_id, String subcategory_id) async {
+  static Future<String> addProducts(String name, String desc, String category_id, String subcategory_id, String imagename, String imagedata) async {
     try{
       var map = Map<String, dynamic>();
       //get the action do by the user transfer it to POST method
@@ -51,6 +51,8 @@ class productServices {
       map['desc'] = desc;
       map['category_id'] = category_id;
       map['subcategory_id'] = subcategory_id;
+      map['imagename'] = imagename;
+      map['imagedata'] = imagedata;
 
       //config API to connect web server
       final res = await http.post(Uri.parse(API.products), body: map); //passing value to result
@@ -69,7 +71,7 @@ class productServices {
   }
 
   //edit categories in database
-  static Future<String> editProducts(String id, String name, String desc, String category_id, String subcategory_id) async {
+  static Future<String> editProducts(String id, String name, String desc, String category_id, String subcategory_id, String imagename, String imagedata) async {
     try{
       var map = Map<String, dynamic>();
       map['action'] = EDIT_PRODUCT;
@@ -78,6 +80,8 @@ class productServices {
       map['desc'] = desc;
       map['category_id'] = category_id;
       map['subcategory_id'] = subcategory_id;
+      map['imagename'] = imagename;
+      map['imagedata'] = imagedata;
 
       print('category id: ${category_id}');
       final res = await http.post(Uri.parse(API.products), body: map); //passing value to result

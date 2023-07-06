@@ -1,4 +1,10 @@
+
+import 'dart:convert';
+
+import 'package:enye_app/config/api_connection.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../../widget/widgets.dart';
 import '../../screens.dart';
 
@@ -34,6 +40,22 @@ class _ProductsPageState extends State<ProductsPage> {
   late bool _isUpdating;
   late String _titleProgess;
   final _formKey = GlobalKey<FormState>();
+
+  File? imagepath;
+  String? imagename;
+  String? imagedata;
+  String? showimage;
+  ImagePicker imagePicker = new ImagePicker();
+
+  Future<void> selectImage() async {
+    var getimage = await imagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imagepath = File(getimage!.path);
+      imagename = getimage.path.split('/').last;
+      imagedata = base64Encode(imagepath!.readAsBytesSync());
+      print(imagepath);
+    });
+  }
 
   @override
   void initState(){
@@ -110,11 +132,13 @@ class _ProductsPageState extends State<ProductsPage> {
   _addProducts(){
     if (_formKey.currentState!.validate()) {
       if (valueChooseCategory == null || valueChooseSubCategory == null) {
-        setState(() => _dropdownError = "Please select an option!");
+        setState(() => _dropdownError = "Please select an OPTION!");
+      } else if (imagepath == null) {
+        setState(() => _dropdownError = "Please select an IMAGE!");
       } else {
         setState(() => _dropdownError = "");
         _showProgress('Adding Products...');
-        productServices.addProducts(productName.text, productDescription.text, valueChooseCategory.toString(), valueChooseSubCategory.toString()).then((result) {
+        productServices.addProducts(productName.text, productDescription.text, valueChooseCategory.toString(), valueChooseSubCategory.toString(), imagename!, imagedata!).then((result) {
           if('success' == result){
             _clearValues();
             _successSnackbar(context, "Successfully added.");
@@ -136,9 +160,16 @@ class _ProductsPageState extends State<ProductsPage> {
       if (valueChooseCategory == null || valueChooseSubCategory == null) {
         setState(() => _dropdownError = "Please select an option!");
       } else {
+
+        //kapag same picture disregard lang
+        if (imagepath == null){
+          imagename = showimage?.split('/').last;
+          imagedata = '';
+        }
+
         _showProgress('Updating Products...');
         productServices.editProducts(
-            products.id, productName.text, productDescription.text, valueChooseCategory.toString(), valueChooseSubCategory.toString()).then((
+            products.id, productName.text, productDescription.text, valueChooseCategory.toString(), valueChooseSubCategory.toString(), imagename!, imagedata!).then((
             result) {
           if ('success' == result) {
             setState(() {
@@ -180,16 +211,18 @@ class _ProductsPageState extends State<ProductsPage> {
     _filteredsubcategories.clear();
     valueChooseSubCategory = null;
     valueChooseCategory = null;
+    imagepath = null;
+    showimage = null;
   }
 
   //show data to textfield when datatable is clicked
   _showValues(Products products){
+    showimage = products.image;
     productName.text = products.name;
     productDescription.text = products.desc;
     valueChooseCategory = products.category_id;
     valueChooseSubCategory = products.subcategory_id;
     _filteredsubcategories = _subcategories.where((subCategories) => subCategories.category_id.toString() == products.category_id).toList();
-    _getCategories();
   }
 
   _getCategories(){
@@ -274,7 +307,7 @@ class _ProductsPageState extends State<ProductsPage> {
         scrollDirection: Axis.horizontal,
         child: DataTable(
           columns: [
-            DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('Image', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Description', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Category', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
@@ -282,7 +315,9 @@ class _ProductsPageState extends State<ProductsPage> {
             DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
           ],
           rows: _products.map((Products) => DataRow(cells: [
-            DataCell(Text(Products.id.toString()),
+            DataCell(CircleAvatar(
+              backgroundImage: NetworkImage(API.hostConnect + Products.image.toString()),
+            ),
                 onTap: (){
                   _showValues(Products);
                   _selectedProduct = Products;
@@ -357,8 +392,32 @@ class _ProductsPageState extends State<ProductsPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 10,),
+                InkWell(
+                  onTap: selectImage,
+                  child: Stack(
+                    children: [
+                      imagepath != null
+                      ? CircleAvatar(
+                        radius: 64,
+                        backgroundImage: FileImage(imagepath!),
+                      ) : _isUpdating
+                      ? CircleAvatar(
+                        radius: 64,
+                        backgroundImage: NetworkImage(API.hostConnect + showimage!),
+                      )
+                      : CircleAvatar(
+                        radius: 64,
+                        foregroundColor: Colors.deepOrange,
+                        child: Icon(Icons.photo, color: Colors.deepOrange, size: 50,),
+                      ),
+                      
+                      Positioned(child: Icon(Icons.add_a_photo, color: Colors.deepOrange,), bottom: 2, left: 90,),
+                    ],
+                  ),
+                ),
 
-                const SizedBox(height: 20,),
+                const SizedBox(height: 10,),
                 NormalTextField(controller: productName, hintText: "Product Name"),
 
                 const SizedBox(height: 10,),
