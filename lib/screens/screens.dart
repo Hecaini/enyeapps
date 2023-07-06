@@ -29,5 +29,8 @@ export 'catalogs/manufacturer/manufacturer.dart';
 export 'catalogs/manufacturer/mfrservices.dart';
 
 export 'dashboard/dashboardpage.dart';
+export 'dashboard/catalogs_pdf/catalogsfilepage.dart';
+export 'dashboard/catalogs_pdf/catalogsfile.dart';
+export 'dashboard/catalogs_pdf/catalogsfilesvc.dart';
 
 export 'orders/orderspage.dart';

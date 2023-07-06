@@ -1,5 +1,5 @@
 class API {
-  static const hostConnect = "http://192.168.0.137/enye_app";
+  static const hostConnect = "http://192.168.0.137/adminenye";
   static const hostConnectAdminUser = "$hostConnect/admin";
 
   //sign-up admin user
@@ -11,18 +11,21 @@ class API {
   //check session start
   static const userSession = "$hostConnect/admin/config.php";
 
-  //sub categories actions
-  static const manufacturer = "$hostConnect/admin/manufacturer.php";
+  //sub categories (FROM CATALOGS SCREEN) actions
+  static const manufacturer = "$hostConnect/admin/catalogs_screen/manufacturer.php";
 
-  //categories actions
-  static const categories = "$hostConnect/admin/categories.php";
+  //categories (FROM CATALOGS SCREEN) actions
+  static const categories = "$hostConnect/admin/catalogs_screen/categories.php";
 
-  //sub categories actions
-  static const subcategories = "$hostConnect/admin/subCategories.php";
+  //sub categories (FROM CATALOGS SCREEN) actions
+  static const subcategories = "$hostConnect/admin/catalogs_screen/subCategories.php";
 
-  //products actions
-  static const products = "$hostConnect/admin/products.php";
+  //products (FROM CATALOGS SCREEN) actions
+  static const products = "$hostConnect/admin/catalogs_screen/products.php";
 
   //catalogs actions
   static const catalogs = "$hostConnect/admin/catalogs.php";
+
+  //catalogs files (FROM DASHBOARD SCREEN) actions
+  static const fileCatalogs = "$hostConnect/admin/dashboard/file_catalogs.php";
 }
