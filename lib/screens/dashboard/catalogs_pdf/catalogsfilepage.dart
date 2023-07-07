@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import '../../../config/api_connection.dart';
 import '../../../widget/widgets.dart';
 import '../../screens.dart';
 
@@ -32,6 +36,9 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
   late String _titleProgess;
   final _formKey = GlobalKey<FormState>();
 
+  //kapag wala pa na-select sa file
+  String? _dropdownError;
+
   File? filepath;
   String? filename;
   String? filedata;
@@ -42,10 +49,10 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
 
     setState(() {
       if(result != null){
-        /*imagepath = File(getimage!.path);
-        imagename = getimage.path.split('/').last;
-        imagedata = base64Encode(imagepath!.readAsBytesSync());
-        print(imagepath);*/
+        filepath = File(result.files.single.path ?? " ");
+        filename = filepath?.path.split('/').last;
+        filedata = base64Encode(filepath!.readAsBytesSync());
+        print(filepath);
       }
     });
   }
@@ -116,31 +123,42 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
     });
   }
 
-  /*_addCategories(){
+  _addFileCatalog(){
     if (_formKey.currentState!.validate()) {
-      _showProgress('Adding Category...');
-      categoriesServices.addCategories(categoryName.text).then((result) {
-        if('success' == result){
-          _clearValues();
-          _successSnackbar(context, "Successfully added.");
-        } else if('exist' == result){
-          _errorSnackbar(context, "Category name EXIST in database.");
-        } else {
-          _errorSnackbar(context, "Error occured...");
-        }
-      });
+      if (filepath == null){
+        setState(() => _dropdownError = "Please select a FILE!");
+      } else {
+        _showProgress('Adding File Catalog...');
+        catalogsFileSvc.addFileCatalogs(
+            catalogsFileName.text, filename.toString(), filedata.toString())
+            .then((result) {
+          if ('success' == result) {
+            _clearValues();
+            _successSnackbar(context, "Successfully added.");
+          } else if ('exist' == result) {
+            _errorSnackbar(context, "File Name EXIST in database.");
+          } else {
+            _errorSnackbar(context, "Error occured...");
+          }
+        });
+      }
     }
-  }*/
+  }
 
-  /*_editCategories(Categories category){
+  _editFileCatalog(CatalogsFile catalogsFile){
     setState(() {
       _isUpdating = true;
     });
     if (_formKey.currentState!.validate()) {
+      //kapag same picture disregard lang
+      if (filepath == null){
+        filename = showfile;
+        filedata = '';
+      }
+
       _showProgress('Updating Category...');
-      categoriesServices.editCategories(category.id, categoryName.text).then((result) {
+      catalogsFileSvc.editFileCatalogs(catalogsFile.id, catalogsFileName.text, filename.toString(), filedata.toString()).then((result) {
         if('success' == result){
-          _getCategories(); //refresh the list after update
           setState(() {
             _isUpdating = false;
           });
@@ -154,32 +172,35 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
 
       });
     }
-  }*/
+  }
 
   //delete data by getting classes in services.dart
-  /*_delCategories(Categories category){
-    _showProgress('Deleting Category...');
-    categoriesServices.deleteCategories(category.id).then((result) {
+  _delFileCatalog(CatalogsFile catalogsFile){
+    _showProgress('Deleting File Catalog...');
+    catalogsFileSvc.deleteFileCatalogs(catalogsFile.id).then((result) {
       //if echo json from PHP is success
       if('success' == result){
-        _successSnackbar(context, "Deleted Successfully");
-        _getCategories();
+        _successSnackbar(context, "Deleted Successfully");;
         _clearValues();
       } else {
         _errorSnackbar(context, "Error occured...");
       }
     });
-  }*/
+  }
 
   //emptying textfields
   _clearValues(){
     catalogsFileName.text = '';
+    filepath = null;
+    filename = null;
+    filedata = null;
     _getCatalogsFile();
   }
 
   //show data to textfield when datatable is clicked
   _showValues(CatalogsFile catalogsFile){
     catalogsFileName.text = catalogsFile.name;
+    showfile = catalogsFile.filename;
   }
 
   //data table select all
@@ -192,6 +213,7 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
           columns: [
             DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('FILE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
+            DataColumn(label: Text('VIEW', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
           ],
           rows: _catalogsFile.map((CatalogsFile) => DataRow(cells: [
@@ -212,9 +234,24 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
                   });
                 }),
             DataCell(IconButton(
+              icon: Icon(Icons.remove_red_eye, color: Colors.red,),
+              onPressed: () {
+                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: catalogPDFview.routeName,),
+                  screen: catalogPDFview(filepath: "${API.fileCatalogsPdf + CatalogsFile.filename.toString()}", filename: "${CatalogsFile.filename.toString()}",),
+                  withNavBar: true,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+                //print("${API.fileCatalogsPdf + CatalogsFile.filename.toString()}");
+                //PDFDocument doc = await PDFDocument.fromURL("${API.fileCatalogsPdf + CatalogsFile.filename.toString()}");
+                //_delFileCatalog(CatalogsFile);
+              },
+            )),
+            DataCell(IconButton(
               icon: Icon(Icons.delete, color: Colors.red,),
               onPressed: (){
-                //_delCategories(CatalogsFile);
+                _delFileCatalog(CatalogsFile);
               },
             )),
           ])).toList(),
@@ -249,38 +286,70 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
                 const SizedBox(height: 20,),
                 NormalTextField(controller: catalogsFileName, hintText: "Catalogs File Name"),
 
-                /*InkWell(
-                  onTap: selectImage,
+                const SizedBox(height: 10,),
+                InkWell(
+                  onTap: selectFile,
                   child: Stack(
                     children: [
-                      imagepath != null
-                          ? CircleAvatar(
-                        radius: 64,
-                        backgroundImage: FileImage(imagepath!),
+                      filepath != null
+                        ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(filename.toString(), style: TextStyle(fontSize: 16, decoration: TextDecoration.underline),),
+                          const SizedBox(width: 10,),
+                          CircleAvatar(
+                            radius: 16,
+                            foregroundColor: Colors.deepOrange,
+                            child: Icon(Icons.file_upload, color: Colors.deepOrange,),
+                          ),
+                        ],
                       ) : _isUpdating
-                          ? CircleAvatar(
-                        radius: 64,
-                        backgroundImage: NetworkImage(API.hostConnect + showimage!),
+                        ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(showfile!, style: TextStyle(fontSize: 16, decoration: TextDecoration.underline),),
+                          const SizedBox(width: 10,),
+                          CircleAvatar(
+                            radius: 16,
+                            foregroundColor: Colors.deepOrange,
+                            child: Icon(Icons.file_upload, color: Colors.deepOrange,),
+                          ),
+                        ],
                       )
-                          : CircleAvatar(
-                        radius: 64,
-                        foregroundColor: Colors.deepOrange,
-                        child: Icon(Icons.photo, color: Colors.deepOrange, size: 50,),
+                        : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("Choose File", style: TextStyle(fontSize: 16, decoration: TextDecoration.underline, color: Colors.grey.shade600),),
+                          const SizedBox(width: 10,),
+                          CircleAvatar(
+                            radius: 16,
+                            foregroundColor: Colors.deepOrange,
+                            child: Icon(Icons.file_upload, color: Colors.deepOrange,),
+                          ),
+                        ],
                       ),
 
-                      Positioned(child: Icon(Icons.add_a_photo, color: Colors.deepOrange,), bottom: 2, left: 90,),
                     ],
                   ),
-                ),*/
+                ),
 
-                const SizedBox(height: 20,),
+
+                _dropdownError == null
+                  ? SizedBox.shrink()
+                  : const SizedBox(height: 10,),
+                  Text(
+                    _dropdownError ?? "",
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 10,),
                 _isUpdating ?
                 Row(
                   children: <Widget>[
                     const SizedBox(width: 20,),
                     editButton(
                       onTap: () {
-                        //_editCategories(_selectedCategory);
+                        _editFileCatalog(_selectedCatalogsFile);
                       },
                       text: 'UPDATE',
                     ),
@@ -309,7 +378,7 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          //_addCategories();
+          _addFileCatalog();
         },
         child: Icon(Icons.add),
       ),

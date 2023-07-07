@@ -163,7 +163,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
         //kapag same picture disregard lang
         if (imagepath == null){
-          imagename = showimage?.split('/').last;
+          imagename = showimage;
           imagedata = '';
         }
 
@@ -316,7 +316,7 @@ class _ProductsPageState extends State<ProductsPage> {
           ],
           rows: _products.map((Products) => DataRow(cells: [
             DataCell(CircleAvatar(
-              backgroundImage: NetworkImage(API.hostConnect + Products.image.toString()),
+              backgroundImage: NetworkImage(API.productImages + Products.image.toString()),
             ),
                 onTap: (){
                   _showValues(Products);
@@ -404,7 +404,7 @@ class _ProductsPageState extends State<ProductsPage> {
                       ) : _isUpdating
                       ? CircleAvatar(
                         radius: 64,
-                        backgroundImage: NetworkImage(API.hostConnect + showimage!),
+                        backgroundImage: NetworkImage(API.productImages + showimage!),
                       )
                       : CircleAvatar(
                         radius: 64,

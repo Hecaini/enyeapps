@@ -32,5 +32,6 @@ export 'dashboard/dashboardpage.dart';
 export 'dashboard/catalogs_pdf/catalogsfilepage.dart';
 export 'dashboard/catalogs_pdf/catalogsfile.dart';
 export 'dashboard/catalogs_pdf/catalogsfilesvc.dart';
+export 'dashboard/catalogs_pdf/catalogpdfview.dart';
 
 export 'orders/orderspage.dart';

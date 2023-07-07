@@ -2,6 +2,12 @@ class API {
   static const hostConnect = "http://192.168.0.137/adminenye";
   static const hostConnectAdminUser = "$hostConnect/admin";
 
+  //product images
+  static const productImages = "$hostConnect/admin/products_img/";
+
+  //file catalogs pdf
+  static const fileCatalogsPdf = "$hostConnect/admin/catalog_pdf/";
+
   //sign-up admin user
   static const signUpAdmin = "$hostConnect/admin/signup.php";
 
