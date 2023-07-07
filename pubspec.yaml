@@ -44,6 +44,12 @@ dependencies:
   image_picker: ^1.0.0
   file_picker: ^5.3.2
   advance_pdf_viewer_fork: any
+  flutter_file_downloader: ^1.1.2
+
+  dio: ^5.2.1+1
+  permission_handler:
+  path_provider: ^2.0.15
+  open_file_plus: ^3.4.1
 
 dev_dependencies:
   flutter_test:

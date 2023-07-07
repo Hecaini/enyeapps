@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
-import 'package:enye_app/widget/widgets.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file_plus/open_file_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 class catalogPDFview extends StatefulWidget {
   static const String routeName = '/catalogPDFview';
@@ -22,10 +26,9 @@ class catalogPDFview extends StatefulWidget {
 
 class _catalogPDFviewState extends State<catalogPDFview> {
   bool _isLoading = true;
+  double? _progress;
 
   late PDFDocument document;
-
-  bool _usePDFListView = false;
 
   void initState() {
     super.initState();
@@ -38,90 +41,105 @@ class _catalogPDFviewState extends State<catalogPDFview> {
     setState(() => _isLoading = false);
   }
 
+  Future openFile ({required String url, String? filename}) async {
+    final file = await downloadFile(url, filename!);
+
+    if (file == null) return;
+    
+    print('Path: ${file.path}');
+    OpenFile.open(file.path);
+  }
+
+  Future <File?> downloadFile (String url, String name) async {
+    final appStorage = await getApplicationDocumentsDirectory();
+    final file = File('${appStorage.path}/$name');
+
+    final response = await Dio().get(
+      url,
+      options: Options(
+        responseType: ResponseType.bytes,
+        followRedirects: false,
+        //receiveTimeout: 0
+      ),
+    );
+
+    final raf = file.openSync(mode: FileMode.write);
+    raf.writeFromSync(response.data);
+    await raf.close();
+
+    return file;
+
+  }
+
+  _successSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.greenAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.check, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _errorSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.filename),
         actions: <Widget>[
-          GestureDetector(
-            onTap: (){
-              _usePDFListView = !_usePDFListView;
-              setState(() {});
-            },
+          _progress != null
+          ? const CircularProgressIndicator()
+          : GestureDetector(
+            onTap: () => openFile(
+              url: widget.filepath,
+              filename: widget.filename,
+            ),
             child: Icon(
-                Icons.cached
+                Icons.download
             ),
           ),
+
           SizedBox(
             width: 15,
           )
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          /*!_usePDFListView
-              ? */Expanded(
-            child: Center(
-              child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : PDFViewer(
-                document: document,
-                zoomSteps: 1,
-                //uncomment below line to preload all pages
-                // lazyLoad: false,
-                // uncomment below line to scroll vertically
-                scrollDirection: Axis.vertical,
+      body: Center(
+        child: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : PDFViewer(
 
-                // enableSwipeNavigation: false,
-                showPicker: false,
-                showNavigation: true,
-                //uncomment below code to replace bottom navigation with your own
-                 navigationBuilder:
-                            (context, page, totalPages, jumpToPage, animateToPage) {
-                          return ButtonBar(
-                            alignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.first_page),
-                                onPressed: () {
-                                  jumpToPage(page: 0);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.arrow_back),
-                                onPressed: () {
-                                  animateToPage(page: page! - 2);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.arrow_forward),
-                                onPressed: () {
-                                  animateToPage(page: page);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.last_page),
-                                onPressed: () {
-                                  jumpToPage(page: totalPages! - 1);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-              ),
-            ),
-          )
-           /*   : Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator(),)
-                : PDFListViewer(
-              document: document,
-              preload: true,
-            ),
-          )*/,
-        ],
-      ),
+            scrollDirection: Axis.vertical,
+            document: document,
+        )),
     );
   }
 }
