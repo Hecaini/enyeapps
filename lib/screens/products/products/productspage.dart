@@ -360,7 +360,7 @@ class _ProductsPageState extends State<ProductsPage> {
             DataCell(IconButton(
               icon: Icon(Icons.delete, color: Colors.red,),
               onPressed: (){
-                _delProducts(_selectedProduct);
+                _delProducts(Products);
               },
             )),
           ])).toList(),

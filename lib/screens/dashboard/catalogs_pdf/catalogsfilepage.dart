@@ -243,9 +243,6 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
                   withNavBar: true,
                   pageTransitionAnimation: PageTransitionAnimation.cupertino,
                 );
-                //print("${API.fileCatalogsPdf + CatalogsFile.filename.toString()}");
-                //PDFDocument doc = await PDFDocument.fromURL("${API.fileCatalogsPdf + CatalogsFile.filename.toString()}");
-                //_delFileCatalog(CatalogsFile);
               },
             )),
             DataCell(IconButton(

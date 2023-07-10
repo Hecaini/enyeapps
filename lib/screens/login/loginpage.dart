@@ -27,7 +27,7 @@ class _loginPageState extends State<loginPage> {
   Future<void> signUserIn() async {
 
     // Validate returns true if the form is valid, or false otherwise.
-    if (_formKey.currentState!.validate()) {
+    /*if (_formKey.currentState!.validate()) {
 
       try {
         var res = await http.post( //pasiing value to result
@@ -78,7 +78,7 @@ class _loginPageState extends State<loginPage> {
         print(e.toString());
         Fluttertoast.showToast(msg: e.toString());
       }
-    }
+    }*/
   }
 
   @override

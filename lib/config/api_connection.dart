@@ -1,37 +1,29 @@
 class API {
-  static const hostConnect = "http://192.168.0.137/adminenye";
+  static const hostConnect = "https://enye.com.ph/enyecontrols_app";
+  //static const hostConnect = "http://192.168.0.137/adminenye";
   static const hostConnectAdminUser = "$hostConnect/admin";
 
   //product images
   static const productImages = "$hostConnect/admin/products_img/";
 
   //file catalogs pdf
-  static const fileCatalogsPdf = "$hostConnect/admin/catalog_pdf/";
+  static const fileCatalogsPdf = "$hostConnect/admin/system_catalog_pdf/";
 
-  //sign-up admin user
-  static const signUpAdmin = "$hostConnect/admin/signup.php";
+  //sub categories (FROM PRODUCTS SCREEN) actions
+  static const manufacturer = "$hostConnect/admin/products_screen/manufacturer.php";
 
-  //login admin user
-  static const loginAdmin = "$hostConnect/admin/login.php";
+  //categories (FROM PRODUCTS SCREEN) actions
+  static const categories = "$hostConnect/admin/products_screen/categories.php";
 
-  //check session start
-  static const userSession = "$hostConnect/admin/config.php";
+  //sub categories (FROM PRODUCTS SCREEN) actions
+  static const subcategories = "$hostConnect/admin/products_screen/subCategories.php";
 
-  //sub categories (FROM CATALOGS SCREEN) actions
-  static const manufacturer = "$hostConnect/admin/catalogs_screen/manufacturer.php";
-
-  //categories (FROM CATALOGS SCREEN) actions
-  static const categories = "$hostConnect/admin/catalogs_screen/categories.php";
-
-  //sub categories (FROM CATALOGS SCREEN) actions
-  static const subcategories = "$hostConnect/admin/catalogs_screen/subCategories.php";
-
-  //products (FROM CATALOGS SCREEN) actions
-  static const products = "$hostConnect/admin/catalogs_screen/products.php";
+  //products (FROM PRODUCTS SCREEN) actions
+  static const products = "$hostConnect/admin/products_screen/products.php";
 
   //catalogs actions
-  static const catalogs = "$hostConnect/admin/catalogs.php";
+  static const catalogs = "$hostConnect/admin/products_screen/products_model.php";
 
   //catalogs files (FROM DASHBOARD SCREEN) actions
-  static const fileCatalogs = "$hostConnect/admin/dashboard/file_catalogs.php";
+  static const fileCatalogs = "$hostConnect/admin/dashboard/systems_catalog.php";
 }

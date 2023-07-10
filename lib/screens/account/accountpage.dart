@@ -25,7 +25,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   @override
-  Future fetchUserInfo() async {
+  /*Future fetchUserInfo() async {
     // Validate returns true if the form is valid, or false otherwise.
     var res = await http.get(Uri.parse(API.userSession),); //passing value to result
 
@@ -39,7 +39,7 @@ class _AccountPageState extends State<AccountPage> {
       // then throw an exception.
       throw Exception('Failed to load data');
     }
-  }
+  }*/
 
   Widget build(BuildContext context) {
 

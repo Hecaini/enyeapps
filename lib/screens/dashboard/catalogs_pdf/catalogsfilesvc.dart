@@ -26,11 +26,9 @@ class catalogsFileSvc {
         return list;
       } else {
         throw Exception('Failed to retrieve categories');
-        //return List<Categories>();
       }
     } catch (e) {
       throw Exception('Failed to retrieve categories');
-      //return List<Categories>();
     }
   }
 

@@ -41,7 +41,7 @@ class _registerPageState extends State<registerPage> {
   Future<void> signUserUp() async {
 
     // Validate returns true if the form is valid, or false otherwise.
-    if (_formKey.currentState!.validate()) {
+    /*if (_formKey.currentState!.validate()) {
 
       //password doesn't match with confirmation password
       if (passwordController.text.trim() != conpasswordController.text.trim()){
@@ -135,7 +135,7 @@ class _registerPageState extends State<registerPage> {
         }
       }
 
-    }
+    }*/
   }
 
   @override
