@@ -118,18 +118,6 @@ class _CatalogsPageState extends State<CatalogsPage> {
             DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
           ],
           rows: _catalogs.map((Catalogs) => DataRow(cells: [
-            /*DataCell(
-              ConstrainedBox(constraints: BoxConstraints(maxWidth: 10, minWidth: 5),
-                  child: Text(Catalogs.id.toString(), maxLines: 2, overflow: TextOverflow.ellipsis, softWrap: true,)),
-              onTap: (){
-                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                  context,
-                  settings: RouteSettings(name: editCatalogsPage.routeName, arguments: {'catalogs': Catalogs}),
-                  screen: editCatalogsPage(catalogs: Catalogs,),
-                  withNavBar: true,
-                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                );
-              }),*/
             DataCell(
               ConstrainedBox(constraints: BoxConstraints(maxWidth: 100, minWidth: 50),
                   child: Text(Catalogs.model_name.toString(), maxLines: 2, overflow: TextOverflow.ellipsis, softWrap: true,)),

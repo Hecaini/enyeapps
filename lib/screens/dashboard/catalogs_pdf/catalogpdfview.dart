@@ -45,7 +45,7 @@ class _catalogPDFviewState extends State<catalogPDFview> {
     final file = await downloadFile(url, filename!);
 
     if (file == null) return;
-    
+
     print('Path: ${file.path}');
     OpenFile.open(file.path);
   }
@@ -59,8 +59,17 @@ class _catalogPDFviewState extends State<catalogPDFview> {
       options: Options(
         responseType: ResponseType.bytes,
         followRedirects: false,
-        //receiveTimeout: 0
+        //receiveTimeout: Duration(milliseconds: 0),
       ),
+      onReceiveProgress: (recivedBytes, totalBytes) {
+        setState(() {
+          _progress = recivedBytes / totalBytes;
+          if (_progress == 1.0){
+            _progress = null;
+          }
+        });
+        print(_progress);
+      }
     );
 
     final raf = file.openSync(mode: FileMode.write);
@@ -71,44 +80,6 @@ class _catalogPDFviewState extends State<catalogPDFview> {
 
   }
 
-  _successSnackbar(context, message){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.greenAccent,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        content: Row(
-          children: [
-            Icon(Icons.check, color: Colors.white,),
-            const SizedBox(width: 10,),
-            Text(message),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _errorSnackbar(context, message){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.redAccent,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        content: Row(
-          children: [
-            Icon(Icons.error, color: Colors.white,),
-            const SizedBox(width: 10,),
-            Text(message),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +87,7 @@ class _catalogPDFviewState extends State<catalogPDFview> {
         title: Text(widget.filename),
         actions: <Widget>[
           _progress != null
-          ? const CircularProgressIndicator()
+          ? const CircularProgressIndicator(valueColor:AlwaysStoppedAnimation<Color>(Colors.white),)
           : GestureDetector(
             onTap: () => openFile(
               url: widget.filepath,

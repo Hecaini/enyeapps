@@ -13,7 +13,7 @@ class catalogsServices {
 
   //get data categories from database
   static Future <List<Catalogs>> getCatalogs() async {
-    try{
+
       var map = Map<String, dynamic>();
       map['action'] = GET_ALL_CATALOGS;
 
@@ -28,10 +28,7 @@ class catalogsServices {
         throw Exception('Failed to retrieve catalogs');
         //return List<Categories>();
       }
-    } catch (e) {
-      throw Exception('Failed to retrieve catalogs');
-      //return List<Categories>();
-    }
+
   }
 
   static List<Catalogs> parseResponse(String responseBody){

@@ -13,7 +13,7 @@ class catalogsFileSvc {
 
   //get data categories from database
   static Future <List<CatalogsFile>> getFileCatalogs() async {
-    try{
+
       var map = Map<String, dynamic>();
       map['action'] = GET_ALL_FILECATALOGS;
 
@@ -27,9 +27,6 @@ class catalogsFileSvc {
       } else {
         throw Exception('Failed to retrieve categories');
       }
-    } catch (e) {
-      throw Exception('Failed to retrieve categories');
-    }
   }
 
   static List<CatalogsFile> parseResponse(String responseBody){
@@ -52,7 +49,7 @@ class catalogsFileSvc {
       //config API to connect web server
       final res = await http.post(Uri.parse(API.fileCatalogs), body: map); //passing value to result
       print('addFileCatalogs Response: ${res.body}');
-
+      print('addFileCatalogs Status: ${res.statusCode}');
       //if status is okay in web server
       if(res.statusCode == 200){
         //return result from PHP backend
