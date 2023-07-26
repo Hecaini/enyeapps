@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:enye_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 
@@ -7,13 +9,9 @@ class AppRouter{
   static Route onGenerateRoute(RouteSettings settings){
     print('This is route:${settings.name}');
 
-    if (settings.name == "/navbar"){
-      return CustomNavBar.route();
-    }
-
     switch (settings.name){
       case '/':
-        return loginPage.route();
+        return CustomNavBar.route();
       case DashboardPage.routeName:
         return DashboardPage.route();
       case OrdersPage.routeName:

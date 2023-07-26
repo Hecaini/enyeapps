@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
+import '../../config/app_session.dart';
 import '../screens.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -80,16 +81,31 @@ class _DashboardPageState extends State<DashboardPage> {
                   GestureDetector(
                     onTap: () async {
                       await SessionManager().destroy();
-
+                      
                       setState(() {
-
+                        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return loginPage();
+                            },
+                          ),
+                              (_) => false,
+                        );
+                        
                         /*PersistentNavBarNavigator.pushNewScreen(
                           context,
                           screen: loginPage(),
                           withNavBar: false,
                         );*/
-                        Navigator.pushNamedAndRemoveUntil(context, "/navbar",
-                            ModalRoute.withName("/"));
+                        /*Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (BuildContext context) => loginPage()),
+                          //MaterialPageRoute(builder: (BuildContext context) => CustomNavBar(sessionData: true,)),
+                          ModalRoute.withName("/")
+                        );*/
+
+
+
                         /*Navigator.of(context).pushAndRemoveUntil(
                           CupertinoPageRoute(
                             builder: (BuildContext context) {

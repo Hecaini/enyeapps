@@ -8,10 +8,11 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:http/http.dart' as http;
 
 import '../../config/api_connection.dart';
+import '../../config/app_session.dart';
 import '../../widget/widgets.dart';
 
 class loginPage extends StatefulWidget {
-  static const String routeName = '/';
+  static const String routeName = '/login';
 
   static Route route(){
     return MaterialPageRoute(
@@ -146,7 +147,7 @@ class _loginPageState extends State<loginPage> {
                   ),
 
                   //or continue with
-                  /*const SizedBox(height: 30,),
+                  const SizedBox(height: 30,),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
@@ -167,7 +168,7 @@ class _loginPageState extends State<loginPage> {
                         ),
                       ],
                     ),
-                  ),*/
+                  ),
 
                   //gmail + facebook sign in
                   /*SizedBox(height: 25,),
