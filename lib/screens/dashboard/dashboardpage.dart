@@ -91,29 +91,6 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                               (_) => false,
                         );
-                        
-                        /*PersistentNavBarNavigator.pushNewScreen(
-                          context,
-                          screen: loginPage(),
-                          withNavBar: false,
-                        );*/
-                        /*Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (BuildContext context) => loginPage()),
-                          //MaterialPageRoute(builder: (BuildContext context) => CustomNavBar(sessionData: true,)),
-                          ModalRoute.withName("/")
-                        );*/
-
-
-
-                        /*Navigator.of(context).pushAndRemoveUntil(
-                          CupertinoPageRoute(
-                            builder: (BuildContext context) {
-                               loginPage();
-                            },
-                          ),
-                              (_) => false,
-                        );*/
                       });
 
                     },

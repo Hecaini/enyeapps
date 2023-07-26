@@ -35,3 +35,11 @@ export 'dashboard/catalogs_pdf/catalogsfilesvc.dart';
 export 'dashboard/catalogs_pdf/catalogpdfview.dart';
 
 export 'orders/orderspage.dart';
+
+export 'quotation/quotation_page.dart';
+
+export 'technical_schedule/technical_page.dart';
+export 'technical_schedule/technical_data.dart';
+export 'technical_schedule/technical_svc.dart';
+
+export 'completed/completed.dart';

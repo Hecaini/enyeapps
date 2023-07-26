@@ -51,7 +51,12 @@ dependencies:
   permission_handler:
   path_provider: ^2.0.15
   open_file_plus: ^3.4.1
+
+  sizer: ^2.0.15
   flutter_session_manager: ^1.0.3
+  intl:
+  google_fonts:
+  date_picker_timeline:
 
 dev_dependencies:
   flutter_test:

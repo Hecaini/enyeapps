@@ -32,11 +32,6 @@ class _checkSessionState extends State<checkSession> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lime,
-      // appBar: AppBar(
-      //   title: Text('Navigation POC'),
-      // ),
-      //drawer: SideMenu(),
       body: FutureBuilder(
         future: _userSessionFuture,
         builder: (context, snapshot) {

@@ -49,39 +49,43 @@ class _CustomNavBarState extends State<CustomNavBar> {
   Widget build(BuildContext context) {
     List<Widget> _buildScreens() {
       return [
-        DashboardPage(),
+        //DashboardPage(),
         //OrdersPage(),
-        AppointmentPage(),
-        CatalogsPage(),
+        //AppointmentPage(),
+        //CatalogsPage(),
+
+        //QuotationPage(),
+        TechSchedPage(),
+        CompletedPage(),
         AccountPage(),
       ];
     }
 
     List<PersistentBottomNavBarItem> _navBarsItems() {
       return [
-        PersistentBottomNavBarItem(
-          icon: Icon(Icons.dashboard),
-          title: ("Dashboard"),
+        /*PersistentBottomNavBarItem(
+          icon: Image(image: AssetImage("assets/icons/quotation.png")),
+          title: ("Quotation"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
+        ),*/
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.book),
+          icon: Image(image: AssetImage("assets/icons/appointment.png")),
           title: ("Appointment"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.shop),
-          title: ("Products"),
+          icon: Image(image: AssetImage("assets/icons/approved.png")),
+          title: ("Completed"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.person),
+          icon: Image(image: AssetImage("assets/icons/profile.png")),
           title: ("Account"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,

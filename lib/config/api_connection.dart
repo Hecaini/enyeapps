@@ -4,8 +4,12 @@ class API {
 
   //login admin
   static const loginAdmin = "$hostConnect/admin/login.php";
+
   //add user admin
   static const signUpAdmin = "$hostConnect/admin/signup.php";
+
+  //technical data's
+  static const technicalData = "$hostConnect/admin/technical/technical.php";
 
   //product images
   static const productImages = "$hostConnect/admin/products_img/";
