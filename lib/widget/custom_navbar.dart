@@ -1,12 +1,12 @@
-import 'package:enye_app/screens/screens.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-import '../dashboardicon_icons.dart';
+import '../screens/screens.dart';
+class CustomNavBar extends StatefulWidget {
 
-class CustomNavBar extends StatelessWidget {
-
-  static const String routeName = '/';
+  static const String routeName = '/navbar';
 
   static Route route(){
     return MaterialPageRoute(
@@ -18,6 +18,26 @@ class CustomNavBar extends StatelessWidget {
   const CustomNavBar({
     super.key,
   });
+
+  @override
+  State<CustomNavBar> createState() => _CustomNavBarState();
+}
+
+class _CustomNavBarState extends State<CustomNavBar> {
+  bool? _sessionData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SessionManager().containsKey("user_data").then((value) => _sessionData = value);
+    if (_sessionData == false){
+      _sessionData = true;
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => loginPage()));
+    } else {
+      _sessionData = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +96,11 @@ class CustomNavBar extends StatelessWidget {
 
     _controller = PersistentTabController(initialIndex: 0);
 
+    //SessionManager().containsKey("user_data").then((value) => _sessionData = value);
+    print(_sessionData);
+
     return PersistentTabView(
+      hideNavigationBar: _sessionData == false ? true : false,
       context,
       controller: _controller,
       screens: _buildScreens(),

@@ -7,9 +7,13 @@ class AppRouter{
   static Route onGenerateRoute(RouteSettings settings){
     print('This is route:${settings.name}');
 
+    if (settings.name == "/navbar"){
+      return CustomNavBar.route();
+    }
+
     switch (settings.name){
       case '/':
-        return CustomNavBar.route();
+        return loginPage.route();
       case DashboardPage.routeName:
         return DashboardPage.route();
       case OrdersPage.routeName:
@@ -21,7 +25,7 @@ class AppRouter{
       case AccountPage.routeName:
         return AccountPage.route();
 
-      default: 
+      default:
         return _errorRoute();
     }
   }

@@ -1,7 +1,11 @@
 class API {
-  static const hostConnect = "https://enye.com.ph/enyecontrols_app";
-  //static const hostConnect = "http://192.168.0.136/adminenye";
-  static const hostConnectAdminUser = "$hostConnect/admin";
+  //static const hostConnect = "https://enye.com.ph/enyecontrols_app";
+  static const hostConnect = "http://192.168.0.137/adminenye";
+
+  //login admin
+  static const loginAdmin = "$hostConnect/admin/login.php";
+  //add user admin
+  static const signUpAdmin = "$hostConnect/admin/signup.php";
 
   //product images
   static const productImages = "$hostConnect/admin/products_img/";

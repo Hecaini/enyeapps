@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:enye_app/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +11,15 @@ import '../../config/api_connection.dart';
 import '../../widget/widgets.dart';
 
 class loginPage extends StatefulWidget {
+  static const String routeName = '/';
+
+  static Route route(){
+    return MaterialPageRoute(
+        settings: RouteSettings(name: routeName),
+        builder: (_) => loginPage()
+    );
+  }
+
   loginPage({super.key});
 
   @override
@@ -27,9 +37,8 @@ class _loginPageState extends State<loginPage> {
   Future<void> signUserIn() async {
 
     // Validate returns true if the form is valid, or false otherwise.
-    /*if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {
 
-      try {
         var res = await http.post( //pasiing value to result
           Uri.parse(API.loginAdmin),
           body: {
@@ -42,6 +51,15 @@ class _loginPageState extends State<loginPage> {
           var resBodyOfLogin = jsonDecode(res.body);
 
           if(resBodyOfLogin['login'] == true){
+            var userData = resBodyOfLogin["user_data"];
+            await SessionManager().set("user_data",  UserLogin(
+                user_id: userData["user_id"],
+                name: userData["name"],
+                username: userData["username"],
+                email: userData["email"],
+                position: userData["position"],
+                image: userData["image"]
+            ));
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 backgroundColor: Colors.green,
@@ -55,7 +73,8 @@ class _loginPageState extends State<loginPage> {
                   ],
                 ),
               ),
-            );
+            ).closed
+            .then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => CustomNavBar())));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -73,12 +92,7 @@ class _loginPageState extends State<loginPage> {
             );
           }
         }
-
-      } catch(e) {
-        print(e.toString());
-        Fluttertoast.showToast(msg: e.toString());
-      }
-    }*/
+    }
   }
 
   @override

@@ -51,6 +51,7 @@ dependencies:
   permission_handler:
   path_provider: ^2.0.15
   open_file_plus: ^3.4.1
+  flutter_session_manager: ^1.0.3
 
 dev_dependencies:
   flutter_test:
