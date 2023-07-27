@@ -1,5 +1,8 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
@@ -29,11 +32,17 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
   int _currentExpandedTileIndex = -1;
 
+  void initState(){
+    super.initState();
+    _services = [];
+    _getServices();
+  }
+
 
   //below this are for technical datas get to server
-  List<TechnicalData>? _services;
+  late List<TechnicalData> _services;
 
-  _getCategories(){
+  _getServices(){
     TechnicalDataServices.getTechnicalData().then((TechnicalData){
       setState(() {
         _services = TechnicalData;
@@ -51,9 +60,32 @@ class _TechSchedPageState extends State<TechSchedPage> {
         children: [
           _addTaskBar(),
           _addDateBar(),
+
+          SizedBox(height: 10,),
           
           Expanded(
-            child: Container(),
+            child: ListView.builder(
+              itemCount: _services.length,
+              itemBuilder: (_, index){
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  child: SlideAnimation(
+                    child: FadeInAnimation(
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              _showBottomSheet(_services[index]);
+                            },
+                            child: TaskTile(services: _services[index]),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+            ),
           ),
           
           //first trial
@@ -107,6 +139,89 @@ class _TechSchedPageState extends State<TechSchedPage> {
             ),
           )*/
         ],
+      ),
+    );
+  }
+
+  _showBottomSheet (TechnicalData services) {
+    showBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.only(top: 4),
+          height: services.status == "On Process" ? MediaQuery.of(context).size.height * 0.34 : MediaQuery.of(context).size.height * 0.24,
+          color: Colors.white,
+          child: Column(
+            children: [
+              Container(
+                height: 6,
+                width: 120,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[300]
+                ),
+              ),
+
+              Spacer(),
+              Container(),
+
+              services.status == "On Process" ?
+              _bottomSheetButton(
+                label: "Task Completed",
+                onTap: (){
+
+                },
+                clr: Colors.blue,
+                context:context,
+              ): Container(),
+
+              SizedBox(height: 10,),
+              _bottomSheetButton(
+                label: "View",
+                onTap: (){
+
+                },
+                clr: Colors.orangeAccent,
+                context:context,
+              ),
+
+              SizedBox(height: 20,),
+              _bottomSheetButton(
+                label: "Close",
+                onTap: (){
+
+                },
+                clr: Colors.orangeAccent,
+                context:context,
+                isClose: true,
+              ),
+
+              SizedBox(height: 10,),
+            ],
+          ),
+        );
+      }
+    );
+  }
+
+  _bottomSheetButton ({required String label,required Function()? onTap,required Color clr, bool isClose = false, required BuildContext context}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        height: 55,
+        width: MediaQuery.of(context).size.width * 0.9,
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: isClose == true ? Colors.grey.shade300 : clr),
+          borderRadius: BorderRadius.circular(20),
+          color: isClose == true ? Colors.transparent:clr,
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: isClose ? TextStyle(color: Colors.black, fontWeight: FontWeight.bold) : TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
     );
   }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "992119846808",
+    "project_id": "enyecontrols-c9eda",
+    "storage_bucket": "enyecontrols-c9eda.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992119846808:android:e954bce856d5d316751ded",
+        "android_client_info": {
+          "package_name": "com.example.enye_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992119846808-di07d5k0qg1p84gp4gs6mdqd9tuqg0u2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlus9OxOYGa-O54JL14qNQ84RCC0ke40Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992119846808-di07d5k0qg1p84gp4gs6mdqd9tuqg0u2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

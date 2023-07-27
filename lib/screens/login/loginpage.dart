@@ -75,7 +75,7 @@ class _loginPageState extends State<loginPage> {
                 ),
               ),
             ).closed
-            .then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => CustomNavBar())));
+            .then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => checkSession())));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

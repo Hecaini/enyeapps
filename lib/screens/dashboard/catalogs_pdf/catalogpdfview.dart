@@ -1,10 +1,5 @@
-import 'dart:io';
+/*
 
-import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:open_file_plus/open_file_plus.dart';
-import 'package:path_provider/path_provider.dart';
 
 class catalogPDFview extends StatefulWidget {
   static const String routeName = '/catalogPDFview';
@@ -115,3 +110,4 @@ class _catalogPDFviewState extends State<catalogPDFview> {
   }
 }
 
+*/

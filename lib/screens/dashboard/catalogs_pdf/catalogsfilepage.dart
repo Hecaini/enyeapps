@@ -280,13 +280,13 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
             DataCell(IconButton(
               icon: Icon(Icons.remove_red_eye, color: Colors.red,),
               onPressed: () {
-                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                /*PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                   context,
                   settings: RouteSettings(name: catalogPDFview.routeName,),
                   screen: catalogPDFview(filepath: "${API.fileCatalogsPdf + CatalogsFile.filename.toString()}", filename: "${CatalogsFile.filename.toString()}",),
                   withNavBar: true,
                   pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                );
+                );*/
               },
             )),
             DataCell(

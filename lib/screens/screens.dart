@@ -41,5 +41,6 @@ export 'quotation/quotation_page.dart';
 export 'technical_schedule/technical_page.dart';
 export 'technical_schedule/technical_data.dart';
 export 'technical_schedule/technical_svc.dart';
+export 'technical_schedule/tasktile_page.dart';
 
 export 'completed/completed.dart';
