@@ -1,11 +1,9 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:sizer/sizer.dart';
 
 import '../../../widget/widgets.dart';
 import '../screens.dart';
@@ -36,18 +34,31 @@ class _TechSchedPageState extends State<TechSchedPage> {
     super.initState();
     _services = [];
     _getServices();
+
+    _account = [];
+    _getAccounts();
   }
 
 
   //below this are for technical datas get to server
   late List<TechnicalData> _services;
-
   _getServices(){
-    TechnicalDataServices.getTechnicalData().then((TechnicalData){
+    TechnicalDataServices.getTechnicalData().then((technicalData){
       setState(() {
-        _services = TechnicalData;
+        _services = technicalData;
       });
-      print("Length ${TechnicalData.length}");
+      print("Length ${technicalData.length}");
+    });
+  }
+
+  //below this are for account infos get to server
+  late List<AccountInfo> _account;
+  _getAccounts(){
+    AccountInfoServices.getAccountInfo().then((accountInfo){
+      setState(() {
+        _account = accountInfo;
+      });
+      print("Length ${accountInfo.length}");
     });
   }
 
@@ -144,12 +155,16 @@ class _TechSchedPageState extends State<TechSchedPage> {
   }
 
   _showBottomSheet (TechnicalData services) {
-    showBottomSheet(
+    showModalBottomSheet(
+      isScrollControlled: true,
+      useRootNavigator: true,
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return Container(
           padding: const EdgeInsets.only(top: 4),
-          height: services.status == "On Process" ? MediaQuery.of(context).size.height * 0.34 : MediaQuery.of(context).size.height * 0.24,
+          height: services.status == "On Process" || services.status == "Unread" ?
+            MediaQuery.of(context).size.height * 0.34 :
+            MediaQuery.of(context).size.height * 0.24,
           color: Colors.white,
           child: Column(
             children: [
@@ -165,13 +180,25 @@ class _TechSchedPageState extends State<TechSchedPage> {
               Spacer(),
               Container(),
 
+              services.status == "Unread" ?
+              _bottomSheetButton(
+                label: "Acknowledge",
+                onTap: (){
+                  setState(() {
+                    _showAnotherBottomSheet(services);
+                  });
+                },
+                clr: Colors.blue,
+                context:context,
+              ): Container(),
+
               services.status == "On Process" ?
               _bottomSheetButton(
                 label: "Task Completed",
                 onTap: (){
-
+                  Navigator.pop(context);
                 },
-                clr: Colors.blue,
+                clr: Colors.green,
                 context:context,
               ): Container(),
 
@@ -189,7 +216,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
               _bottomSheetButton(
                 label: "Close",
                 onTap: (){
-
+                  Navigator.pop(context);
                 },
                 clr: Colors.orangeAccent,
                 context:context,
@@ -204,7 +231,210 @@ class _TechSchedPageState extends State<TechSchedPage> {
     );
   }
 
-  _bottomSheetButton ({required String label,required Function()? onTap,required Color clr, bool isClose = false, required BuildContext context}) {
+  String? valueChooseAccount;
+  _showAnotherBottomSheet (TechnicalData services) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useRootNavigator: true,
+        context: context,
+        builder: (BuildContext context) {
+          return MasonryGridView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+            ),
+            children: <Widget> [
+              Container(
+                height: 6,
+                margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.4, right: MediaQuery.of(context).size.width * 0.4, top: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[300]
+                ),
+              ),
+
+              const SizedBox(height: 30,),
+              Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("Title :"),
+                        RichText(
+                          softWrap: true,
+                          text: TextSpan(text: services.svcTitle,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.access_time_rounded,
+                              size: 18,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                              style: GoogleFonts.lato(
+                                textStyle:
+                                TextStyle(fontSize: 15,),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.calendar_month_rounded,
+                              size: 18,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                              style: GoogleFonts.lato(
+                                textStyle:
+                                TextStyle(fontSize: 15,),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Text("Description :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.svcDesc,
+                            style: TextStyle(color: Colors.black),),
+                        ),
+                        //Text(services.svcDesc, maxLines: 5, softWrap: false,),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Column(
+                      children: [
+                        Text("Client Name :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.clientName,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+
+                        Text("Company :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.clientCompany,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+                        Text("Location :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.clientLocation,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+                        Text("Project Name :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.clientProjName,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+                        Text("Contact :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.clientContact,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+                        Text("Email :"),
+                        RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text: TextSpan(text: services.clientEmail,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10,),
+
+              //drop-down button
+              StatefulBuilder(
+                builder: (BuildContext context, setState) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: DropdownButton(
+                      alignment: Alignment.bottomCenter,
+                      underline:Container(),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                      isDense: true,
+                      iconSize: 36,
+                      iconEnabledColor: Colors.deepOrange,
+                      isExpanded: true,
+                      value: valueChooseAccount,
+                      onChanged: (value){
+                        setState(() {
+                          valueChooseAccount = value;
+                        });
+                        print(valueChooseAccount);
+                      },
+                      hint: Text("Select Person In Charge"),
+                      items: _account.map((accountInfo) => DropdownMenuItem(
+                        alignment: Alignment.bottomCenter,
+                        value: accountInfo.user_id.toString(),
+                        child: Text("${accountInfo.name.toString()} || ${accountInfo.position.toString()}", textAlign: TextAlign.center,),
+                      )).toList(),
+                    ),
+                  );
+                }
+              ),
+
+              const SizedBox(height: 20,),
+              _bottomSheetButton(
+                label: "Close",
+                onTap: (){
+                  valueChooseAccount = null;
+                  Navigator.pop(context);
+                },
+                clr: Colors.orangeAccent,
+                context:context,
+                isClose: true,
+              ),
+
+              SizedBox(height: 10,),
+            ],
+          );
+        }
+    ).whenComplete(() => valueChooseAccount = null);
+  }
+
+  _bottomSheetButton ({
+    required String label,
+    required Function()? onTap,
+    required Color clr,
+    bool isClose = false,
+    required BuildContext context
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
