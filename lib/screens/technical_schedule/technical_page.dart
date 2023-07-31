@@ -4,6 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../../../widget/widgets.dart';
 import '../screens.dart';
@@ -25,8 +26,11 @@ class TechSchedPage extends StatefulWidget {
 }
 
 class _TechSchedPageState extends State<TechSchedPage> {
-  DateTime _selectedDate = DateTime.now();
+
   TextEditingController? searchTransaction;
+  final kToday = DateTime.now();
+  final kFirstDay = DateTime(DateTime.now().year, DateTime.now().month - 3, DateTime.now().day);
+  final kLastDay = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
 
   int _currentExpandedTileIndex = -1;
 
@@ -37,8 +41,69 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
     _account = [];
     _getAccounts();
+
+    _selectedDay = _focusedDay;
   }
 
+  CalendarFormat _calendarFormat = CalendarFormat.week;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+      .toggledOff; // Can be toggled on/off by longpressing a date
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _rangeStart = null; // Important to clean those
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      });
+    }
+  }
+
+
+  //snackbars
+  _successSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.greenAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.check, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _errorSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
 
   //below this are for technical datas get to server
   late List<TechnicalData> _services;
@@ -62,6 +127,18 @@ class _TechSchedPageState extends State<TechSchedPage> {
     });
   }
 
+  String? _dropdownError; //kapag wala pa na-select sa option
+  _editToOnProcess(TechnicalData services){
+    TechnicalDataServices.editToOnProcess(services.id, services.svcId, valueChooseAccount!.toString()).then((result) {
+      if('success' == result){
+        //_getCategories(); //refresh the list after update
+        _successSnackbar(context, "Acknowledge Successfully");
+      } else {
+        _errorSnackbar(context, "Error occured...");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +146,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
       /*drawer: CustomDrawer(),*/
       body: Column(
         children: [
-          _addTaskBar(),
+          //_addTaskBar(),
           _addDateBar(),
 
           SizedBox(height: 10,),
@@ -80,7 +157,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
               itemBuilder: (_, index){
                 TechnicalData services = _services[index];
 
-                if (DateFormat.yMd().format(DateTime.parse(services.dateSched)) == DateFormat.yMd().format(_selectedDate)){
+                if (DateFormat.yMd().format(DateTime.parse(services.dateSched)) == DateFormat.yMd().format(_selectedDay!)){
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     child: SlideAnimation(
@@ -262,122 +339,145 @@ class _TechSchedPageState extends State<TechSchedPage> {
               ),
 
               const SizedBox(height: 30,),
-              Row(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text("Title :"),
-                        RichText(
-                          softWrap: true,
-                          text: TextSpan(text: services.svcTitle,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-                        ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      softWrap: true,
+                      text:TextSpan(
+                        children: <TextSpan> [
+                          TextSpan(text: "Title :  ",
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
 
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.access_time_rounded,
-                              size: 18,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                              style: GoogleFonts.lato(
-                                textStyle:
-                                TextStyle(fontSize: 15,),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.calendar_month_rounded,
-                              size: 18,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                              style: GoogleFonts.lato(
-                                textStyle:
-                                TextStyle(fontSize: 15,),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        Text("Description :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.svcDesc,
-                            style: TextStyle(color: Colors.black),),
-                        ),
-                        //Text(services.svcDesc, maxLines: 5, softWrap: false,),
-                      ],
+                          TextSpan(text: services.svcTitle,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                        ]
+                      )
                     ),
-                  ),
 
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: Column(
+                    const SizedBox(height: 10,),
+                    RichText(
+                      textAlign: TextAlign.justify,
+                      softWrap: true,
+                      text:TextSpan(
+                          children: <TextSpan> [
+                            TextSpan(text: "Description :  ",
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+
+                            TextSpan(text: services.svcDesc,
+                              style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                          ]
+                      )
+                    ),
+
+                    const SizedBox(height: 15,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Client Name :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.clientName,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        Icon(
+                          Icons.access_time_rounded,
+                          size: 18,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                          style: GoogleFonts.lato(
+                            textStyle:
+                            TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
                         ),
 
-                        Text("Company :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.clientCompany,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        SizedBox(width: 50),
+                        Icon(
+                          Icons.calendar_month_rounded,
+                          size: 18,
                         ),
-                        Text("Location :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.clientLocation,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-                        ),
-                        Text("Project Name :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.clientProjName,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-                        ),
-                        Text("Contact :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.clientContact,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-                        ),
-                        Text("Email :"),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text: TextSpan(text: services.clientEmail,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                        SizedBox(width: 4),
+                        Text(
+                          DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                          style: GoogleFonts.lato(
+                            textStyle:
+                            TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 15,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                              RichText(
+                                softWrap: true,
+                                text: TextSpan(text: "\t" + services.clientName,
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                              ),
+
+                              const SizedBox(height: 5,),
+                              Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                              RichText(
+                                softWrap: true,
+                                text: TextSpan(text: "\t" + services.clientContact,
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                              ),
+
+                              const SizedBox(height: 5,),
+                              Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                              RichText(
+                                softWrap: true,
+                                text: TextSpan(text: services.clientEmail,
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                              ),
+                              //Text(services.svcDesc, maxLines: 5, softWrap: false,),
+                            ],
+                          ),
+                        ),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                              RichText(
+                                softWrap: true,
+                                text: TextSpan(text: "\t" + services.clientProjName,
+                                  style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                              ),
+
+                              const SizedBox(height: 5,),
+                              const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                              RichText(
+                                softWrap: true,
+                                text: TextSpan(text: "\t" + services.clientCompany,
+                                  style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                              ),
+
+                              const SizedBox(height: 5,),
+                              const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                              RichText(
+                                softWrap: true,
+                                text: TextSpan(text: "\t" + services.clientLocation,
+                                  style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 10,),
-
               //drop-down button
               StatefulBuilder(
                 builder: (BuildContext context, setState) {
@@ -416,23 +516,71 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 }
               ),
 
+
+              //save data or close
+              StatefulBuilder(
+                builder: (BuildContext context, setState){
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      children: [
+                        _dropdownError == null
+                            ? SizedBox.shrink()
+                            : Center(
+                          child: Text(
+                            _dropdownError ?? "",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+
+                        const SizedBox(height: 10,),
+                        _bottomSheetButton(
+                          label: "Save",
+                          onTap: (){
+                            if (valueChooseAccount == null || valueChooseAccount!.isEmpty) {
+                              setState(() => _dropdownError = "Please select an option!");
+                            } else {
+                              setState(() {
+                                _editToOnProcess(services);
+                                _dropdownError = null;
+                                _getServices();
+                                Navigator.pop(context);
+                              });
+                            }
+                          },
+                          clr: Colors.green,
+                          context:context,
+                        ),
+                      ],
+                    )
+                  );
+                }
+              ),
+
               const SizedBox(height: 20,),
-              _bottomSheetButton(
-                label: "Close",
-                onTap: (){
-                  valueChooseAccount = null;
-                  Navigator.pop(context);
-                },
-                clr: Colors.orangeAccent,
-                context:context,
-                isClose: true,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: _bottomSheetButton(
+                  label: "Close",
+                  onTap: (){
+                    _dropdownError = null;
+                    valueChooseAccount = null;
+                    Navigator.pop(context);
+                  },
+                  clr: Colors.orangeAccent,
+                  context:context,
+                  isClose: true,
+                ),
               ),
 
               SizedBox(height: 10,),
             ],
           );
         }
-    ).whenComplete(() => valueChooseAccount = null);
+    ).whenComplete(() {
+      valueChooseAccount = null;
+      _dropdownError = null;
+    });
   }
 
   _bottomSheetButton ({
@@ -500,38 +648,83 @@ class _TechSchedPageState extends State<TechSchedPage> {
   _addDateBar () {
     return Container(
       margin: const EdgeInsets.only(top: 10, left: 10),
-      child: DatePicker(
-        DateTime.now(),
-        height: 100,
-        width: 80,
-        initialSelectedDate: DateTime.now(),
-        selectionColor: Colors.deepOrange,
-        selectedTextColor: Colors.white,
-        dateTextStyle: GoogleFonts.lato(
+      child: TableCalendar (
+        firstDay: kFirstDay,
+        lastDay: kLastDay,
+        focusedDay: _focusedDay,
+        headerStyle: HeaderStyle(
+          titleTextStyle: GoogleFonts.lato(
+              textStyle: TextStyle(
+                fontSize: 22,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.bold
+              )
+          ),
+        ),
+        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+        rangeStartDay: _rangeStart,
+        rangeEndDay: _rangeEnd,
+        calendarFormat: _calendarFormat,
+        rangeSelectionMode: _rangeSelectionMode,
+        eventLoader: (day) => _services.where((services) => isSameDay(DateTime.parse(services.dateSched),day)).toList(),
+        startingDayOfWeek: StartingDayOfWeek.sunday,
+        calendarStyle: CalendarStyle(
+          weekendTextStyle: GoogleFonts.lato(
             textStyle: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey,
+              fontSize: 12,
+              color: Colors.redAccent,
             )
-        ),
-        dayTextStyle: GoogleFonts.lato(
+          ),
+          weekNumberTextStyle: GoogleFonts.lato(
+              textStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold
+              )
+          ),
+          defaultTextStyle: GoogleFonts.lato(
             textStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey,
+              fontSize: 12,
             )
+          ),
+          selectedDecoration: BoxDecoration(color: Colors.deepOrange, shape: BoxShape.circle),
+          todayDecoration: BoxDecoration(color: Colors.deepOrange.shade100, shape: BoxShape.circle),
+          todayTextStyle: GoogleFonts.lato(
+              textStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              )
+          ),
+          markersAlignment: Alignment.bottomCenter,
         ),
-        monthTextStyle: GoogleFonts.lato(
-            textStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey,
-            )
+        calendarBuilders: CalendarBuilders(
+          markerBuilder: (context, day, events) => events.isNotEmpty
+              ? Container(
+            width: 16,
+            height: 16,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.green.shade400,
+            ),
+            child: Text(
+              '${events.length}',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+            ),
+          )
+              : null,
         ),
-        onDateChange: (date) {
-          setState(() {
-            _selectedDate = date;
-          });
+        onFormatChanged: (format) {
+          if (_calendarFormat != format) {
+            setState(() {
+              _calendarFormat = format;
+            });
+          }
+        },
+        onDaySelected: _onDaySelected,
+        //onRangeSelected: _onRangeSelected,
+        onPageChanged: (focusedDay) {
+          _focusedDay = focusedDay;
         },
       ),
     );

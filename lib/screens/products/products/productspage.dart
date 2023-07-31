@@ -431,11 +431,11 @@ class _ProductsPageState extends State<ProductsPage> {
                 _filteredsubcategories.isEmpty ? Container() : _subcategoryList(),
 
                 _dropdownError == null
-                    ? SizedBox.shrink()
-                    : Text(
-                  _dropdownError ?? "",
-                  style: TextStyle(color: Colors.red),
-                ),
+                  ? SizedBox.shrink()
+                  : Text(
+                    _dropdownError ?? "",
+                    style: TextStyle(color: Colors.red),
+                  ),
 
                 const SizedBox(height: 5,),
                 _isUpdating ?

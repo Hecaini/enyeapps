@@ -57,6 +57,7 @@ dependencies:
   intl:
   google_fonts:
   date_picker_timeline:
+  table_calendar:
   flutter_staggered_animations:
   flutter_staggered_grid_view:
 
