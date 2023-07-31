@@ -78,23 +78,30 @@ class _TechSchedPageState extends State<TechSchedPage> {
             child: ListView.builder(
               itemCount: _services.length,
               itemBuilder: (_, index){
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  child: SlideAnimation(
-                    child: FadeInAnimation(
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: (){
-                              _showBottomSheet(_services[index]);
-                            },
-                            child: TaskTile(services: _services[index]),
-                          )
-                        ],
+                TechnicalData services = _services[index];
+
+                if (DateFormat.yMd().format(DateTime.parse(services.dateSched)) == DateFormat.yMd().format(_selectedDate)){
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    child: SlideAnimation(
+                      child: FadeInAnimation(
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                _showBottomSheet(services);
+                              },
+                              child: TaskTile(services: services),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  return Container();
+                }
+
               }
             ),
           ),
@@ -522,7 +529,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
             )
         ),
         onDateChange: (date) {
-          _selectedDate = date;
+          setState(() {
+            _selectedDate = date;
+          });
         },
       ),
     );
