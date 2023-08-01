@@ -8,6 +8,7 @@ class TechnicalDataServices {
   //this is same as in PHP code action made by the user CRUD
   static const GET_ALL_TECHNICAL = 'get_all_technical';
   static const EDIT_TO_ON_PROCESS = 'edit_to_on_process';
+  static const EDIT_TO_COMPLETED = 'edit_to_completed';
 
   //get data categories from database
   static Future <List<TechnicalData>> getTechnicalData() async {
@@ -38,7 +39,7 @@ class TechnicalDataServices {
     return parsed.map<TechnicalData>((json) => TechnicalData.fromJson(json)).toList();
   }
 
-  //edit categories in database
+  //edit TO ON PROCESS in database
   static Future<String> editToOnProcess(String id, String svcId, String personInCharge) async {
     try{
       var map = Map<String, dynamic>();
@@ -49,6 +50,28 @@ class TechnicalDataServices {
 
       final res = await http.post(Uri.parse(API.technicalData), body: map); //passing value to result
       print('editToOnProcess Response: ${res.body}');
+
+      if(res.statusCode == 200){
+        return res.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
+
+  //edit TO TASK COMPLETED in database
+  static Future<String> editTaskCompleted(String id, String svcId, String notes) async {
+    try{
+      var map = Map<String, dynamic>();
+      map['action'] = EDIT_TO_COMPLETED;
+      map['id'] = id;
+      map['svcId'] = svcId;
+      map['notes'] = notes;
+
+      final res = await http.post(Uri.parse(API.technicalData), body: map); //passing value to result
+      print('editToCompleted Response: ${res.body}');
 
       if(res.statusCode == 200){
         return res.body;

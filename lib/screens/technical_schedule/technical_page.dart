@@ -28,6 +28,8 @@ class TechSchedPage extends StatefulWidget {
 class _TechSchedPageState extends State<TechSchedPage> {
 
   TextEditingController? searchTransaction;
+  final TextEditingController note = TextEditingController();
+
   final kToday = DateTime.now();
   final kFirstDay = DateTime(DateTime.now().year, DateTime.now().month - 3, DateTime.now().day);
   final kLastDay = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
@@ -131,8 +133,21 @@ class _TechSchedPageState extends State<TechSchedPage> {
   _editToOnProcess(TechnicalData services){
     TechnicalDataServices.editToOnProcess(services.id, services.svcId, valueChooseAccount!.toString()).then((result) {
       if('success' == result){
-        //_getCategories(); //refresh the list after update
+        _getServices(); //refresh the list after update
         _successSnackbar(context, "Acknowledge Successfully");
+        _dropdownError = null;
+      } else {
+        _errorSnackbar(context, "Error occured...");
+      }
+    });
+  }
+
+  _editToCompleted(TechnicalData services){
+    TechnicalDataServices.editTaskCompleted(services.id, services.svcId, note.text.trim()).then((result) {
+      if('success' == result){
+        _getServices(); //refresh the list after update
+        _successSnackbar(context, "Task Completed Successfully");
+        note.text = '';
       } else {
         _errorSnackbar(context, "Error occured...");
       }
@@ -143,14 +158,15 @@ class _TechSchedPageState extends State<TechSchedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
-      /*drawer: CustomDrawer(),*/
+      resizeToAvoidBottomInset: true,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           //_addTaskBar(),
           _addDateBar(),
 
           SizedBox(height: 10,),
-          
+
           Expanded(
             child: ListView.builder(
               itemCount: _services.length,
@@ -166,7 +182,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           children: [
                             GestureDetector(
                               onTap: (){
-                                _showBottomSheet(services);
+                                _showBottomSheet(context, services);
                               },
                               child: TaskTile(services: services),
                             )
@@ -182,7 +198,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
               }
             ),
           ),
-          
+
+          NormalTextField(controller: note, hintText: 'sample'),
           //first trial
           /*NormalTextField(controller: searchTransaction, hintText: "Service #"),
 
@@ -238,7 +255,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     );
   }
 
-  _showBottomSheet (TechnicalData services) {
+  _showBottomSheet (BuildContext context, TechnicalData services) {
     showModalBottomSheet(
       isScrollControlled: true,
       useRootNavigator: true,
@@ -269,7 +286,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 label: "Acknowledge",
                 onTap: (){
                   setState(() {
-                    _showAnotherBottomSheet(services);
+                    Navigator.pop(context);
+                    _showAnotherBottomSheet(context, services, "Acknowledge");
                   });
                 },
                 clr: Colors.blue,
@@ -280,7 +298,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
               _bottomSheetButton(
                 label: "Task Completed",
                 onTap: (){
-                  Navigator.pop(context);
+                  setState(() {
+                    Navigator.pop(context);
+                    _showAnotherBottomSheet(context, services, "Task Completed");
+                  });
                 },
                 clr: Colors.green,
                 context:context,
@@ -290,7 +311,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
               _bottomSheetButton(
                 label: "View",
                 onTap: (){
-
+                  setState(() {
+                    Navigator.pop(context);
+                    _showAnotherBottomSheet(context, services, "View");
+                  });
                 },
                 clr: Colors.orangeAccent,
                 context:context,
@@ -316,265 +340,456 @@ class _TechSchedPageState extends State<TechSchedPage> {
   }
 
   String? valueChooseAccount;
-  _showAnotherBottomSheet (TechnicalData services) {
+  _showAnotherBottomSheet (BuildContext context, TechnicalData services, String whatToDo) {
     showModalBottomSheet(
         isScrollControlled: true,
         useRootNavigator: true,
         context: context,
         builder: (BuildContext context) {
-          return MasonryGridView(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-            ),
-            children: <Widget> [
-              Container(
-                height: 6,
-                margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.4, right: MediaQuery.of(context).size.width * 0.4, top: 4),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300]
-                ),
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: MasonryGridView(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
               ),
+              children: <Widget> [
+                Container(
+                  height: 6,
+                  margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.4, right: MediaQuery.of(context).size.width * 0.4, top: 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300]
+                  ),
+                ),
 
-              const SizedBox(height: 30,),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      softWrap: true,
-                      text:TextSpan(
-                        children: <TextSpan> [
-                          TextSpan(text: "Title :  ",
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-
-                          TextSpan(text: services.svcTitle,
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                        ]
-                      )
-                    ),
-
-                    const SizedBox(height: 10,),
-                    RichText(
-                      textAlign: TextAlign.justify,
-                      softWrap: true,
-                      text:TextSpan(
+                const SizedBox(height: 30,),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        softWrap: true,
+                        text:TextSpan(
                           children: <TextSpan> [
-                            TextSpan(text: "Description :  ",
+                            TextSpan(text: "Title :  ",
                               style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
 
-                            TextSpan(text: services.svcDesc,
-                              style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                            TextSpan(text: services.svcTitle,
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
                           ]
-                      )
-                    ),
+                        )
+                      ),
 
-                    const SizedBox(height: 15,),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          size: 18,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                          style: GoogleFonts.lato(
-                            textStyle:
-                            TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 10,),
+                      RichText(
+                        textAlign: TextAlign.justify,
+                        softWrap: true,
+                        text:TextSpan(
+                            children: <TextSpan> [
+                              TextSpan(text: "Description :  ",
+                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+
+                              TextSpan(text: services.svcDesc,
+                                style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                            ]
+                        )
+                      ),
+
+                      const SizedBox(height: 15,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 18,
                           ),
-                        ),
-
-                        SizedBox(width: 50),
-                        Icon(
-                          Icons.calendar_month_rounded,
-                          size: 18,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                          style: GoogleFonts.lato(
-                            textStyle:
-                            TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          SizedBox(width: 4),
+                          Text(
+                            DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                            style: GoogleFonts.lato(
+                              textStyle:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
 
-                    const SizedBox(height: 15,),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                              RichText(
-                                softWrap: true,
-                                text: TextSpan(text: "\t" + services.clientName,
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                              ),
-
-                              const SizedBox(height: 5,),
-                              Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                              RichText(
-                                softWrap: true,
-                                text: TextSpan(text: "\t" + services.clientContact,
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                              ),
-
-                              const SizedBox(height: 5,),
-                              Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                              RichText(
-                                softWrap: true,
-                                text: TextSpan(text: services.clientEmail,
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                              ),
-                              //Text(services.svcDesc, maxLines: 5, softWrap: false,),
-                            ],
+                          SizedBox(width: 50),
+                          Icon(
+                            Icons.calendar_month_rounded,
+                            size: 18,
                           ),
-                        ),
+                          SizedBox(width: 4),
+                          Text(
+                            DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                            style: GoogleFonts.lato(
+                              textStyle:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
 
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                              RichText(
-                                softWrap: true,
-                                text: TextSpan(text: "\t" + services.clientProjName,
+                      const SizedBox(height: 15,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientName,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientContact,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: services.clientEmail,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+                                //Text(services.svcDesc, maxLines: 5, softWrap: false,),
+                              ],
+                            ),
+                          ),
+
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientProjName,
+                                    style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientCompany,
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientLocation,
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                whatToDo == "View"
+                 ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                          softWrap: true,
+                          text:TextSpan(
+                              children: <TextSpan> [
+                                TextSpan(text: "Title :  ",
+                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+
+                                TextSpan(text: services.svcTitle,
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                              ]
+                          )
+                      ),
+
+                      const SizedBox(height: 10,),
+                      RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text:TextSpan(
+                              children: <TextSpan> [
+                                TextSpan(text: "Description :  ",
+                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+
+                                TextSpan(text: services.svcDesc,
                                   style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                              ]
+                          )
+                      ),
+
+                      const SizedBox(height: 15,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 18,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                            style: GoogleFonts.lato(
+                              textStyle:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+
+                          SizedBox(width: 50),
+                          Icon(
+                            Icons.calendar_month_rounded,
+                            size: 18,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                            style: GoogleFonts.lato(
+                              textStyle:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 15,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientName,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientContact,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: services.clientEmail,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+                                //Text(services.svcDesc, maxLines: 5, softWrap: false,),
+                              ],
+                            ),
+                          ),
+
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientProjName,
+                                    style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientCompany,
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+
+                                const SizedBox(height: 5,),
+                                const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                RichText(
+                                  softWrap: true,
+                                  text: TextSpan(text: "\t" + services.clientLocation,
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+                 : SizedBox.shrink(),
+
+                //save data into On Process
+                whatToDo == "Acknowledge"
+                 ? StatefulBuilder(
+                  builder: (BuildContext context, setState){
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                        children: [
+
+                          //drop-down button
+                          const SizedBox(height: 10,),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            height: 55,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: DropdownButton(
+                              alignment: Alignment.bottomCenter,
+                              underline:Container(),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                              isDense: true,
+                              iconSize: 36,
+                              iconEnabledColor: Colors.deepOrange,
+                              isExpanded: true,
+                              value: valueChooseAccount,
+                              onChanged: (value){
+                                setState(() {
+                                  valueChooseAccount = value;
+                                });
+                                print(valueChooseAccount);
+                              },
+                              hint: Text("Select Person In Charge"),
+                              items: _account.map((accountInfo) => DropdownMenuItem(
+                                alignment: Alignment.bottomCenter,
+                                value: accountInfo.user_id.toString(),
+                                child: Text("${accountInfo.name.toString()} || ${accountInfo.position.toString()}", textAlign: TextAlign.center,),
+                              )).toList(),
+                            ),
+                          ),
+
+                          _dropdownError == null
+                              ? SizedBox.shrink()
+                              : Center(
+                            child: Text(
+                              _dropdownError ?? "",
+                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+
+                          //save button for acknowledge
+                          const SizedBox(height: 10,),
+                          _bottomSheetButton(
+                            label: "Proceed to Processing",
+                            onTap: (){
+                              if (valueChooseAccount == null || valueChooseAccount!.isEmpty) {
+                                setState(() => _dropdownError = "Please select an option!");
+                              } else {
+                                setState(() {
+                                  _editToOnProcess(services);
+                                  Navigator.of(context).pop();
+                                });
+                              }
+                            },
+                            clr: Colors.green,
+                            context:context,
+                          ),
+                        ],
+                      )
+                    );
+                  }
+                )
+                 : SizedBox.shrink(),
+
+                //save data into Task Completed
+                whatToDo == "Task Completed"
+                    ? StatefulBuilder(
+                    builder: (BuildContext context, setState){
+                      return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Column(
+                            children: [
+
+                              //drop-down button
+                              const SizedBox(height: 10,),
+                              NormalTextField(
+                                controller: note,
+                                hintText: 'Note',
                               ),
 
-                              const SizedBox(height: 5,),
-                              const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                              RichText(
-                                softWrap: true,
-                                text: TextSpan(text: "\t" + services.clientCompany,
-                                  style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                              _dropdownError == null
+                                  ? SizedBox.shrink()
+                                  : Center(
+                                child: Text(
+                                  _dropdownError ?? "",
+                                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                ),
                               ),
 
-                              const SizedBox(height: 5,),
-                              const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                              RichText(
-                                softWrap: true,
-                                text: TextSpan(text: "\t" + services.clientLocation,
-                                  style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                              //save button for acknowledge
+                              const SizedBox(height: 10,),
+                              _bottomSheetButton(
+                                label: "Task Completed",
+                                onTap: (){
+                                  setState(() {
+                                    if (note.text.trim() == null || note.text.trim().isEmpty) {
+                                      setState(() => _dropdownError = "Fill out the fields!");
+                                    } else {
+                                      setState(() {
+                                        _editToCompleted(services);
+                                        Navigator.of(context).pop();
+                                      });
+                                    }
+                                  });
+                                },
+                                clr: Colors.green,
+                                context:context,
                               ),
                             ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          )
+                      );
+                    }
+                )
+                    : SizedBox.shrink(),
+
+                const SizedBox(height: 20,),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: _bottomSheetButton(
+                    label: "Close",
+                    onTap: (){
+                      _dropdownError = null;
+                      valueChooseAccount = null;
+                      Navigator.pop(context);
+                    },
+                    clr: Colors.orangeAccent,
+                    context:context,
+                    isClose: true,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 10,),
-              //drop-down button
-              StatefulBuilder(
-                builder: (BuildContext context, setState) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    height: 55,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2, color: Colors.deepOrange.shade300),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: DropdownButton(
-                      alignment: Alignment.bottomCenter,
-                      underline:Container(),
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
-                      isDense: true,
-                      iconSize: 36,
-                      iconEnabledColor: Colors.deepOrange,
-                      isExpanded: true,
-                      value: valueChooseAccount,
-                      onChanged: (value){
-                        setState(() {
-                          valueChooseAccount = value;
-                        });
-                        print(valueChooseAccount);
-                      },
-                      hint: Text("Select Person In Charge"),
-                      items: _account.map((accountInfo) => DropdownMenuItem(
-                        alignment: Alignment.bottomCenter,
-                        value: accountInfo.user_id.toString(),
-                        child: Text("${accountInfo.name.toString()} || ${accountInfo.position.toString()}", textAlign: TextAlign.center,),
-                      )).toList(),
-                    ),
-                  );
-                }
-              ),
-
-
-              //save data or close
-              StatefulBuilder(
-                builder: (BuildContext context, setState){
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      children: [
-                        _dropdownError == null
-                            ? SizedBox.shrink()
-                            : Center(
-                          child: Text(
-                            _dropdownError ?? "",
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-
-                        const SizedBox(height: 10,),
-                        _bottomSheetButton(
-                          label: "Save",
-                          onTap: (){
-                            if (valueChooseAccount == null || valueChooseAccount!.isEmpty) {
-                              setState(() => _dropdownError = "Please select an option!");
-                            } else {
-                              setState(() {
-                                _editToOnProcess(services);
-                                _dropdownError = null;
-                                _getServices();
-                                Navigator.pop(context);
-                              });
-                            }
-                          },
-                          clr: Colors.green,
-                          context:context,
-                        ),
-                      ],
-                    )
-                  );
-                }
-              ),
-
-              const SizedBox(height: 20,),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: _bottomSheetButton(
-                  label: "Close",
-                  onTap: (){
-                    _dropdownError = null;
-                    valueChooseAccount = null;
-                    Navigator.pop(context);
-                  },
-                  clr: Colors.orangeAccent,
-                  context:context,
-                  isClose: true,
-                ),
-              ),
-
-              SizedBox(height: 10,),
-            ],
+                SizedBox(height: 10,),
+              ],
+            ),
           );
         }
     ).whenComplete(() {
