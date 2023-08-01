@@ -1,4 +1,4 @@
-import 'package:date_picker_timeline/date_picker_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -198,8 +198,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
               }
             ),
           ),
-
-          NormalTextField(controller: note, hintText: 'sample'),
           //first trial
           /*NormalTextField(controller: searchTransaction, hintText: "Service #"),
 
@@ -436,7 +434,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.45,
+                            width: MediaQuery.of(context).size.width * 0.52,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -468,7 +466,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           ),
 
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.45,
+                            width: MediaQuery.of(context).size.width * 0.38,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -476,7 +474,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t" + services.clientProjName,
-                                    style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
                                 ),
 
                                 const SizedBox(height: 5,),
@@ -484,7 +482,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t" + services.clientCompany,
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
                                 ),
 
                                 const SizedBox(height: 5,),
@@ -492,7 +490,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t" + services.clientLocation,
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
                                 ),
                               ],
                             ),
@@ -509,135 +507,41 @@ class _TechSchedPageState extends State<TechSchedPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RichText(
+                      const SizedBox(height: 30,),
+
+                      services.svcHandler != ''
+                       ? RichText(
                           softWrap: true,
                           text:TextSpan(
                               children: <TextSpan> [
-                                TextSpan(text: "Title :  ",
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                                TextSpan(text: "Person In Charge :  ",
+                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
 
-                                TextSpan(text: services.svcTitle,
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                TextSpan(text: _account.where((AccInfo) => AccInfo.user_id == services.svcHandler).elementAt(0).name,
+                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+
+                                TextSpan(text: "\n\t ${_account.where((AccInfo) => AccInfo.user_id == services.svcHandler).elementAt(0).position} || ${_account.where((AccInfo) => AccInfo.user_id == services.svcHandler).elementAt(0).contact}",
+                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
                               ]
                           )
-                      ),
+                      )
+                       : SizedBox.shrink(),
 
-                      const SizedBox(height: 10,),
-                      RichText(
-                          textAlign: TextAlign.justify,
-                          softWrap: true,
-                          text:TextSpan(
-                              children: <TextSpan> [
-                                TextSpan(text: "Description :  ",
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                      const SizedBox(height: 20,),
+                      services.notesComplete != ''
+                        ? RichText(
+                        softWrap: true,
+                        text:TextSpan(
+                            children: <TextSpan> [
+                              TextSpan(text: "Notes :  ",
+                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
 
-                                TextSpan(text: services.svcDesc,
-                                  style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
-                              ]
-                          )
-                      ),
-
-                      const SizedBox(height: 15,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.access_time_rounded,
-                            size: 18,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                            style: GoogleFonts.lato(
-                              textStyle:
-                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-
-                          SizedBox(width: 50),
-                          Icon(
-                            Icons.calendar_month_rounded,
-                            size: 18,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                            style: GoogleFonts.lato(
-                              textStyle:
-                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 15,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.45,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                                RichText(
-                                  softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientName,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                                ),
-
-                                const SizedBox(height: 5,),
-                                Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                                RichText(
-                                  softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientContact,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                                ),
-
-                                const SizedBox(height: 5,),
-                                Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                                RichText(
-                                  softWrap: true,
-                                  text: TextSpan(text: services.clientEmail,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
-                                ),
-                                //Text(services.svcDesc, maxLines: 5, softWrap: false,),
-                              ],
-                            ),
-                          ),
-
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.45,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                                RichText(
-                                  softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientProjName,
-                                    style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
-                                ),
-
-                                const SizedBox(height: 5,),
-                                const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                                RichText(
-                                  softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientCompany,
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
-                                ),
-
-                                const SizedBox(height: 5,),
-                                const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
-                                RichText(
-                                  softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientLocation,
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                              TextSpan(text: services.notesComplete,
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+                            ]
+                        )
+                    )
+                        : SizedBox.shrink(),
                     ],
                   ),
                 )
