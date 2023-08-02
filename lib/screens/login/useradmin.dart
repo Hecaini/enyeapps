@@ -1,3 +1,5 @@
+import 'package:flutter_session_manager/flutter_session_manager.dart';
+
 class userAdmin {
   final String name;
   final String email;
@@ -32,5 +34,22 @@ class UserLogin {
     user["username"] = this.position;
     user["email"] = this.image;
     return user;
+  }
+
+  static UserLogin fromJson(Map<String, dynamic> json) {
+    return UserLogin(
+      user_id: json['user_id'] as String,
+      name: json['name'] as String,
+      username: json['username'] as String,
+      email: json['email'] as String,
+      position: json['username'] as String,
+      image: json['email'] as String,
+    );
+  }
+
+  Future <UserLogin> _getUserSessionStatus() async {
+    UserLogin userInfo = UserLogin.fromJson(await SessionManager().get("user_data"));
+
+    return userInfo;
   }
 }
