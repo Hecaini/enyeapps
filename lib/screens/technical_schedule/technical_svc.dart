@@ -82,4 +82,24 @@ class TechnicalDataServices {
       return "error";
     }
   }
+
+  static Future<String> pushNotif(String title, String body) async {
+    try{
+      var map = Map<String, dynamic>();
+      map['action'] = EDIT_TO_COMPLETED;
+      map['title'] = title;
+      map['body'] = body;
+
+      final res = await http.post(Uri.parse(API.pushNotif), body: map); //passing value to result
+      print('pushNotif Response: ${res.body}');
+
+      if(res.statusCode == 200){
+        return res.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
 }

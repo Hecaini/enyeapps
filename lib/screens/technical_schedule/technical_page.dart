@@ -152,6 +152,17 @@ class _TechSchedPageState extends State<TechSchedPage> {
         _errorSnackbar(context, "Error occured...");
       }
     });
+
+    TechnicalDataServices.pushNotif("Task Completed", note.text.trim()).then((result) {
+      if('success' == result){
+        //_getServices(); //refresh the list after update
+        //_successSnackbar(context, "Task Completed Successfully");
+        print("success push notif");
+        note.text = '';
+      } else {
+        _errorSnackbar(context, "Error occured...");
+      }
+    });
   }
 
   @override
@@ -403,13 +414,14 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           Icon(
                             Icons.access_time_rounded,
                             size: 18,
+                            color: Colors.deepOrange,
                           ),
                           SizedBox(width: 4),
                           Text(
                             DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
                             style: GoogleFonts.lato(
                               textStyle:
-                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold, ),
                             ),
                           ),
 
@@ -417,6 +429,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           Icon(
                             Icons.calendar_month_rounded,
                             size: 18,
+                            color: Colors.deepOrange,
                           ),
                           SizedBox(width: 4),
                           Text(
