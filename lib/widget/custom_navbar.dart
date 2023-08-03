@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -31,7 +32,6 @@ class _CustomNavBarState extends State<CustomNavBar> {
   @override
   void initState() {
     _userSessionFuture = this._getUserSessionStatus();
-    print(_userSessionFuture);
     super.initState();
   }
 
@@ -47,6 +47,15 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    RemoteMessage? message;
+
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      message = ModalRoute.of(context)!.settings.arguments as RemoteMessage;
+      // Continue processing with the casted value
+    } else {
+      message = RemoteMessage();
+    }
+
     List<Widget> _buildScreens() {
       return [
         //DashboardPage(),
@@ -55,7 +64,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
         //CatalogsPage(),
 
         //QuotationPage(),
-        TechSchedPage(),
+        TechSchedPage(message: message as RemoteMessage),
         CompletedPage(),
         AccountPage(),
       ];

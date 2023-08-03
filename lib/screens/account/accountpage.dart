@@ -60,7 +60,7 @@ class _AccountPageState extends State<AccountPage> {
 
               ElevatedButton.icon(
                 onPressed: () async {
-                  await SessionManager().destroy();
+                  await SessionManager().remove("user_data");
                   setState(() {
                     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                       MaterialPageRoute(

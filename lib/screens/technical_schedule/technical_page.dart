@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -10,14 +11,16 @@ import '../../../widget/widgets.dart';
 import '../screens.dart';
 
 class TechSchedPage extends StatefulWidget {
-  static const String routeName = '/quotation';
+  static const String routeName = '/appointment';
 
-  const TechSchedPage({super.key});
+  RemoteMessage? message;
 
-  static Route route(){
+  TechSchedPage({required this.message});
+
+  Route route(){
     return MaterialPageRoute(
         settings: const RouteSettings(name: routeName),
-        builder: (_) => const TechSchedPage()
+        builder: (_) => TechSchedPage(message: message,)
     );
   }
 
@@ -26,6 +29,7 @@ class TechSchedPage extends StatefulWidget {
 }
 
 class _TechSchedPageState extends State<TechSchedPage> {
+  final RemoteMessage message = RemoteMessage();
 
   TextEditingController? searchTransaction;
   final TextEditingController note = TextEditingController();
@@ -44,10 +48,18 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _account = [];
     _getAccounts();
 
-    _selectedDay = _focusedDay;
+
+    if(widget.message!.data["moredata"] != null){
+      print("Remote Message ${widget.message?.data["moredata"]}");
+
+      _selectedDay = DateTime.parse(widget.message?.data["moredata"]);
+
+    } else {
+      _selectedDay = _focusedDay;
+    }
   }
 
-  CalendarFormat _calendarFormat = CalendarFormat.week;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -668,7 +680,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 label: "Task Completed",
                                 onTap: (){
                                   setState(() {
-                                    if (note.text.trim() == null || note.text.trim().isEmpty) {
+                                    if (note.text.trim().isEmpty) {
                                       setState(() => _dropdownError = "Fill out the fields!");
                                     } else {
                                       setState(() {

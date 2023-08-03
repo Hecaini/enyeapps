@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'config/app_session.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
-  //await FirebaseApi().initNotifications();
+  await Firebase.initializeApp();
+  await FirebaseApi().initNotifications();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -23,6 +24,7 @@ void main() async {
           primarySwatch: Colors.deepOrange,
           fontFamily: 'Raleway',
         ),
+        navigatorKey: navigatorKey,
         home: checkSession(),
       );
     })

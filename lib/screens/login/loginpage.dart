@@ -39,12 +39,14 @@ class _loginPageState extends State<loginPage> {
 
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
+       dynamic token = await SessionManager().get("token");
 
         var res = await http.post( //pasiing value to result
           Uri.parse(API.loginAdmin),
           body: {
             'email' : emailController.text.trim(),
             'password' : passwordController.text.trim(),
+            'token' : token.toString(),
           },
         );
 
