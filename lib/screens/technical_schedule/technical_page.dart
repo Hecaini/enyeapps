@@ -51,9 +51,12 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
     if(widget.message!.data["moredata"] != null){
       print("Remote Message ${widget.message?.data["moredata"]}");
-
       _selectedDay = DateTime.parse(widget.message?.data["moredata"]);
-
+      /*WidgetsBinding.instance?.addPostFrameCallback((_) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) => CategoriesPage()),
+        );
+      });*/
     } else {
       _selectedDay = _focusedDay;
     }
@@ -179,6 +182,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
       resizeToAvoidBottomInset: true,
