@@ -48,10 +48,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _account = [];
     _getAccounts();
 
+    if(widget.message!.data["datesched"] != null){
+      print("Remote Message ${widget.message?.data["datesched"]}");
+      _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
 
-    if(widget.message!.data["moredata"] != null){
-      print("Remote Message ${widget.message?.data["moredata"]}");
-      _selectedDay = DateTime.parse(widget.message?.data["moredata"]);
       /*WidgetsBinding.instance?.addPostFrameCallback((_) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (BuildContext context) => CategoriesPage()),

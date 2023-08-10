@@ -28,6 +28,7 @@ class CustomNavBar extends StatefulWidget {
 class _CustomNavBarState extends State<CustomNavBar> {
 
   late Future _userSessionFuture;
+  int _initialIndex = 0;
 
   @override
   void initState() {
@@ -51,6 +52,11 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
     if (ModalRoute.of(context)!.settings.arguments != null) {
       message = ModalRoute.of(context)!.settings.arguments as RemoteMessage;
+
+      if (message.data["goToPage"].toString() == 'Appointment'){
+        _initialIndex = 0;
+      }
+
       // Continue processing with the casted value
     } else {
       message = RemoteMessage();
@@ -105,7 +111,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
     PersistentTabController _controller;
 
-    _controller = PersistentTabController(initialIndex: 0);
+    _controller = PersistentTabController(initialIndex: _initialIndex);
 
     return FutureBuilder(
       future: _userSessionFuture,
