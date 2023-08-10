@@ -241,7 +241,7 @@ class _registerPageState extends State<registerPage> {
                       const SizedBox(height: 4,),
                       TextButton(
                         onPressed: (){
-                          Navigator.of(context).popUntil(ModalRoute.withName("/login"));
+                          Navigator.of(context).pop();
                         },
                         child: const Text(
                           'Login now',

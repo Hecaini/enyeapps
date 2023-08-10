@@ -63,6 +63,7 @@ class _loginPageState extends State<loginPage> {
                 position: userData["position"],
                 image: userData["image"]
             ));
+
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 backgroundColor: Colors.green,
