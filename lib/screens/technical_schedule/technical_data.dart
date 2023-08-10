@@ -2,10 +2,10 @@
 class TechnicalData {
   String id;
   String svcId;
+  String service;
   String svcTitle;
   String svcDesc;
   String dateSched;
-  String timeSched;
   String clientId;
   String clientName;
   String clientCompany;
@@ -20,10 +20,10 @@ class TechnicalData {
   TechnicalData({
     required this.id,
     required this.svcId,
+    required this.service,
     required this.svcTitle,
     required this.svcDesc,
     required this.dateSched,
-    required this.timeSched,
     required this.clientId,
     required this.clientName,
     required this.clientCompany,
@@ -40,10 +40,10 @@ class TechnicalData {
     return TechnicalData(
       id: json['id'] as String,
       svcId: json['svc_id'] as String,
+      service: json['service'] as String,
       svcTitle: json['svc_title'] as String,
       svcDesc: json['svc_desc'] as String,
       dateSched: json['date_sched'] as String,
-      timeSched: json['time_sched'] as String,
       clientId: json['client_id'] as String,
       clientName: json['client_name'] as String,
       clientCompany: json['client_company'] as String,

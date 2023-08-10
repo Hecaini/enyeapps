@@ -55,19 +55,6 @@ class TaskTile extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.access_time_rounded,
-                      color: Colors.grey[200],
-                      size: 18,
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                      style: GoogleFonts.lato(
-                        textStyle:
-                        TextStyle(fontSize: 15, color: Colors.grey[100]),
-                      ),
-                    ),
 
                     SizedBox(width: 20),
                     Icon(
@@ -77,7 +64,7 @@ class TaskTile extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                      DateFormat.yMMMd().format(DateTime.parse(services!.dateSched)),
                       style: GoogleFonts.lato(
                         textStyle:
                         TextStyle(fontSize: 15, color: Colors.grey[100]),

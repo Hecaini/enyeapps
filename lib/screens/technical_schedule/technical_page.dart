@@ -427,20 +427,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.access_time_rounded,
-                            size: 18,
-                            color: Colors.deepOrange,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            DateFormat.jm().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
-                            style: GoogleFonts.lato(
-                              textStyle:
-                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold, ),
-                            ),
-                          ),
-
                           SizedBox(width: 50),
                           Icon(
                             Icons.calendar_month_rounded,
@@ -449,7 +435,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            DateFormat.yMMMd().format(DateTime.parse(services!.dateSched + " " + services!.timeSched)),
+                            DateFormat.yMMMd().format(DateTime.parse(services!.dateSched)),
                             style: GoogleFonts.lato(
                               textStyle:
                               TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
