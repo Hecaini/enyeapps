@@ -14,9 +14,6 @@ class API {
   //technical data's
   static const technicalData = "$hostConnect/admin/technical/technical.php";
 
-  //technical data's
-  static const pushNotif = "$hostConnect/send.php";
-
   //product images
   static const productImages = "$hostConnect/admin/products_img/";
 
@@ -40,4 +37,7 @@ class API {
 
   //catalogs files (FROM DASHBOARD SCREEN) actions
   static const fileCatalogs = "$hostConnect/admin/dashboard/systems_catalog.php";
+
+  //push notif to frontend
+  static const pushNotif = "$hostConnect/admin/pushNotifAdmin.php";
 }
