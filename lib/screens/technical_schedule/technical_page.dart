@@ -161,17 +161,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
     TechnicalDataServices.editTaskCompleted(services.id, services.svcId, note.text.trim()).then((result) {
       if('success' == result){
         _getServices(); //refresh the list after update
+        sendPushNotifications("Completed", services.svcId);
         _successSnackbar(context, "Task Completed Successfully");
-        note.text = '';
-      } else {
-        _errorSnackbar(context, "Error occured...");
-      }
-    });
-
-    TechnicalDataServices.pushNotif("Task Completed", note.text.trim()).then((result) {
-      if('success' == result){
-        //_getServices(); //refresh the list after update
-        //_successSnackbar(context, "Task Completed Successfully");
         note.text = '';
       } else {
         _errorSnackbar(context, "Error occured...");
