@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -11,12 +12,13 @@ import '../../../widget/widgets.dart';
 import '../../config/config.dart';
 import '../screens.dart';
 
+// ignore: must_be_immutable
 class TechSchedPage extends StatefulWidget {
   static const String routeName = '/appointment';
 
   RemoteMessage? message;
 
-  TechSchedPage({required this.message});
+  TechSchedPage({super.key, required this.message});
 
   Route route(){
     return MaterialPageRoute(
@@ -30,7 +32,7 @@ class TechSchedPage extends StatefulWidget {
 }
 
 class _TechSchedPageState extends State<TechSchedPage> {
-  final RemoteMessage message = RemoteMessage();
+  final RemoteMessage message = const RemoteMessage();
 
   TextEditingController? searchTransaction;
   final TextEditingController note = TextEditingController();
@@ -39,8 +41,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
   final kFirstDay = DateTime(DateTime.now().year, DateTime.now().month - 3, DateTime.now().day);
   final kLastDay = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
 
-  int _currentExpandedTileIndex = -1;
-
+  @override
   void initState(){
     super.initState();
     _services = [];
@@ -50,7 +51,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _getAccounts();
 
     if(widget.message!.data["datesched"] != null){
-      print("Remote Message ${widget.message?.data["datesched"]}");
       _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
 
       /*WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -89,13 +89,13 @@ class _TechSchedPageState extends State<TechSchedPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         backgroundColor: Colors.greenAccent,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
           children: [
-            Icon(Icons.check, color: Colors.white,),
+            const Icon(Icons.check, color: Colors.white,),
             const SizedBox(width: 10,),
             Text(message),
           ],
@@ -108,13 +108,13 @@ class _TechSchedPageState extends State<TechSchedPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         backgroundColor: Colors.redAccent,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.white,),
+            const Icon(Icons.error, color: Colors.white,),
             const SizedBox(width: 10,),
             Text(message),
           ],
@@ -130,7 +130,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
       setState(() {
         _services = technicalData;
       });
-      print("Length ${technicalData.length}");
     });
   }
 
@@ -141,7 +140,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
       setState(() {
         _account = accountInfo;
       });
-      print("Length ${accountInfo.length}");
     });
   }
 
@@ -174,7 +172,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
       if('success' == result){
         //_getServices(); //refresh the list after update
         //_successSnackbar(context, "Task Completed Successfully");
-        print("success push notif");
         note.text = '';
       } else {
         _errorSnackbar(context, "Error occured...");
@@ -193,10 +190,14 @@ class _TechSchedPageState extends State<TechSchedPage> {
     );
     if (response.statusCode == 200) {
       if(response.body == "success"){
-        print('send push notifications.');
+        if (kDebugMode) {
+          print('send push notifications.');
+        }
       }
     } else {
-      print('Failed to send push notifications.');
+      if (kDebugMode) {
+        print('Failed to send push notifications.');
+      }
     }
   }
 
@@ -212,7 +213,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
           //_addTaskBar(),
           _addDateBar(),
 
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
 
           Expanded(
             child: ListView.builder(
@@ -323,7 +324,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 ),
               ),
 
-              Spacer(),
+              const Spacer(),
               Container(),
 
               services.status == "Unread" ?
@@ -352,7 +353,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 context:context,
               ): Container(),
 
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               _bottomSheetButton(
                 label: "View",
                 onTap: (){
@@ -365,7 +366,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 context:context,
               ),
 
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               _bottomSheetButton(
                 label: "Close",
                 onTap: (){
@@ -376,7 +377,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 isClose: true,
               ),
 
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
             ],
           ),
         );
@@ -396,7 +397,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
             child: MasonryGridView(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1,
               ),
               children: <Widget> [
@@ -411,7 +412,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
                 const SizedBox(height: 30,),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -419,11 +420,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         softWrap: true,
                         text:TextSpan(
                           children: <TextSpan> [
-                            TextSpan(text: "Title :  ",
+                            const TextSpan(text: "Title :  ",
                               style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
 
                             TextSpan(text: services.svcTitle,
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
                           ]
                         )
                       ),
@@ -434,11 +435,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         softWrap: true,
                         text:TextSpan(
                             children: <TextSpan> [
-                              TextSpan(text: "Description :  ",
+                              const TextSpan(text: "Description :  ",
                                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
 
                               TextSpan(text: services.svcDesc,
-                                style: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
                             ]
                         )
                       ),
@@ -447,18 +448,18 @@ class _TechSchedPageState extends State<TechSchedPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(width: 50),
-                          Icon(
+                          const SizedBox(width: 50),
+                          const Icon(
                             Icons.calendar_month_rounded,
                             size: 18,
                             color: Colors.deepOrange,
                           ),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           Text(
-                            DateFormat.yMMMd().format(DateTime.parse(services!.dateSched)),
+                            DateFormat.yMMMd().format(DateTime.parse(services.dateSched)),
                             style: GoogleFonts.lato(
                               textStyle:
-                              TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                              const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -468,55 +469,55 @@ class _TechSchedPageState extends State<TechSchedPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.52,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                const Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
                                 RichText(
                                   softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientName,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                  text: TextSpan(text: "\t${services.clientName}",
+                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
                                 ),
 
                                 const SizedBox(height: 5,),
-                                Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                const Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
                                 RichText(
                                   softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientContact,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                  text: TextSpan(text: "\t${services.clientContact}",
+                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
                                 ),
 
                                 const SizedBox(height: 5,),
-                                Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                const Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: services.clientEmail,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
                                 ),
                                 //Text(services.svcDesc, maxLines: 5, softWrap: false,),
                               ],
                             ),
                           ),
 
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.38,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                const Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
                                 RichText(
                                   softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientProjName,
-                                    style: TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
+                                  text: TextSpan(text: "\t${services.clientProjName}",
+                                    style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
                                 ),
 
                                 const SizedBox(height: 5,),
                                 const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
                                 RichText(
                                   softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientCompany,
+                                  text: TextSpan(text: "\t${services.clientCompany}",
                                     style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
                                 ),
 
@@ -524,7 +525,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
                                 RichText(
                                   softWrap: true,
-                                  text: TextSpan(text: "\t" + services.clientLocation,
+                                  text: TextSpan(text: "\t${services.clientLocation}",
                                     style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
                                 ),
                               ],
@@ -538,7 +539,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
                 whatToDo == "View"
                  ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -549,18 +550,18 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           softWrap: true,
                           text:TextSpan(
                               children: <TextSpan> [
-                                TextSpan(text: "Person In Charge :  ",
+                                const TextSpan(text: "Person In Charge :  ",
                                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
 
-                                TextSpan(text: _account.where((AccInfo) => AccInfo.user_id == services.svcHandler).elementAt(0).name,
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+                                TextSpan(text: _account.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).name,
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
 
-                                TextSpan(text: "\n\t ${_account.where((AccInfo) => AccInfo.user_id == services.svcHandler).elementAt(0).position} || ${_account.where((AccInfo) => AccInfo.user_id == services.svcHandler).elementAt(0).contact}",
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+                                TextSpan(text: "\n\t ${_account.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).position} || ${_account.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).contact}",
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
                               ]
                           )
                       )
-                       : SizedBox.shrink(),
+                       : const SizedBox.shrink(),
 
                       const SizedBox(height: 20,),
                       services.notesComplete != ''
@@ -568,19 +569,19 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         softWrap: true,
                         text:TextSpan(
                             children: <TextSpan> [
-                              TextSpan(text: "Notes :  ",
+                              const TextSpan(text: "Notes :  ",
                                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
 
                               TextSpan(text: services.notesComplete,
-                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
                             ]
                         )
                     )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                     ],
                   ),
                 )
-                 : SizedBox.shrink(),
+                 : const SizedBox.shrink(),
 
                 //save data into On Process
                 whatToDo == "Acknowledge"
@@ -605,7 +606,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                             child: DropdownButton(
                               alignment: Alignment.bottomCenter,
                               underline:Container(),
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
                               isDense: true,
                               iconSize: 36,
                               iconEnabledColor: Colors.deepOrange,
@@ -615,9 +616,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 setState(() {
                                   valueChooseAccount = value;
                                 });
-                                print(valueChooseAccount);
                               },
-                              hint: Text("Select Person In Charge"),
+                              hint: const Text("Select Person In Charge"),
                               items: _account.map((accountInfo) => DropdownMenuItem(
                                 alignment: Alignment.bottomCenter,
                                 value: accountInfo.user_id.toString(),
@@ -627,11 +627,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           ),
 
                           _dropdownError == null
-                              ? SizedBox.shrink()
+                              ? const SizedBox.shrink()
                               : Center(
                             child: Text(
                               _dropdownError ?? "",
-                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                              style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                             ),
                           ),
 
@@ -657,7 +657,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                     );
                   }
                 )
-                 : SizedBox.shrink(),
+                 : const SizedBox.shrink(),
 
                 //save data into Task Completed
                 whatToDo == "Task Completed"
@@ -676,11 +676,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
                               ),
 
                               _dropdownError == null
-                                  ? SizedBox.shrink()
+                                  ? const SizedBox.shrink()
                                   : Center(
                                 child: Text(
                                   _dropdownError ?? "",
-                                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                                 ),
                               ),
 
@@ -708,7 +708,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                       );
                     }
                 )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
 
                 const SizedBox(height: 20,),
                 Container(
@@ -726,7 +726,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                   ),
                 ),
 
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
               ],
             ),
           );
@@ -758,14 +758,14 @@ class _TechSchedPageState extends State<TechSchedPage> {
         child: Center(
           child: Text(
             label,
-            style: isClose ? TextStyle(color: Colors.black, fontWeight: FontWeight.bold) : TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: isClose ? const TextStyle(color: Colors.black, fontWeight: FontWeight.bold) : const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),
     );
   }
 
-  _addTaskBar (){
+  /*_addTaskBar (){
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
       child: Row(
@@ -798,7 +798,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
         ],
       ),
     );
-  }
+  }*/
   _addDateBar () {
     return Container(
       margin: const EdgeInsets.only(top: 10, left: 10),
@@ -840,7 +840,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
               fontSize: 12,
             )
           ),
-          selectedDecoration: BoxDecoration(color: Colors.deepOrange, shape: BoxShape.circle),
+          selectedDecoration: const BoxDecoration(color: Colors.deepOrange, shape: BoxShape.circle),
           todayDecoration: BoxDecoration(color: Colors.deepOrange.shade100, shape: BoxShape.circle),
           todayTextStyle: GoogleFonts.lato(
               textStyle: const TextStyle(
