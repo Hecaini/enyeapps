@@ -2,14 +2,18 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class userAdmin {
   final String name;
+  final String contact;
+  final String position;
   final String email;
   final String password;
 
-  userAdmin({required this.name,required this.email,required this.password});
+  userAdmin({required this.name, required this.contact, required this.position, required this.email, required this.password});
 
   Map <String, dynamic> toJson() => {
 
     'name' : name,
+    'contact' : contact,
+    'position' : position,
     'email' : email,
     'password' : password,
   };

@@ -42,8 +42,9 @@ class NormalTextField extends StatelessWidget {
 class PasswordTextField extends StatefulWidget {
   final controller;
   final String hintText;
+  final bool disabling;
 
-  const PasswordTextField({super.key, required this.controller, required this.hintText});
+  const PasswordTextField({super.key, required this.controller, required this.hintText, required this.disabling});
 
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
@@ -57,6 +58,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        readOnly: widget.disabling,
         onEditingComplete: (){},
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
@@ -99,14 +101,16 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 class EmailTextField extends StatelessWidget {
   final controller;
   final String hintText;
+  final bool disabling;
 
-  const EmailTextField({super.key, required this.controller, required this.hintText});
+  const EmailTextField({super.key, required this.controller, required this.hintText, required this.disabling});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -138,14 +142,16 @@ class EmailTextField extends StatelessWidget {
 class PersonNameTextField extends StatelessWidget {
   final controller;
   final String hintText;
+  final bool disabling;
 
-  const PersonNameTextField({super.key, required this.controller, required this.hintText});
+  const PersonNameTextField({super.key, required this.controller, required this.hintText, required this.disabling});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
           if (value == null || value.isEmpty) {

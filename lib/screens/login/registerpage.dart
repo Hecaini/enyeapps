@@ -28,15 +28,20 @@ class registerPage extends StatefulWidget {
 class _registerPageState extends State<registerPage> {
   //text editing controllers
   final nameController = TextEditingController();
-
+  final contactController = TextEditingController();
+  final positionController = TextEditingController();
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
-
   final conpasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
+  bool disabling = false;
+
+  //close the keyboard if nakalabas
+  void _onButtonPressed() {
+    FocusScope.of(context).unfocus(); // Close the keyboard
+  }
 
   Future<void> signUserUp() async {
 
@@ -64,6 +69,8 @@ class _registerPageState extends State<registerPage> {
         //useradmin.dart transfering to json
         userAdmin userAdminModel = userAdmin(
           name: nameController.text.trim(),
+          contact: contactController.text.trim(),
+          position: positionController.text.trim(),
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
@@ -96,6 +103,10 @@ class _registerPageState extends State<registerPage> {
               _formKey.currentState?.reset();
 
             } else if(resBodyOfSignUp['user_add'] == true){ //registration success
+              setState(() {
+                disabling = true;
+              });
+              _formKey.currentState?.reset();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   backgroundColor: Colors.green,
@@ -109,8 +120,7 @@ class _registerPageState extends State<registerPage> {
                     ],
                   ),
                 ),
-              );
-              _formKey.currentState?.reset();
+              ).closed.then((value) => Navigator.of(context).pop());
             } else {
               ScaffoldMessenger.of(context).showSnackBar( //registration failed
                 const SnackBar(
@@ -120,7 +130,7 @@ class _registerPageState extends State<registerPage> {
                   content: Row(
                     children: [
                       Icon(Icons.close, color: Colors.white,),
-                      const SizedBox(width: 10,),
+                      SizedBox(width: 10,),
                       Text("Error occured!"),
                     ],
                   ),
@@ -167,6 +177,21 @@ class _registerPageState extends State<registerPage> {
                   PersonNameTextField(
                     controller: nameController,
                     hintText: 'Fullname',
+                    disabling: disabling,
+                  ),
+
+                  //contact textfield
+                  const SizedBox(height: 10,),
+                  NormalTextField(
+                    controller: contactController,
+                    hintText: 'Contact No (11-digit no.)',
+                  ),
+
+                  //position textfield
+                  const SizedBox(height: 10,),
+                  NormalTextField(
+                    controller: positionController,
+                    hintText: 'Position',
                   ),
 
                   //email textfield
@@ -174,6 +199,7 @@ class _registerPageState extends State<registerPage> {
                   EmailTextField(
                     controller: emailController,
                     hintText: 'Email',
+                    disabling: disabling,
                   ),
 
                   //password textfield
@@ -181,6 +207,7 @@ class _registerPageState extends State<registerPage> {
                   PasswordTextField(
                     controller: passwordController,
                     hintText: 'Password',
+                    disabling: disabling,
                   ),
 
                   //confirm password textfield
@@ -188,13 +215,19 @@ class _registerPageState extends State<registerPage> {
                   PasswordTextField(
                     controller: conpasswordController,
                     hintText: 'Confirm Password',
+                    disabling: disabling,
                   ),
 
                   //sign-up button
                   const SizedBox(height: 25,),
                   MyButton(
                     text: "Sign Up",
-                    onTap: signUserUp,
+                    onTap: (){
+                      if (disabling == false) {
+                        signUserUp();
+                      }
+                      _onButtonPressed();
+                    },
                   ),
 
                   //or continue with

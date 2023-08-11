@@ -28,12 +28,18 @@ class loginPage extends StatefulWidget {
 }
 
 class _loginPageState extends State<loginPage> {
+
+  bool disabling = false;
   //text editing controllers
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  //close the keyboard if nakalabas
+  void _onButtonPressed() {
+    FocusScope.of(context).unfocus(); // Close the keyboard
+  }
 
   Future<void> signUserIn() async {
 
@@ -54,6 +60,10 @@ class _loginPageState extends State<loginPage> {
           var resBodyOfLogin = jsonDecode(res.body);
 
           if(resBodyOfLogin['login'] == true){
+            setState(() {
+              disabling = true;
+            });
+
             var userData = resBodyOfLogin["user_data"];
             await SessionManager().set("user_data",  UserLogin(
                 user_id: userData["user_id"],
@@ -120,6 +130,7 @@ class _loginPageState extends State<loginPage> {
                   EmailTextField(
                     controller: emailController,
                     hintText: 'Email',
+                    disabling: disabling,
                   ),
 
                   //password textfield
@@ -127,6 +138,7 @@ class _loginPageState extends State<loginPage> {
                   PasswordTextField(
                     controller: passwordController,
                     hintText: 'Password',
+                    disabling: disabling,
                   ),
 
                   //forgot password
@@ -146,7 +158,12 @@ class _loginPageState extends State<loginPage> {
                   //sign-in button
                   MyButton(
                     text: "Sign In",
-                    onTap: signUserIn,
+                    onTap: (){
+                      if (disabling == false) {
+                        signUserIn();
+                      }
+                      _onButtonPressed();
+                    },
                   ),
 
                   //or continue with
