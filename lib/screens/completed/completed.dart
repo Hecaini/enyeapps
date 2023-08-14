@@ -8,11 +8,13 @@ import '../screens.dart';
 class CompletedPage extends StatefulWidget {
   static const String routeName = '/completed';
 
+  const CompletedPage({super.key});
+
 
   Route route(){
     return MaterialPageRoute(
         settings: const RouteSettings(name: routeName),
-        builder: (_) => CompletedPage()
+        builder: (_) => const CompletedPage()
     );
   }
 
@@ -24,6 +26,7 @@ class _CompletedPageState extends State<CompletedPage> {
   bool? userSessionFuture;
   final searchController = TextEditingController();
 
+  @override
   void initState(){
     super.initState();
     _services = [];
@@ -43,6 +46,7 @@ class _CompletedPageState extends State<CompletedPage> {
     });*/
   }
 
+  @override
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
@@ -72,18 +76,18 @@ class _CompletedPageState extends State<CompletedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'History', imagePath: 'assets/logo/enyecontrols.png',),
+      appBar: const CustomAppBar(title: 'History', imagePath: 'assets/logo/enyecontrols.png',),
       /*drawer: CustomDrawer(),*/
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 10,),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: TextField(
               controller: searchController,
-              decoration: InputDecoration(
-                labelText: 'Search',
+              decoration: const InputDecoration(
+                labelText: 'Search SERVICE #',
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) {
@@ -98,7 +102,19 @@ class _CompletedPageState extends State<CompletedPage> {
           ),
 
           const SizedBox(height: 25,),
-          Expanded(
+          _services.isEmpty
+            ? const Expanded(
+            child: Center(
+              child: (Text(
+                "No Data Available",
+                style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.grey
+                ),
+              )),
+            ),
+          )
+            : Expanded(
             child: ListView.builder(
                 itemCount: searchController.text.isEmpty ? _services.length : _filteredServices.length,
                 itemBuilder: (_, index){

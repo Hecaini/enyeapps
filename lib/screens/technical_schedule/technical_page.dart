@@ -205,7 +205,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
           _addDateBar(),
 
           const SizedBox(height: 10,),
-
           Expanded(
             child: ListView.builder(
               itemCount: _services.length,
