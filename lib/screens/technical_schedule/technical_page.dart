@@ -128,7 +128,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
   _getServices(){
     TechnicalDataServices.getTechnicalData().then((technicalData){
       setState(() {
-        _services = technicalData;
+        _services = technicalData.where((element) => element.status != "Completed" && element.status != "Cancelled").toList();
       });
     });
   }
