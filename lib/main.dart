@@ -1,6 +1,7 @@
 import 'package:enye_app/config/api_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -22,7 +23,6 @@ void main() async {
         title: 'ADMIN ENYE',
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
-          fontFamily: 'Raleway',
         ),
         navigatorKey: navigatorKey,
         home: checkSession(),

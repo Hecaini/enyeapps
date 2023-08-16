@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:enye_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:http/http.dart' as http;
 
@@ -76,6 +75,7 @@ class _loginPageState extends State<loginPage> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
+                duration: Duration(seconds: 1),
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
@@ -92,6 +92,7 @@ class _loginPageState extends State<loginPage> {
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
+                duration: Duration(seconds: 1),
                 backgroundColor: Colors.redAccent,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),

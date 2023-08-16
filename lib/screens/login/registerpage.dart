@@ -88,6 +88,7 @@ class _registerPageState extends State<registerPage> {
             if(resBodyOfSignUp['email_taken'] == true){
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
+                  duration: Duration(seconds: 1),
                   backgroundColor: Colors.orangeAccent,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
@@ -109,6 +110,7 @@ class _registerPageState extends State<registerPage> {
               _formKey.currentState?.reset();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
+                  duration: Duration(seconds: 1),
                   backgroundColor: Colors.green,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
