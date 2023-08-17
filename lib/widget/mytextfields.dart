@@ -177,3 +177,47 @@ class PersonNameTextField extends StatelessWidget {
     ) ;
   }
 }
+
+class ContactTextField extends StatelessWidget {
+  final controller;
+  final String hintText;
+  final bool disabling;
+
+  const ContactTextField({super.key, required this.controller, required this.hintText, required this.disabling});
+
+  @override
+  Widget build(BuildContext context) {
+    String patttern = r'(^(?:[+0]9)?[0-9]{11,12}$)';
+    RegExp regExp = new RegExp(patttern);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      child: TextFormField(
+        readOnly: disabling,
+        onEditingComplete: (){},
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Required !';
+          } else if (!regExp.hasMatch(value)) {
+            return 'Please enter valid mobile number';
+          }
+          return null;
+        },
+        controller: controller,
+        decoration: InputDecoration(
+            prefixIcon: Icon(Icons.call),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepOrange),
+            ),
+            fillColor: Colors.deepOrange.shade50,
+            filled: true,
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.grey.shade400)
+        ),
+      ),
+    ) ;
+  }
+}

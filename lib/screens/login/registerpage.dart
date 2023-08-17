@@ -184,9 +184,10 @@ class _registerPageState extends State<registerPage> {
 
                   //contact textfield
                   const SizedBox(height: 10,),
-                  NormalTextField(
+                  ContactTextField(
                     controller: contactController,
                     hintText: 'Contact No (11-digit no.)',
+                    disabling: disabling,
                   ),
 
                   //position textfield
