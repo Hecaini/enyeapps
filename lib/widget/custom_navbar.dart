@@ -145,7 +145,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
               duration: Duration(milliseconds: 200),
             ),
             navBarStyle: NavBarStyle.style9, // Choose the nav bar style with this property.
-          ) : loginPage();
+          ) : LoginPage();
         } else {
           return _loadingScreen();
         }

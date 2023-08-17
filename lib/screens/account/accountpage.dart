@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
-import '../../widget/custom_appbar.dart';
+import '../../config/config.dart';
+import '../../widget/widgets.dart';
 import '../screens.dart';
 
 class AccountPage extends StatefulWidget {
@@ -60,12 +60,22 @@ class _AccountPageState extends State<AccountPage> {
 
               ElevatedButton.icon(
                 onPressed: () async {
+                  dynamic token = await SessionManager().get("token");
                   await SessionManager().remove("user_data");
+                  //clear the client_id in a token
+                  TokenServices.updateToken(token.toString(), "").then((result) {
+                    if('success' == result){
+                      print("Updated token successfully");
+                    } else {
+                      print("Error updating token");
+                    }
+                  });
+
                   setState(() {
                     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return loginPage();
+                          return LoginPage();
                         },
                       ),
                           (_) => false,

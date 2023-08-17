@@ -1,21 +1,22 @@
-import 'package:enye_app/screens/login/loginpage.dart';
-import 'package:enye_app/widget/custom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
-class checkSession extends StatefulWidget {
-  const checkSession({super.key});
+import '../screens/screens.dart';
+import '../widget/widgets.dart';
+
+class CheckSession extends StatefulWidget {
+  const CheckSession({super.key});
 
   @override
-  State<checkSession> createState() => _checkSessionState();
+  State<CheckSession> createState() => _CheckSessionState();
 }
 
-class _checkSessionState extends State<checkSession> {
+class _CheckSessionState extends State<CheckSession> {
   late Future _userSessionFuture;
 
   @override
   void initState() {
-    _userSessionFuture = this._getUserSessionStatus();
+    _userSessionFuture = _getUserSessionStatus();
     super.initState();
   }
 
@@ -24,7 +25,7 @@ class _checkSessionState extends State<checkSession> {
   }
 
   Widget _loadingScreen() {
-    return Center(
+    return const Center(
       child: CircularProgressIndicator(),
     );
   }
@@ -36,8 +37,8 @@ class _checkSessionState extends State<checkSession> {
         future: _userSessionFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            bool _userLoginStatus = snapshot.data;
-            return _userLoginStatus ? CustomNavBar() : loginPage();
+            bool userLoginStatus = snapshot.data;
+            return userLoginStatus ? const CustomNavBar() : LoginPage();
           } else {
             return _loadingScreen();
           }
@@ -45,4 +46,17 @@ class _checkSessionState extends State<checkSession> {
       ),
     );
   }
+}
+
+class CheckSessionData {
+
+  Future<bool> getUserSessionStatus() async {
+    return SessionManager().containsKey("user_data");
+  }
+
+  Future <UserLogin> getClientsData() async {
+    UserLogin userLogin = UserLogin.fromJson(await SessionManager().get("user_data"));
+    return userLogin;
+  }
+
 }

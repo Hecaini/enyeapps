@@ -86,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return loginPage();
+                              return LoginPage();
                             },
                           ),
                               (_) => false,

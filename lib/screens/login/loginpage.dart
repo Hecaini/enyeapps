@@ -1,32 +1,30 @@
 import 'dart:convert';
-
-import 'package:enye_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:http/http.dart' as http;
 
-import '../../config/api_connection.dart';
-import '../../config/app_session.dart';
+import '../../config/config.dart';
 import '../../widget/widgets.dart';
+import '../screens.dart';
 
-class loginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   static const String routeName = '/login';
 
   static Route route(){
     return MaterialPageRoute(
-        settings: RouteSettings(name: routeName),
-        builder: (_) => loginPage()
+        settings: const RouteSettings(name: routeName),
+        builder: (_) => const LoginPage()
     );
   }
 
-  loginPage({super.key});
+  const LoginPage({super.key});
 
   @override
-  State<loginPage> createState() => _loginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _loginPageState extends State<loginPage> {
+class _LoginPageState extends State<LoginPage> {
 
   bool disabling = false;
   //text editing controllers
@@ -44,35 +42,42 @@ class _loginPageState extends State<loginPage> {
 
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
-       dynamic token = await SessionManager().get("token");
 
-        var res = await http.post( //pasiing value to result
-          Uri.parse(API.loginAdmin),
-          body: {
-            'email' : emailController.text.trim(),
-            'password' : passwordController.text.trim(),
-            'token' : token.toString(),
-          },
-        );
+      dynamic token = await SessionManager().get("token");
 
-        if (res.statusCode == 200){ //from flutter app the connection with API to server  - success
-          var resBodyOfLogin = jsonDecode(res.body);
+      var res = await http.post( //pasiing value to result
+        Uri.parse(API.loginAdmin),
+        body: {
+          'email' : emailController.text.trim(),
+          'password' : passwordController.text.trim(),
+        },
+      );
 
-          if(resBodyOfLogin['login'] == true){
-            setState(() {
-              disabling = true;
-            });
+      if (res.statusCode == 200){ //from flutter app the connection with API to server  - success
+        var resBodyOfLogin = jsonDecode(res.body);
 
-            var userData = resBodyOfLogin["user_data"];
-            await SessionManager().set("user_data",  UserLogin(
-                user_id: userData["user_id"],
-                name: userData["name"],
-                username: userData["username"],
-                email: userData["email"],
-                position: userData["position"],
-                image: userData["image"]
-            ));
+        if(resBodyOfLogin['login'] == true){
 
+          var userData = resBodyOfLogin["user_data"];
+          await SessionManager().set("user_data",  UserLogin(
+              user_id: userData["user_id"],
+              name: userData["name"],
+              username: userData["username"],
+              email: userData["email"],
+              position: userData["position"],
+              image: userData["image"]
+          ));
+
+          TokenServices.updateToken(token.toString(), userData["user_id"]).then((result) {
+            if('success' == result){
+              print("Updated token successfully");
+            } else {
+              print("Error updating token");
+            }
+          });
+
+          setState(() {
+            disabling = true;
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 duration: Duration(seconds: 1),
@@ -87,26 +92,26 @@ class _loginPageState extends State<loginPage> {
                   ],
                 ),
               ),
-            ).closed
-            .then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => checkSession())));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                duration: Duration(seconds: 1),
-                backgroundColor: Colors.redAccent,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-                content: Row(
-                  children: [
-                    Icon(Icons.close, color: Colors.white,),
-                    const SizedBox(width: 10,),
-                    Text("Incorrect email or password !"),
-                  ],
-                ),
+            ).closed.then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const CheckSession())));
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 1),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+              content: Row(
+                children: [
+                  Icon(Icons.close, color: Colors.white,),
+                  const SizedBox(width: 10,),
+                  Text("Incorrect email or password !"),
+                ],
               ),
-            );
-          }
+            ),
+          );
         }
+      }
     }
   }
 
@@ -123,11 +128,11 @@ class _loginPageState extends State<loginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //logo application
-                  SizedBox(height: 50,),
-                  Image(image: AssetImage("assets/logo/enyelogo.png")),
+                  const SizedBox(height: 50,),
+                  const Image(image: AssetImage("assets/logo/enyelogo.png")),
 
                   //email textfield
-                  SizedBox(height: 25,),
+                  const SizedBox(height: 25,),
                   EmailTextField(
                     controller: emailController,
                     hintText: 'Email',
@@ -135,7 +140,7 @@ class _loginPageState extends State<loginPage> {
                   ),
 
                   //password textfield
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   PasswordTextField(
                     controller: passwordController,
                     hintText: 'Password',
@@ -144,7 +149,7 @@ class _loginPageState extends State<loginPage> {
 
                   //forgot password
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -179,7 +184,7 @@ class _loginPageState extends State<loginPage> {
                               color: Colors.grey.shade500,)
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text('Or continue with', style: TextStyle(color: Colors.grey.shade800,),),
                         ),
                         Expanded(
@@ -213,13 +218,13 @@ class _loginPageState extends State<loginPage> {
                         onPressed: (){
                           PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                             context,
-                            settings: RouteSettings(name: registerPage.routeName,),
+                            settings: const RouteSettings(name: registerPage.routeName,),
                             screen: registerPage(),
                             withNavBar: true,
                             pageTransitionAnimation: PageTransitionAnimation.cupertino,
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           'Register now',
                           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                         ),

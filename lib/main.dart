@@ -1,11 +1,10 @@
-import 'package:enye_app/config/api_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'config/app_session.dart';
+import 'config/config.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -17,6 +16,34 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  //to update token in database always everytime app opened
+  dynamic token = await SessionManager().get("token");
+  String user_id = "";
+
+  //this is to configure if the user already signed in
+  CheckSessionData().getUserSessionStatus().then((bool) {
+    if (bool == true) {
+      CheckSessionData().getClientsData().then((value) {
+        TokenServices.updateToken(token.toString(), value.user_id).then((result) {
+          if('success' == result){
+            print("Updated token successfully");
+          } else {
+            print("Error updating token");
+          }
+        });
+      });
+    } else {
+      TokenServices.updateToken(token.toString(), user_id.toString()).then((result) {
+        if('success' == result){
+          print("Updated token successfully");
+        } else {
+          print("Error updating token");
+        }
+      });
+    }
+  });
+
   runApp(Sizer(
     builder: (context, orientation, deviceType) {
       return MaterialApp(
@@ -25,7 +52,7 @@ void main() async {
           primarySwatch: Colors.deepOrange,
         ),
         navigatorKey: navigatorKey,
-        home: checkSession(),
+        home: const CheckSession(),
       );
     })
   );
