@@ -337,7 +337,7 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
                 children: [
 
                   const SizedBox(height: 20,),
-                  NormalTextField(controller: catalogsFileName, hintText: "Catalogs File Name"),
+                  NormalTextField(controller: catalogsFileName, hintText: "Catalogs File Name", disabling: false,),
 
                   const SizedBox(height: 10,),
                   InkWell(

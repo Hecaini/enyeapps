@@ -226,7 +226,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
               children: [
 
                 const SizedBox(height: 20,),
-                NormalTextField(controller: categoryName, hintText: "Category Name"),
+                NormalTextField(controller: categoryName, hintText: "Category Name", disabling: false,),
 
                 const SizedBox(height: 20,),
                 _isUpdating ?

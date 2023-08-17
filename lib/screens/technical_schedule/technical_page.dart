@@ -662,6 +662,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                               NormalTextField(
                                 controller: note,
                                 hintText: 'Note',
+                                disabling: false,
                               ),
 
                               _dropdownError == null

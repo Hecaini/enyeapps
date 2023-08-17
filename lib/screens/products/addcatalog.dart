@@ -313,13 +313,13 @@ class _addCatalogsPageState extends State<addCatalogsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(height: 20,),
-                NormalTextField(controller: modelName, hintText: "Model Name"),
+                NormalTextField(controller: modelName, hintText: "Model Name", disabling: false,),
 
                 const SizedBox(height: 20,),
-                NormalTextField(controller: sized, hintText: "Sized"),
+                NormalTextField(controller: sized, hintText: "Sized", disabling: false,),
 
                 const SizedBox(height: 20,),
-                NormalTextField(controller: salePrice, hintText: "Sale Price"),
+                NormalTextField(controller: salePrice, hintText: "Sale Price", disabling: false,),
 
                 const SizedBox(height: 20,),
                 _categoryList(),

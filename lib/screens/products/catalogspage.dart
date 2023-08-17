@@ -239,7 +239,7 @@ class _CatalogsPageState extends State<CatalogsPage> {
                 children: [
 
                   const SizedBox(height: 20,),
-                  NormalTextField(controller: searchBox, hintText: ""),
+                  NormalTextField(controller: searchBox, hintText: "", disabling: false,),
 
                   const SizedBox(height: 5,),
                   Expanded(

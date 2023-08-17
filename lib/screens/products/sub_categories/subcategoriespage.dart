@@ -288,7 +288,7 @@ class _subCategoriesPageState extends State<subCategoriesPage> {
               children: [
 
                 const SizedBox(height: 20,),
-                NormalTextField(controller: subCategoryName, hintText: "Sub Category Name"),
+                NormalTextField(controller: subCategoryName, hintText: "Sub Category Name", disabling: false,),
 
                 const SizedBox(height: 10,),
                 _categoryList(),

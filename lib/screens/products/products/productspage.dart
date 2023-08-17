@@ -418,10 +418,10 @@ class _ProductsPageState extends State<ProductsPage> {
                 ),
 
                 const SizedBox(height: 10,),
-                NormalTextField(controller: productName, hintText: "Product Name"),
+                NormalTextField(controller: productName, hintText: "Product Name", disabling: false,),
 
                 const SizedBox(height: 10,),
-                NormalTextField(controller: productDescription, hintText: "Product Description"),
+                NormalTextField(controller: productDescription, hintText: "Product Description", disabling: false,),
 
                 const SizedBox(height: 10,),
                 _categoryList(),

@@ -226,7 +226,7 @@ class _ManufacturersPageState extends State<ManufacturersPage> {
               children: [
 
                 const SizedBox(height: 20,),
-                NormalTextField(controller: mfrName, hintText: "Manufacturer Name"),
+                NormalTextField(controller: mfrName, hintText: "Manufacturer Name", disabling: false,),
 
                 const SizedBox(height: 20,),
                 _isUpdating ?

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:convert';
 
 import '../../config/config.dart';
 import '../../widget/widgets.dart';
@@ -22,46 +25,117 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  List<UserLogin>? userInfo;
+  //text editing controllers
+  final nameController = TextEditingController();
+  final contactController = TextEditingController();
+  final positionController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final conpasswordController = TextEditingController();
 
-  @override
-  Future <UserLogin> _getUserSessionStatus() async {
-    UserLogin userInfo = UserLogin.fromJson(await SessionManager().get("user_data"));
+  final _formKey = GlobalKey<FormState>();
 
-    return userInfo;
+  bool disabling = true;
+
+  late bool _isUpdating = false;
+
+  File? imagepath;
+  String? imagename;
+  String? imagedata;
+  String? showimage;
+  ImagePicker imagePicker = new ImagePicker();
+
+  Future<void> selectImage() async {
+    var getimage = await imagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imagepath = File(getimage!.path);
+      imagename = getimage.path.split('/').last;
+      imagedata = base64Encode(imagepath!.readAsBytesSync());
+      print(imagepath);
+    });
   }
 
+  //kapag wala pa na-select sa option
+  String? _dropdownError;
+
   Widget build(BuildContext context) {
-    _getUserSessionStatus().then((value) => print(value.name));
 
     return Scaffold(
         appBar: CustomAppBar(title: 'Account', imagePath: 'assets/logo/enyecontrols.png',),
-        /*drawer: CustomDrawer(),*/
         body: Center(
-          child: Column(
+          child: ListView(
             children: [
-              FutureBuilder<UserLogin>(
-                future: _getUserSessionStatus(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // While the Future is still loading, show a loading indicator or placeholder
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    // If there's an error in fetching the data, handle the error here
-                    return Text("Error: ${snapshot.error}");
-                  } else {
-                    // If the Future has completed and data is available, display the user information
-                    UserLogin userInfo = snapshot.data!;
-                    return Text("Username: ${userInfo.username}, Email: ${userInfo.email}");
-                  }
-                },
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 10,),
+                    InkWell(
+                      onTap: selectImage,
+                      child: Stack(
+                        children: [
+                          imagepath != null
+                              ? CircleAvatar(
+                            radius: 64,
+                            backgroundImage: FileImage(imagepath!),
+                          ) : _isUpdating
+                              ? CircleAvatar(
+                            radius: 64,
+                            backgroundImage: NetworkImage(API.productImages + showimage!),
+                          )
+                              : CircleAvatar(
+                            radius: 64,
+                            foregroundColor: Colors.deepOrange,
+                            child: Icon(Icons.photo, color: Colors.deepOrange, size: 50,),
+                          ),
+
+                          Positioned(child: Icon(Icons.add_a_photo, color: Colors.deepOrange,), bottom: 2, left: 90,),
+                        ],
+                      ),
+                    ),
+
+                    //fullname textfield
+                    const SizedBox(height: 25,),
+                    PersonNameTextField(
+                      controller: nameController,
+                      hintText: 'Fullname',
+                      disabling: disabling,
+                    ),
+
+                    //contact textfield
+                    const SizedBox(height: 10,),
+                    ContactTextField(
+                      controller: contactController,
+                      hintText: 'Contact No (11-digit no.)',
+                      disabling: disabling,
+                    ),
+
+                    //position textfield
+                    const SizedBox(height: 10,),
+                    NormalTextField(
+                      controller: positionController,
+                      hintText: 'Position',
+                      disabling: disabling,
+                    ),
+
+                    //email textfield
+                    const SizedBox(height: 10,),
+                    EmailTextField(
+                      controller: emailController,
+                      hintText: 'Email',
+                      disabling: disabling,
+                    ),
+                  ],
+                ),
               ),
 
-
+              //logout button
               ElevatedButton.icon(
                 onPressed: () async {
                   dynamic token = await SessionManager().get("token");
                   await SessionManager().remove("user_data");
+
                   //clear the client_id in a token
                   TokenServices.updateToken(token.toString(), "").then((result) {
                     if('success' == result){
@@ -91,7 +165,7 @@ class _AccountPageState extends State<AccountPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold
                   ),
-                ), // <-- Text
+                ),
               ),
             ],
           ),

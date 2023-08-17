@@ -195,6 +195,7 @@ class _registerPageState extends State<registerPage> {
                   NormalTextField(
                     controller: positionController,
                     hintText: 'Position',
+                    disabling: disabling,
                   ),
 
                   //email textfield

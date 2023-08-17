@@ -28,7 +28,7 @@ class _QuotationPageState extends State<QuotationPage> {
       /*drawer: CustomDrawer(),*/
       body: Column(
         children: [
-          NormalTextField(controller: searchTransaction, hintText: "Transaction #"),
+          NormalTextField(controller: searchTransaction, hintText: "Transaction #", disabling: false,),
 
           Expanded(
             child: ListView(

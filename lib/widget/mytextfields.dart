@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 class NormalTextField extends StatelessWidget {
   final controller;
   final String hintText;
+  final bool disabling;
 
-  const NormalTextField({super.key, required this.controller, required this.hintText});
+  const NormalTextField({super.key, required this.controller, required this.hintText, required this.disabling});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
           if (value == null || value.isEmpty) {
