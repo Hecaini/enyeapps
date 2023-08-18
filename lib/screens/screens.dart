@@ -10,6 +10,10 @@ export 'account/features/department/deptpage.dart';
 export 'account/features/department/department.dart';
 export 'account/features/department/dept_svc.dart';
 
+export 'account/features/positions/position_page.dart';
+export 'account/features/positions/position_svc.dart';
+export 'account/features/positions/position.dart';
+
 export 'appointment/appointmentpage.dart';
 
 export 'products/catalogspage.dart';

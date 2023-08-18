@@ -15,6 +15,9 @@ class API {
   //department data's
   static const department = "$hostConnect/admin/features/department.php";
 
+  //position data's
+  static const position = "$hostConnect/admin/features/position.php";
+
   //technical data's
   static const technicalData = "$hostConnect/admin/technical/technical.php";
 

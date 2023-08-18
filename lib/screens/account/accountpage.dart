@@ -244,7 +244,7 @@ class _AccountPageState extends State<AccountPage> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return DepartmentPage();
+                              return const DepartmentPage();
                             },
                           ),
                         );
@@ -287,7 +287,13 @@ class _AccountPageState extends State<AccountPage> {
                     //Positions button
                     InkWell(
                       onTap: (){
-
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return const PositionPage();
+                            },
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 25.0, top: 20.0, bottom: 20.0),
