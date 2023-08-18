@@ -55,7 +55,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
         duration: const Duration(seconds: 2),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
