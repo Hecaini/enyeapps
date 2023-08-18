@@ -60,6 +60,7 @@ dependencies:
   table_calendar:
   flutter_staggered_animations:
   flutter_staggered_grid_view:
+  flutter_keyboard_visibility:
 
   firebase_messaging: ^14.6.5
   firebase_core: ^2.15.0

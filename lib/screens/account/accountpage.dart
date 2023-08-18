@@ -241,7 +241,13 @@ class _AccountPageState extends State<AccountPage> {
                     //department button
                     InkWell(
                       onTap: (){
-
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return DepartmentPage();
+                            },
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 25.0, top: 20.0, bottom: 20.0),
