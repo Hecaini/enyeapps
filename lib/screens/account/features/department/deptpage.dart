@@ -112,7 +112,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
 
   _addDepartment(){
     if (_formKey.currentState!.validate()) {
-      _showProgress('Adding Category...');
+      _showProgress('Adding Department...');
       DepartmentServices.addDepartment(deptName.text, deptShName.text).then((result) {
         if('success' == result){
           _getDepartments();
@@ -153,7 +153,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
 
   //delete data by getting classes in services.dart
   _delDepartment(Department department){
-    _showProgress('Deleting Category...');
+    _showProgress('Deleting Department...');
     DepartmentServices.deleteDepartment(department.id).then((result) {
       //if echo json from PHP is success
       if('success' == result){
