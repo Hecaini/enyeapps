@@ -47,7 +47,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _services = [];
     _getServices();
 
-    _account = [];
+    _users = [];
     _getAccounts();
 
     if(widget.message!.data["datesched"] != null){
@@ -134,11 +134,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
   }
 
   //below this are for account infos get to server
-  late List<AccountInfo> _account;
+  late List<UsersInfo> _users;
   _getAccounts(){
-    AccountInfoServices.getAccountInfo().then((accountInfo){
+    UsersInfoServices.getUsersInfo().then((accountInfo){
       setState(() {
-        _account = accountInfo;
+        _users = accountInfo;
       });
     });
   }
@@ -542,10 +542,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 const TextSpan(text: "Person In Charge :  ",
                                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
 
-                                TextSpan(text: _account.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).name,
+                                TextSpan(text: _users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).name,
                                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
 
-                                TextSpan(text: "\n\t ${_account.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).position} || ${_account.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).contact}",
+                                TextSpan(text: "\n\t ${_users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).position} || ${_users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).contact}",
                                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
                               ]
                           )
@@ -607,7 +607,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 });
                               },
                               hint: const Text("Select Person In Charge"),
-                              items: _account.map((accountInfo) => DropdownMenuItem(
+                              items: _users.map((accountInfo) => DropdownMenuItem(
                                 alignment: Alignment.bottomCenter,
                                 value: accountInfo.user_id.toString(),
                                 child: Text("${accountInfo.name.toString()} || ${accountInfo.position.toString()}", textAlign: TextAlign.center,),

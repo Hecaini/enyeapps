@@ -3,8 +3,8 @@ export 'login/registerpage.dart';
 export 'login/useradmin.dart';
 
 export 'account/accountpage.dart';
-export 'account/account.dart';
-export 'account/account_svc.dart';
+export 'account/features/user.dart';
+export 'account/features/user_svc.dart';
 
 export 'appointment/appointmentpage.dart';
 

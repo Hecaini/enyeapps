@@ -1,5 +1,5 @@
 //values na meron si categories
-class AccountInfo {
+class UsersInfo {
   String user_id;
   String name;
   String username;
@@ -8,7 +8,7 @@ class AccountInfo {
   String position;
   String image;
 
-  AccountInfo({
+  UsersInfo({
     required this.user_id,
     required this.name,
     required this.username,
@@ -18,8 +18,8 @@ class AccountInfo {
     required this.image,
   });
 
-  factory AccountInfo.fromJson(Map<String, dynamic> json) {
-    return AccountInfo(
+  factory UsersInfo.fromJson(Map<String, dynamic> json) {
+    return UsersInfo(
       user_id: json['user_id'] as String,
       name: json['name'] as String,
       username: json['username'] as String,

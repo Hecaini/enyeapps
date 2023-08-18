@@ -11,8 +11,9 @@ class NormalTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        style: Theme.of(context).textTheme.bodyLarge,
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -60,6 +61,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        style: Theme.of(context).textTheme.bodyLarge,
         readOnly: widget.disabling,
         onEditingComplete: (){},
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -112,6 +114,7 @@ class EmailTextField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        style: Theme.of(context).textTheme.bodyLarge,
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -153,6 +156,7 @@ class PersonNameTextField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        style: Theme.of(context).textTheme.bodyLarge,
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -195,6 +199,7 @@ class ContactTextField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextFormField(
+        style: Theme.of(context).textTheme.bodyLarge,
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {

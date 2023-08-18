@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -19,13 +20,13 @@ void main() async {
 
   //to update token in database always everytime app opened
   dynamic token = await SessionManager().get("token");
-  String user_id = "";
+  String userId = "";
 
   //this is to configure if the user already signed in
-  CheckSessionData().getUserSessionStatus().then((bool) {
-    if (bool == true) {
+  CheckSessionData().getUserSessionStatus().then((userSession) {
+    if (userSession == true) {
       CheckSessionData().getClientsData().then((value) {
-        TokenServices.updateToken(token.toString(), value.user_id).then((result) {
+        TokenServices.updateToken(token.toString(), value.userId).then((result) {
           if('success' == result){
             print("Updated token successfully");
           } else {
@@ -34,7 +35,7 @@ void main() async {
         });
       });
     } else {
-      TokenServices.updateToken(token.toString(), user_id.toString()).then((result) {
+      TokenServices.updateToken(token.toString(), userId.toString()).then((result) {
         if('success' == result){
           print("Updated token successfully");
         } else {
@@ -50,6 +51,21 @@ void main() async {
         title: 'ADMIN ENYE',
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
+          textTheme: GoogleFonts.latoTextTheme(
+            Theme.of(context).textTheme.copyWith(
+              // Modify the TextStyle for different text elements here
+              displayLarge: const TextStyle(
+                fontSize: 24,
+                letterSpacing: 1.5, // Adjust the letter spacing here
+              ),
+              bodyLarge: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                letterSpacing: 0.8, // Adjust the letter spacing here
+              ),
+              // Add more TextStyle entries as needed
+            ),
+          ),
         ),
         navigatorKey: navigatorKey,
         home: const CheckSession(),
