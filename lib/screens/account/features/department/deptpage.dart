@@ -4,21 +4,21 @@ import '../../../../widget/widgets.dart';
 import '../../../screens.dart';
 
 class DepartmentPage extends StatefulWidget {
-  DepartmentPage() : super();
+  const DepartmentPage({super.key});
 
   static const String routeName = '/department';
 
   static Route route(){
     return MaterialPageRoute(
-        settings: RouteSettings(name: routeName),
-        builder: (_) => DepartmentPage()
+        settings: const RouteSettings(name: routeName),
+        builder: (_) => const DepartmentPage()
     );
   }
 
   final String title = 'Department';
 
   @override
-  _DepartmentPageState createState() => _DepartmentPageState();
+  State<DepartmentPage> createState() => _DepartmentPageState();
 }
 
 class _DepartmentPageState extends State<DepartmentPage> {
@@ -54,13 +54,13 @@ class _DepartmentPageState extends State<DepartmentPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         backgroundColor: Colors.greenAccent,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
           children: [
-            Icon(Icons.check, color: Colors.white,),
+            const Icon(Icons.check, color: Colors.white,),
             const SizedBox(width: 10,),
             Text(message),
           ],
@@ -73,13 +73,13 @@ class _DepartmentPageState extends State<DepartmentPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         backgroundColor: Colors.redAccent,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.white,),
+            const Icon(Icons.error, color: Colors.white,),
             const SizedBox(width: 10,),
             Text(message),
           ],
@@ -107,7 +107,6 @@ class _DepartmentPageState extends State<DepartmentPage> {
         _department = department;
       });
       _showProgress(widget.title);
-      print("Length ${department.length}");
     });
   }
 
@@ -174,7 +173,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          columns: [
+          columns: const [
             DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('Short Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
             DataColumn(label: Text('DELETE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.deepOrange),)),
@@ -201,7 +200,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
                   });
                 }),
             DataCell(IconButton(
-              icon: Icon(Icons.delete, color: Colors.red,),
+              icon: const Icon(Icons.delete, color: Colors.red,),
               onPressed: (){
                 _delDepartment(department);
               },
@@ -228,7 +227,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
               onPressed: (){
                 _getDepartments();
               },
-              icon: Icon(Icons.refresh)
+              icon: const Icon(Icons.refresh)
           ),
         ],
       ),
@@ -275,8 +274,8 @@ class _DepartmentPageState extends State<DepartmentPage> {
 
                 const SizedBox(height: 20,),
                 Expanded(
-                  child: _department.length == 0
-                    ? Center(
+                  child: _department.isEmpty
+                    ? const Center(
                     child: (Text(
                       "No Data Available",
                       style: TextStyle(
@@ -297,7 +296,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
           _closeKeyboard(context);
           _addDepartment();
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
