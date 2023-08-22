@@ -26,10 +26,20 @@ class registerPage extends StatefulWidget {
 }
 
 class _registerPageState extends State<registerPage> {
+
+  late List<Department> _department;
+  late List<Position> _position;
+
+  void initState(){
+    super.initState();
+    _getDepartments();
+    _department = [];
+    _position = [];
+  }
+
   //text editing controllers
   final nameController = TextEditingController();
   final contactController = TextEditingController();
-  final positionController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final conpasswordController = TextEditingController();
@@ -37,6 +47,26 @@ class _registerPageState extends State<registerPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool disabling = false;
+
+  String? valueDept;
+  String? valuePosition;
+  String? _dropdownError; //kapag wala pa na-select sa option
+
+  _getDepartments(){
+    DepartmentServices.getDepartments().then((department){
+      setState(() {
+        _department = department;
+      });
+    });
+  }
+
+  _getPositions(String department){
+    PositionServices.getPositions().then((positions){
+      setState(() {
+        _position = positions.where((element) => element.departmentId == department).toList();
+      });
+    });
+  }
 
   //close the keyboard if nakalabas
   void _onButtonPressed() {
@@ -65,14 +95,18 @@ class _registerPageState extends State<registerPage> {
           ),
         );
 
+      } else if (valueDept == null || valuePosition == null){
+        setState(() => _dropdownError = "Please select an option!");
       } else {
+        setState(() => _dropdownError = null);
         //useradmin.dart transfering to json
         userAdmin userAdminModel = userAdmin(
           name: nameController.text.trim(),
           contact: contactController.text.trim(),
-          position: positionController.text.trim(),
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
+          department: valueDept.toString(),
+          position: valuePosition.toString(),
         );
 
         try {
@@ -150,6 +184,42 @@ class _registerPageState extends State<registerPage> {
     }
   }
 
+  //dropdown position list after department
+  _positionList(String department){
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12.5),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      height: 55,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: BoxDecoration(
+        color: Colors.deepOrange.shade50,
+        border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: DropdownButton(
+        alignment: Alignment.bottomCenter,
+        underline:Container(),
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+        isDense: true,
+        iconSize: 36,
+        iconEnabledColor: Colors.deepOrange,
+        isExpanded: true,
+        value: valuePosition,
+        onChanged: (value){
+          setState(() {
+            valuePosition = value;
+          });
+        },
+        hint: const Text("Select Position *"),
+        items: _position.map((positsion) => DropdownMenuItem(
+          alignment: Alignment.bottomCenter,
+          value: positsion.id.toString(),
+          child: Text(positsion.position, textAlign: TextAlign.center,),
+        )).toList(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,12 +260,55 @@ class _registerPageState extends State<registerPage> {
                     disabling: disabling,
                   ),
 
-                  //position textfield
+                  //department
                   const SizedBox(height: 10,),
-                  NormalTextField(
-                    controller: positionController,
-                    hintText: 'Position',
-                    disabling: disabling,
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12.5),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange.shade50,
+                      border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: DropdownButton(
+                      alignment: Alignment.bottomCenter,
+                      underline:Container(),
+                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                      isDense: true,
+                      iconSize: 36,
+                      iconEnabledColor: Colors.deepOrange,
+                      isExpanded: true,
+                      value: valueDept,
+                      onChanged: (value){
+                        setState(() {
+                          _getPositions(value!);
+                          valueDept = value;
+                        });
+                      },
+                      hint: const Text("Select Department *"),
+                      items: _department.map((department) => DropdownMenuItem(
+                        alignment: Alignment.bottomCenter,
+                        value: department.id.toString(),
+                        child: Text(department.deptShname, textAlign: TextAlign.center,),
+                      )).toList(),
+                    ),
+                  ),
+
+                  //position
+                  const SizedBox(height: 10,),
+                  valueDept != null
+                   ? _positionList(valueDept.toString())
+                   : const SizedBox.shrink(),
+
+                  _dropdownError == null
+                      ? const SizedBox.shrink()
+                      : Center(
+                    child: Text(
+                      _dropdownError ?? "",
+                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                    ),
                   ),
 
                   //email textfield
@@ -233,41 +346,6 @@ class _registerPageState extends State<registerPage> {
                       _onButtonPressed();
                     },
                   ),
-
-                  //or continue with
-                  /*const SizedBox(height: 30,),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Divider(
-                              thickness: 0.5,
-                              color: Colors.grey.shade500,)
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text('Or continue with', style: TextStyle(color: Colors.grey.shade800,),),
-                        ),
-                        Expanded(
-                            child: Divider(
-                              thickness: 0.5,
-                              color: Colors.grey.shade500,)
-                        ),
-                      ],
-                    ),
-                  ),*/
-
-                  //gmail + facebook sign in
-                  /*const SizedBox(height: 25,),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage('assets/icons/gmail.png'), height: 40, width: 40),
-                      SizedBox(width: 25,),
-                      Image(image: AssetImage('assets/icons/facebook-v2.png'), height: 40, width: 40,),
-                    ],
-                  ),*/
 
                   //already have an account
                   const SizedBox(height: 10,),

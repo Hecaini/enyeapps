@@ -65,8 +65,9 @@ class _LoginPageState extends State<LoginPage> {
               contact: userData["contact"],
               username: userData["username"],
               email: userData["email"],
-              position: userData["position"],
-              image: userData["image"]
+              image: userData["image"],
+              department: userData["department"],
+              position: userData["position"]
           ));
 
           TokenServices.updateToken(token.toString(), userData["user_id"]).then((result) {
@@ -190,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   //or continue with
-                  const SizedBox(height: 30,),
+                  /*const SizedBox(height: 30,),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
@@ -211,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                  ),
+                  ),*/
 
                   //gmail + facebook sign in
                   /*SizedBox(height: 25,),

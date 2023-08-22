@@ -1,19 +1,28 @@
 class userAdmin {
   final String name;
   final String contact;
-  final String position;
   final String email;
   final String password;
+  final String department;
+  final String position;
 
-  userAdmin({required this.name, required this.contact, required this.position, required this.email, required this.password});
+  userAdmin({
+    required this.name,
+    required this.contact,
+    required this.email,
+    required this.password,
+    required this.department,
+    required this.position
+  });
 
   Map <String, dynamic> toJson() => {
 
     'name' : name,
     'contact' : contact,
-    'position' : position,
     'email' : email,
     'password' : password,
+    'department' : department,
+    'position' : position,
   };
 }
 
@@ -23,6 +32,7 @@ class UserLogin {
   String contact;
   String username;
   String email;
+  String department;
   String position;
   String image;
 
@@ -32,6 +42,7 @@ class UserLogin {
     required this.contact,
     required this.username,
     required this.email,
+    required this.department,
     required this.position,
     required this.image,
   });
@@ -43,6 +54,7 @@ class UserLogin {
     user["contact"] = contact;
     user["username"] = username;
     user["email"] = email;
+    user["department"] = department;
     user["position"] = position;
     user["image"] = image;
     return user;
@@ -55,7 +67,8 @@ class UserLogin {
       contact: json['contact'] as String? ?? '',
       username: json['username'] as String? ?? '',
       email: json['email'] as String? ?? '',
-      position: json['username'] as String? ?? '',
+      department: json['department'] as String? ?? '',
+      position: json['position'] as String? ?? '',
       image: json['image'] as String? ?? '',
     );
   }
