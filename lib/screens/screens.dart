@@ -6,6 +6,7 @@ export 'account/accountpage.dart';
 export 'account/features/users/user.dart';
 export 'account/features/users/user_svc.dart';
 export 'account/features/users/users_page.dart';
+export 'account/features/users/users_tasktile.dart';
 export 'account/features/department/deptpage.dart';
 export 'account/features/department/department.dart';
 export 'account/features/department/dept_svc.dart';

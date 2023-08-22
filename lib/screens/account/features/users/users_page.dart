@@ -1,4 +1,3 @@
-import 'package:enye_app/screens/account/features/users/users_tasktile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -31,6 +30,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
   late List<Department> _department;
   late List<Position> _position;
 
+  @override
   void initState(){
     super.initState();
     _controller = TabController(length: 2, vsync: this);
@@ -39,7 +39,6 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
         _selectedIndex = _controller.index;
         _getUsersInfo();
       });
-      print("Selected Index: " + _controller.index.toString());
     });
 
     _getUsersInfo();
