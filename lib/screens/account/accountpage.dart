@@ -333,7 +333,13 @@ class _AccountPageState extends State<AccountPage> {
                     //Users Information button
                     InkWell(
                       onTap: (){
-
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return const UsersPage();
+                            },
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 25.0, top: 20.0, bottom: 20.0),

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../../../config/config.dart';
-import '../../screens.dart';
+import '../../../../config/config.dart';
+import '../../../screens.dart';
 
 class UsersInfoServices {
   //this is same as in PHP code action made by the user CRUD

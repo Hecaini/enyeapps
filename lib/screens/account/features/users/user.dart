@@ -5,7 +5,9 @@ class UsersInfo {
   String username;
   String contact;
   String email;
+  String department;
   String position;
+  String status;
   String image;
 
   UsersInfo({
@@ -14,7 +16,9 @@ class UsersInfo {
     required this.username,
     required this.contact,
     required this.email,
+    required this.department,
     required this.position,
+    required this.status,
     required this.image,
   });
 
@@ -25,7 +29,9 @@ class UsersInfo {
       username: json['username'] as String,
       contact: json['contact'] as String,
       email: json['email'] as String,
+      department: json['department'] as String,
       position: json['position'] as String,
+      status: json['status'] as String,
       image: json['image'] as String,
     );
   }
