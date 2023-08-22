@@ -224,8 +224,11 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
 
+              //Other features disabled status EMPLOYEE
               SizedBox(height: MediaQuery.of(context).size.height * 0.15),
-              Card(
+              userInfo?.status == "Employee"
+               ? const SizedBox.shrink()
+               : Card(
                 margin: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: ExpansionTile(
                   title: Row(
@@ -238,8 +241,9 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   children: [
 
-                    //department button
-                    InkWell(
+                    //department button for ADMIN Only
+                    userInfo?.status == "Admin"
+                     ? InkWell(
                       onTap: (){
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -282,10 +286,12 @@ class _AccountPageState extends State<AccountPage> {
                           ],
                         ),
                       ),
-                    ),
+                    )
+                     : const SizedBox.shrink(),
 
                     //Positions button
-                    InkWell(
+                    userInfo?.status == "Admin"
+                     ? InkWell(
                       onTap: (){
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -328,7 +334,8 @@ class _AccountPageState extends State<AccountPage> {
                           ],
                         ),
                       ),
-                    ),
+                    )
+                     : const SizedBox.shrink(),
 
                     //Users Information button
                     InkWell(
