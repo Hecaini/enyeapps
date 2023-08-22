@@ -24,6 +24,7 @@ class UsersPage extends StatefulWidget {
 
 class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
   late TabController _controller;
+  List<String> userStatus = <String>['Manager', 'Assistant', 'Admin', 'Employee'];
   int _selectedIndex = 0;
 
   late List<UsersInfo> _users;
@@ -55,6 +56,46 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
     super.dispose();
   }
 
+  //snackbars
+  _successSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            const Icon(Icons.check, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _errorSnackbar(context, message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            const Icon(Icons.error, color: Colors.white,),
+            const SizedBox(width: 10,),
+            Text(message),
+          ],
+        ),
+      ),
+    );
+  }
+
+
   _getUsersInfo(){
     if(_selectedIndex == 0){
       UsersInfoServices.getUsersInfo().then((UsersInfo){
@@ -84,6 +125,118 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
       setState(() {
         _position = positions;
       });
+    });
+  }
+
+  _editStatus(UsersInfo user){
+    UsersInfoServices.editStatus(user.user_id, valueChooseStatus.toString()).then((result) {
+      if('success' == result){
+        _getUsersInfo(); //refresh the list after update
+        //sendPushNotifications("On Process", services.svcId);
+        _successSnackbar(context, "Status Changed Successfully");
+        _dropdownError = null;
+      } else {
+        _errorSnackbar(context, "Error occured...");
+      }
+    });
+  }
+
+  String? valueChooseStatus;
+  String? _dropdownError; //kapag wala pa na-select sa option
+  void _showStatusChange(BuildContext context, UsersInfo user,) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+
+        return Dialog(
+          // Set dialog properties such as shape, elevation, etc.
+          child: StatefulBuilder(
+            builder: (BuildContext context, setState){
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        "Status for USER to Login",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 55,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: DropdownButton(
+                        alignment: Alignment.bottomCenter,
+                        underline:Container(),
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                        isDense: true,
+                        iconSize: 36,
+                        iconEnabledColor: Colors.deepOrange,
+                        isExpanded: true,
+                        value: valueChooseStatus,
+                        onChanged: (value){
+                          setState(() {
+                            valueChooseStatus = value;
+                          });
+                        },
+                        hint: const Text("Select Status of Employee"),
+                        items: userStatus.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            alignment: Alignment.bottomCenter,
+                            value: value,
+                            child: Text(value, textAlign: TextAlign.center,),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+
+                    _dropdownError == null
+                        ? const SizedBox.shrink()
+                        : Center(
+                      child: Text(
+                        _dropdownError ?? "",
+                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+
+                    SizedBox(height: 20,),
+                    GestureDetector(
+                      onTap: (){
+                        if (valueChooseStatus == null || valueChooseStatus!.isEmpty) {
+                          setState(() => _dropdownError = "Please select an option!");
+                        } else {
+                          _editStatus(user);
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        color: Colors.deepOrangeAccent,
+                        child: const Center(
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    ).whenComplete(() {
+      valueChooseStatus = null;
+      _dropdownError = null;
     });
   }
 
@@ -123,12 +276,12 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
 
                 return InkWell(
                   onTap: (){
-
+                    _showStatusChange(context, users);
                   },
                   child: UsertaskTile(
                     users: users,
-                    departments: _department.where((element) => element.id == users.department).elementAt(0).deptShname.toString(),
-                    position: _position.where((element) => element.id == users.position).elementAt(0).position.toString(),
+                    departments: _department.where((element) => element.id == users.department).elementAtOrNull(0)!.deptShname.toString(),
+                    position: _position.where((element) => element.id == users.position).elementAtOrNull(0)!.position.toString(),
                   ),
                 );
               }

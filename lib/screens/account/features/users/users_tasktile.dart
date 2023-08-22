@@ -109,7 +109,8 @@ class UsertaskTile extends StatelessWidget {
             ),
 
             SizedBox(width: 10,),
-            RotatedBox(
+            users.status == ""
+             ? RotatedBox(
               quarterTurns: 3,
               child: Text(
                 "CHANGE STATUS",
@@ -120,10 +121,36 @@ class UsertaskTile extends StatelessWidget {
                       color: Colors.green),
                 ),
               ),
+            )
+             : RotatedBox(
+              quarterTurns: 3,
+              child: Text(
+                users.status.toUpperCase(),
+                style: GoogleFonts.lato(
+                  textStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: _getStatusColor(users.status)),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Color _getStatusColor(String? status) {
+    if (status == "Employee") {
+      return Colors.amber;
+    } else if (status == "Admin") {
+      return Colors.blue;
+    } else if (status == "Assistant") {
+      return Colors.purple;
+    } else if (status == "Manager") {
+      return Colors.redAccent;
+    } else {
+      return Colors.black;
+    }
   }
 }
