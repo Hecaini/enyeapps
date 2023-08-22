@@ -33,7 +33,7 @@ class UsertaskTile extends StatelessWidget {
                   ),
 
                   //department
-                  SizedBox(height: 5.0,),
+                  const SizedBox(height: 5.0,),
                   RichText(
                     softWrap: true,
                     text: TextSpan(children: <TextSpan>
@@ -53,7 +53,7 @@ class UsertaskTile extends StatelessWidget {
                   ),
 
                   //positions
-                  SizedBox(height: 5.0,),
+                  const SizedBox(height: 5.0,),
                   RichText(
                     softWrap: true,
                     text: TextSpan(children:
@@ -73,7 +73,7 @@ class UsertaskTile extends StatelessWidget {
                   ),
 
                   //email
-                  SizedBox(height: 5.0,),
+                  const SizedBox(height: 5.0,),
                   RichText(
                     softWrap: true,
                     text: TextSpan(children: <TextSpan>
@@ -103,12 +103,12 @@ class UsertaskTile extends StatelessWidget {
                 image: DecorationImage(
                   image: users.image.isNotEmpty == true && users.image != ""
                       ? Image.network(API.usersImages + users.image).image
-                      : AssetImage("assets/icons/user.png"),
+                      : const AssetImage("assets/icons/user.png"),
                 ),
               ),
             ),
 
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             users.status == ""
              ? RotatedBox(
               quarterTurns: 3,
