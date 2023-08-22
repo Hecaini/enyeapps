@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import '../../../widget/widgets.dart';
+import '../../config/config.dart';
 import '../screens.dart';
 
 class CompletedPage extends StatefulWidget {
@@ -23,27 +24,30 @@ class CompletedPage extends StatefulWidget {
 }
 
 class _CompletedPageState extends State<CompletedPage> {
-  bool? userSessionFuture;
   final searchController = TextEditingController();
+
+  UserLogin? userInfo; //users session
+  bool? userSessionFuture;
 
   @override
   void initState(){
     super.initState();
     _services = [];
-    _getServices();
 
     //calling session data
-    /*checkSession().getUserSessionStatus().then((bool) {
+    CheckSessionData().getUserSessionStatus().then((bool) {
       if (bool == true) {
-        checkSession().getClientsData().then((value) {
-          ClientInfo = value;
+        CheckSessionData().getClientsData().then((value) {
+          setState(() {
+            userInfo = value;
+          });
           _getServices();
         });
         userSessionFuture = bool;
       } else {
         userSessionFuture = bool;
       }
-    });*/
+    });
   }
 
   @override
@@ -57,11 +61,19 @@ class _CompletedPageState extends State<CompletedPage> {
   late List<TechnicalData> _services;
 
   _getServices(){
-    TechnicalDataServices.getTechnicalData().then((technicalData){
-      setState(() {
-        _services = technicalData.where((element) => element.status == "Completed" || element.status == "Cancelled").toList();
+    if(userInfo?.status == "Employee") {
+      TechnicalDataServices.getTechnicalData().then((technicalData){
+        setState(() {
+          _services = technicalData.where((element) => element.status == "Completed" && element.svcHandler == userInfo?.userId).toList();
+        });
       });
-    });
+    } else {
+      TechnicalDataServices.getTechnicalData().then((technicalData){
+        setState(() {
+          _services = technicalData.where((element) => element.status == "Completed" || element.status == "Cancelled").toList();
+        });
+      });
+    }
   }
 
   List<TechnicalData> _filteredServices = [];

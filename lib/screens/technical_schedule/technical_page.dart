@@ -41,12 +41,29 @@ class _TechSchedPageState extends State<TechSchedPage> {
   final kFirstDay = DateTime(DateTime.now().year, DateTime.now().month - 3, DateTime.now().day);
   final kLastDay = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
 
+  UserLogin? userInfo; //users session
+  bool? userSessionFuture;
+
   @override
   void initState(){
     super.initState();
-    _services = [];
-    _getServices();
 
+    //calling session data
+    CheckSessionData().getUserSessionStatus().then((bool) {
+      if (bool == true) {
+        CheckSessionData().getClientsData().then((value) {
+          setState(() {
+            userInfo = value;
+          });
+          _getServices();
+        });
+        userSessionFuture = bool;
+      } else {
+        userSessionFuture = bool;
+      }
+    });
+
+    _services = [];
     _users = [];
     _getAccounts();
 
@@ -126,11 +143,20 @@ class _TechSchedPageState extends State<TechSchedPage> {
   //below this are for technical datas get to server
   late List<TechnicalData> _services;
   _getServices(){
-    TechnicalDataServices.getTechnicalData().then((technicalData){
-      setState(() {
-        _services = technicalData.where((element) => element.status != "Completed" && element.status != "Cancelled").toList();
+    print(userInfo?.status);
+    if(userInfo?.status == "Employee") {
+      TechnicalDataServices.getTechnicalData().then((technicalData){
+        setState(() {
+          _services = technicalData.where((element) => element.status != "Completed" && element.status != "Cancelled" && element.svcHandler == userInfo?.userId).toList();
+        });
       });
-    });
+    } else {
+      TechnicalDataServices.getTechnicalData().then((technicalData){
+        setState(() {
+          _services = technicalData.where((element) => element.status != "Completed" && element.status != "Cancelled").toList();
+        });
+      });
+    }
   }
 
   //below this are for account infos get to server
@@ -195,6 +221,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
   @override
   Widget build(BuildContext context) {
 
+    print(userInfo?.status);
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
       resizeToAvoidBottomInset: true,
@@ -330,7 +357,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 context:context,
               ): Container(),
 
-              services.status == "On Process" ?
+              services.status == "On Process" && userInfo?.status == "Employee" ?
               _bottomSheetButton(
                 label: "Task Completed",
                 onTap: (){
