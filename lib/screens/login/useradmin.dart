@@ -34,6 +34,7 @@ class UserLogin {
   String email;
   String department;
   String position;
+  String status;
   String image;
 
   UserLogin({
@@ -44,6 +45,7 @@ class UserLogin {
     required this.email,
     required this.department,
     required this.position,
+    required this.status,
     required this.image,
   });
 
@@ -56,6 +58,7 @@ class UserLogin {
     user["email"] = email;
     user["department"] = department;
     user["position"] = position;
+    user["status"] = status;
     user["image"] = image;
     return user;
   }
@@ -69,6 +72,7 @@ class UserLogin {
       email: json['email'] as String? ?? '',
       department: json['department'] as String? ?? '',
       position: json['position'] as String? ?? '',
+      status: json['status'] as String? ?? '',
       image: json['image'] as String? ?? '',
     );
   }

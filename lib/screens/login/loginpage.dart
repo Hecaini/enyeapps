@@ -67,7 +67,8 @@ class _LoginPageState extends State<LoginPage> {
               email: userData["email"],
               image: userData["image"],
               department: userData["department"],
-              position: userData["position"]
+              position: userData["position"],
+              status: userData["status"]
           ));
 
           TokenServices.updateToken(token.toString(), userData["user_id"]).then((result) {
