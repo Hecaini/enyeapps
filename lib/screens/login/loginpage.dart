@@ -95,7 +95,23 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ).closed.then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const CheckSession())));
           });
-        } else {
+        } else if(resBodyOfLogin['login'] == "no status"){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.amber,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+              content: Row(
+                children: [
+                  Icon(Icons.info, color: Colors.white,),
+                  const SizedBox(width: 10,),
+                  Text("Wait, someone will change your status."),
+                ],
+              ),
+            ),
+          );
+        }else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               duration: Duration(seconds: 1),
