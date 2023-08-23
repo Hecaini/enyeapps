@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../widget/widgets.dart';
-import '../screens.dart';
 
 class ForgotPassPage extends StatefulWidget {
   static const String routeName = '/forgotpass';
@@ -86,7 +85,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
         final defaultPinTheme = PinTheme(
           width: 56,
           height: 56,
-          textStyle: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
+          textStyle: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.deepOrange),
             borderRadius: BorderRadius.circular(20),
@@ -130,7 +129,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Pinput(
                   controller: pin,
                   length: 6,
@@ -158,7 +157,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                   }
                 },
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   color: Colors.deepOrangeAccent,
                   child: const Center(
                     child: Text(
