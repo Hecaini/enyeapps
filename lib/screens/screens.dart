@@ -1,6 +1,7 @@
 export 'login/loginpage.dart';
 export 'login/registerpage.dart';
 export 'login/useradmin.dart';
+export 'login/forgotpass_page.dart';
 
 export 'account/accountpage.dart';
 export 'account/features/users/user.dart';

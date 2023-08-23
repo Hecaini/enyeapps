@@ -173,7 +173,15 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                              context,
+                              settings: const RouteSettings(name: ForgotPassPage.routeName,),
+                              screen: ForgotPassPage(),
+                              withNavBar: true,
+                              pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                            );
+                          },
                           child: Text('Forgot Password?', style: TextStyle(color: Colors.grey.shade800,),),
                         ),
                       ],
