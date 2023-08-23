@@ -737,7 +737,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                             label: "Proceed to Processing",
                             onTap: (){
                               if (valueChooseAccount == null || valueChooseAccount!.isEmpty) {
-                                setState(() => _dropdownError = "Please select an option!");
+                                setState(() => _dropdownError = "Please select Person In Charge !");
                               } else {
                                 setState(() {
                                   _editToOnProcess(services);

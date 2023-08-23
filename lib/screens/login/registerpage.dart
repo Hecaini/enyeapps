@@ -185,7 +185,7 @@ class _registerPageState extends State<registerPage> {
   }
 
   //dropdown position list after department
-  _positionList(String department){
+  _positionList(){
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12.5),
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -299,7 +299,7 @@ class _registerPageState extends State<registerPage> {
                   //position
                   const SizedBox(height: 10,),
                   valueDept != null
-                   ? _positionList(valueDept.toString())
+                   ? _positionList()
                    : const SizedBox.shrink(),
 
                   _dropdownError == null
