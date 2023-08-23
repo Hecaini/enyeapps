@@ -47,6 +47,15 @@ class _TechSchedPageState extends State<TechSchedPage> {
   @override
   void initState(){
     super.initState();
+    _services = [];
+    _users = [];
+    _filteredUsers = [];
+    _department = [];
+    _position = [];
+    _filteredPosition = [];
+    _getAccounts();
+    _getDepartments();
+    _getPositions();
 
     //calling session data
     CheckSessionData().getUserSessionStatus().then((bool) {
@@ -62,10 +71,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
         userSessionFuture = bool;
       }
     });
-
-    _services = [];
-    _users = [];
-    _getAccounts();
 
     if(widget.message!.data["datesched"] != null){
       _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
@@ -159,8 +164,29 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
+  late List<Department> _department;
+  _getDepartments(){
+    DepartmentServices.getDepartments().then((department){
+      setState(() {
+        _department = department;
+      });
+    });
+  }
+
+
+  late List<Position> _position;
+  late List<Position> _filteredPosition;
+  _getPositions(){
+    PositionServices.getPositions().then((positions){
+      setState(() {
+        _position = positions;
+      });
+    });
+  }
+
   //below this are for account infos get to server
   late List<UsersInfo> _users;
+  late List<UsersInfo> _filteredUsers;
   _getAccounts(){
     UsersInfoServices.getUsersInfo().then((accountInfo){
       setState(() {
@@ -220,8 +246,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    print(userInfo?.status);
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
       resizeToAvoidBottomInset: true,
@@ -263,56 +287,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
               }
             ),
           ),
-          //first trial
-          /*NormalTextField(controller: searchTransaction, hintText: "Service #"),
-
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(20.0),
-              itemCount: 20,
-              itemBuilder: (context, index){
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 10.0),
-                  child: ExpansionTile(
-                    collapsedShape: const RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(3),)),
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.deepOrange),
-                      borderRadius: BorderRadius.circular(3)),
-                    key: Key(_currentExpandedTileIndex.toString()),
-                    initiallyExpanded: index == _currentExpandedTileIndex,
-                    onExpansionChanged: ((newState) {
-                      if (newState) {
-                        setState(() {
-                          _currentExpandedTileIndex = index;
-                        });
-                      } else {
-                        setState(() {
-                          _currentExpandedTileIndex = -1;
-                        });
-                      }
-                    }),
-                    title: RichText(
-                      textAlign: TextAlign.justify,
-                      softWrap: true,
-                      text: const TextSpan(children: <TextSpan>
-                        [
-                          TextSpan(text: 'Service # |',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-                          TextSpan(text: "Company Name | ",
-                            style: TextStyle(fontSize: 15, color: Colors.grey, letterSpacing: 0.8),),
-                          TextSpan(text: "Concern",
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
-                        ]
-                      ),
-                    ),
-
-                  ),
-                );
-              }
-            ),
-          )*/
         ],
       ),
     );
@@ -403,6 +377,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
   }
 
   String? valueChooseAccount;
+  String? valueChooseDepartment;
+  String? valueChoosePosition;
   _showAnotherBottomSheet (BuildContext context, TechnicalData services, String whatToDo) {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -608,7 +584,106 @@ class _TechSchedPageState extends State<TechSchedPage> {
                       child: Column(
                         children: [
 
-                          //drop-down button
+                          const SizedBox(height: 10,),
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                height: 55,
+                                width: MediaQuery.of(context).size.width * 0.35,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: DropdownButton(
+                                  alignment: Alignment.bottomCenter,
+                                  underline:Container(),
+                                  style: const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                                  isDense: true,
+                                  iconSize: 36,
+                                  iconEnabledColor: Colors.deepOrange,
+                                  isExpanded: true,
+                                  value: valueChooseDepartment,
+                                  onChanged: (value){
+                                    setState(() {
+                                      //use for clearing lang para once magbago
+                                      //  yung department mag-empty muna yung position (iwas error)
+                                      if(valueChoosePosition != null){
+                                        valueChoosePosition = null;
+                                      }
+
+                                      valueChooseDepartment = value;
+                                      _filteredPosition = _position.where((element) => element.departmentId == value).toList();
+                                      _filteredUsers = _users.where((element) => element.department == value).toList();
+
+                                      if(_filteredUsers.isEmpty){
+                                        _dropdownError = "Selected Department has NO DATA, SHOW ALL USERS";
+                                      } else {
+                                        _dropdownError = null;
+                                      }
+                                    });
+                                  },
+                                  hint: const Text("Department"),
+                                  items: _department.map((department) => DropdownMenuItem(
+                                    alignment: Alignment.bottomCenter,
+                                    value: department.id.toString(),
+                                    child: Text(department.deptShname.toString(), textAlign: TextAlign.center,),
+                                  )).toList(),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                height: 55,
+                                width: MediaQuery.of(context).size.width * 0.52,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 2, color: Colors.deepOrange.shade300),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: DropdownButton(
+                                  alignment: Alignment.bottomCenter,
+                                  underline:Container(),
+                                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                                  isDense: true,
+                                  iconSize: 36,
+                                  iconEnabledColor: Colors.deepOrange,
+                                  isExpanded: true,
+                                  value: valueChoosePosition,
+                                  onChanged: (value){
+                                    setState(() {
+                                      valueChoosePosition = value;
+                                      if(valueChooseDepartment != null) {
+                                        _filteredUsers = _users.where((element) => element.position == value && element.department == valueChooseDepartment).toList();
+                                      } else {
+                                        _filteredUsers = _users.where((element) => element.position == value).toList();
+                                      }
+
+                                      if(_filteredUsers.isEmpty){
+                                        _dropdownError = "Selected Position has NO DATA, SHOW ALL USERS";
+                                      } else {
+                                        _dropdownError = null;
+                                      }
+                                    });
+                                  },
+                                  hint: const Text("Position"),
+                                  items: _filteredPosition.isEmpty
+                                  ? _position.map((position) => DropdownMenuItem(
+                                    alignment: Alignment.bottomCenter,
+                                    value: position.id.toString(),
+                                    child: Text(position.position.toString(), textAlign: TextAlign.center,),
+                                  )).toList()
+                                  : _filteredPosition.map((position) => DropdownMenuItem(
+                                    alignment: Alignment.bottomCenter,
+                                    value: position.id.toString(),
+                                    child: Text(position.position.toString(), textAlign: TextAlign.center,),
+                                  )).toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          //drop-down button svc handler
                           const SizedBox(height: 10,),
                           Container(
                             margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -633,11 +708,17 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                   valueChooseAccount = value;
                                 });
                               },
-                              hint: const Text("Select Person In Charge"),
-                              items: _users.map((accountInfo) => DropdownMenuItem(
+                              hint: const Text("Select Person In Charge * "),
+                              items: _filteredUsers.isEmpty
+                               ? _users.map((accountInfo) => DropdownMenuItem(
                                 alignment: Alignment.bottomCenter,
                                 value: accountInfo.user_id.toString(),
-                                child: Text("${accountInfo.name.toString()} || ${accountInfo.position.toString()}", textAlign: TextAlign.center,),
+                                child: Text("${accountInfo.name.toString()} || ${_position.where((element) => element.id == accountInfo.position).elementAtOrNull(0)?.position}", textAlign: TextAlign.center,),
+                              )).toList()
+                              : _filteredUsers.map((accountInfo) => DropdownMenuItem(
+                                alignment: Alignment.bottomCenter,
+                                value: accountInfo.user_id.toString(),
+                                child: Text("${accountInfo.name.toString()} || ${_position.where((element) => element.id == accountInfo.position).elementAtOrNull(0)?.position}", textAlign: TextAlign.center,),
                               )).toList(),
                             ),
                           ),
@@ -735,6 +816,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
                     onTap: (){
                       _dropdownError = null;
                       valueChooseAccount = null;
+                      valueChooseDepartment = null;
+                      valueChoosePosition = null;
+                      _filteredUsers.clear();
+                      _filteredPosition.clear();
                       Navigator.pop(context);
                     },
                     clr: Colors.orangeAccent,
@@ -750,7 +835,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
         }
     ).whenComplete(() {
       valueChooseAccount = null;
+      valueChooseDepartment = null;
+      valueChoosePosition = null;
       _dropdownError = null;
+      _filteredUsers.clear();
+      _filteredPosition.clear();
     });
   }
 
