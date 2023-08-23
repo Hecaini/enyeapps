@@ -326,9 +326,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
       builder: (context) {
         return Container(
           padding: const EdgeInsets.only(top: 4),
-          height: services.status == "On Process" || services.status == "Unread" ?
-            MediaQuery.of(context).size.height * 0.34 :
-            MediaQuery.of(context).size.height * 0.24,
+          height: (services.status == "On Process" && userInfo?.status == "Employee") || (services.status == "Unread" && userInfo?.status != "Employee")
+            ? MediaQuery.of(context).size.height * 0.34
+            : MediaQuery.of(context).size.height * 0.24,
           color: Colors.white,
           child: Column(
             children: [
