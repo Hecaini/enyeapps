@@ -58,17 +58,17 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _getPositions();
 
     //calling session data
-    CheckSessionData().getUserSessionStatus().then((bool) {
-      if (bool == true) {
+    CheckSessionData().getUserSessionStatus().then((userSession) {
+      if (userSession == true) {
         CheckSessionData().getClientsData().then((value) {
           setState(() {
             userInfo = value;
           });
           _getServices();
         });
-        userSessionFuture = bool;
+        userSessionFuture = userSession;
       } else {
-        userSessionFuture = bool;
+        userSessionFuture = userSession;
       }
     });
 
@@ -148,7 +148,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
   //below this are for technical datas get to server
   late List<TechnicalData> _services;
   _getServices(){
-    print(userInfo?.status);
     if(userInfo?.status == "Employee") {
       TechnicalDataServices.getTechnicalData().then((technicalData){
         setState(() {
