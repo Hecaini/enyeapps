@@ -1,3 +1,4 @@
+import 'package:enye_app/widget/maintenance_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -69,7 +70,8 @@ void main() async {
           ),
         ),
         navigatorKey: navigatorKey,
-        home: const CheckSession(),
+        //home: const CheckSession(),
+        home: MaintenancePage(),
       );
     })
   );

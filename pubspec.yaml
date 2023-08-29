@@ -52,6 +52,7 @@ dependencies:
   path_provider:
   open_file_plus:
 
+  lottie:
   sizer:
   flutter_session_manager:
   intl:

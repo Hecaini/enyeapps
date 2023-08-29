@@ -106,16 +106,25 @@ class _CompletedPageState extends State<CompletedPage> {
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: TextField(
               controller: searchController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Search SERVICE #',
                 prefixIcon: Icon(Icons.search),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                  onPressed: () {
+                    searchController.clear();
+                    filterSystemsList();
+                  },
+                  icon: Icon(Icons.clear),
+                )
+                    : null, // Set suffixIcon to null when text is empty
               ),
               onChanged: (value) {
                 setState(() {
                   filterSystemsList();
                 });
               },
-              onEditingComplete: (){
+              onEditingComplete: () {
                 filterSystemsList();
               },
             ),
