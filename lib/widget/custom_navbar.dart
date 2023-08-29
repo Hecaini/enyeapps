@@ -55,6 +55,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
       if (message.data["goToPage"].toString() == 'Appointment'){
         _initialIndex = 0;
+      } else if (message.data["goToPage"].toString() == 'Completed'){
+        _initialIndex = 1;
       }
 
       // Continue processing with the casted value
@@ -71,7 +73,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
         //QuotationPage(),
         TechSchedPage(message: message as RemoteMessage),
-        CompletedPage(),
+        CompletedPage(message: message as RemoteMessage),
         AccountPage(),
       ];
     }

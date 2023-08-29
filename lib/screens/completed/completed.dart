@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging_platform_interface/src/remote_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
@@ -9,13 +10,15 @@ import '../screens.dart';
 class CompletedPage extends StatefulWidget {
   static const String routeName = '/completed';
 
-  const CompletedPage({super.key});
+  RemoteMessage? message;
+
+  CompletedPage({super.key, required this.message});
 
 
   Route route(){
     return MaterialPageRoute(
         settings: const RouteSettings(name: routeName),
-        builder: (_) => const CompletedPage()
+        builder: (_) => CompletedPage(message: message,)
     );
   }
 
@@ -87,6 +90,11 @@ class _CompletedPageState extends State<CompletedPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.message!.data["goToPage"] == "Completed"){
+      searchController.text = '${widget.message!.data["code"]}';
+      filterSystemsList();
+    }
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'History', imagePath: 'assets/logo/enyecontrols.png',),
       /*drawer: CustomDrawer(),*/

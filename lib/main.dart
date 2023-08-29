@@ -11,8 +11,10 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   await FirebaseApi().initNotifications();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -20,7 +22,6 @@ void main() async {
 
   //to update token in database always everytime app opened
   dynamic token = await SessionManager().get("token");
-  String userId = "";
 
   //this is to configure if the user already signed in
   CheckSessionData().getUserSessionStatus().then((userSession) {
@@ -35,7 +36,7 @@ void main() async {
         });
       });
     } else {
-      TokenServices.updateToken(token.toString(), userId.toString()).then((result) {
+      TokenServices.updateToken(token.toString(), "").then((result) {
         if('success' == result){
           print("Updated token successfully");
         } else {

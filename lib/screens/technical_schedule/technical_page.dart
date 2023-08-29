@@ -112,7 +112,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
       SnackBar(
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
         duration: const Duration(seconds: 2),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
@@ -295,7 +295,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
       builder: (context) {
         return Container(
           padding: const EdgeInsets.only(top: 4),
-          height: (services.status == "On Process" && userInfo?.status == "Employee") || (services.status == "Unread" && userInfo?.status != "Employee")
+          height: (services.status == "On Process" && userInfo?.status == "Employee")
+            || (services.status == "Unread" && userInfo?.status != "Employee")
+            || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId)
             ? MediaQuery.of(context).size.height * 0.34
             : MediaQuery.of(context).size.height * 0.24,
           color: Colors.white,
@@ -326,7 +328,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 context:context,
               ): Container(),
 
-              services.status == "On Process" && userInfo?.status == "Employee" ?
+              (services.status == "On Process" && userInfo?.status == "Employee")
+                || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId) ?
               _bottomSheetButton(
                 label: "Task Completed",
                 onTap: (){

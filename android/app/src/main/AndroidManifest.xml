@@ -4,6 +4,12 @@
         android:label="ENYE Admin"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Add the default notification channel for Android O and above -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
