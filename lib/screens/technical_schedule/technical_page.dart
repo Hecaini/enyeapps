@@ -196,7 +196,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
   String? _dropdownError; //kapag wala pa na-select sa option
   _editToOnProcess(TechnicalData services){
-    TechnicalDataServices.editToOnProcess(services.id, services.svcId, valueChooseAccount!.toString()).then((result) {
+    TechnicalDataServices.editToOnProcess(services.id, services.svcId, valueChooseAccount!.toString(), userInfo!.userId.toString()).then((result) {
       if('success' == result){
         _getServices(); //refresh the list after update
         sendPushNotifications("On Process", services.svcId);
@@ -232,14 +232,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
     );
     if (response.statusCode == 200) {
       if(response.body == "success"){
-        if (kDebugMode) {
-          print('send push notifications.');
-        }
+        print('send push notifications.');
       }
     } else {
-      if (kDebugMode) {
-        print('Failed to send push notifications.');
-      }
+      print('Failed to send push notifications.');
     }
   }
 

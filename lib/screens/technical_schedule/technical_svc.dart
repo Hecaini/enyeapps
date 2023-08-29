@@ -40,13 +40,14 @@ class TechnicalDataServices {
   }
 
   //edit TO ON PROCESS in database
-  static Future<String> editToOnProcess(String id, String svcId, String personInCharge) async {
+  static Future<String> editToOnProcess(String id, String svcId, String personInCharge, String assignedBy) async {
     try{
       var map = Map<String, dynamic>();
       map['action'] = EDIT_TO_ON_PROCESS;
       map['id'] = id;
       map['svcId'] = svcId;
       map['personInCharge'] = personInCharge;
+      map['assignedBy'] = assignedBy;
 
       final res = await http.post(Uri.parse(API.technicalData), body: map); //passing value to result
       print('editToOnProcess Response: ${res.body}');
