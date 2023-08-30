@@ -85,7 +85,11 @@ class FirebaseApi{
 
 
   Future<void> initNotifications() async{
-    await _firebaseMessaging.requestPermission();
+    await _firebaseMessaging.requestPermission(
+      announcement: true,  // Set to true if you want to support announcement notifications
+      carPlay: true,  // Set to true if you want to support CarPlay notifications
+      criticalAlert: true,  // Set to true if you want to support critical alerts
+    );
     final fCMToken = await _firebaseMessaging.getToken();
     await SessionManager().set("token", fCMToken);
     print('Token: $fCMToken');

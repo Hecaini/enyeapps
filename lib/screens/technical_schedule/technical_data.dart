@@ -16,6 +16,7 @@ class TechnicalData {
   String status;
   String svcHandler;
   String notesComplete;
+  String assignedBy;
 
   TechnicalData({
     required this.id,
@@ -33,7 +34,8 @@ class TechnicalData {
     required this.clientEmail,
     required this.status,
     required this.svcHandler,
-    required this.notesComplete
+    required this.notesComplete,
+    required this.assignedBy
   });
 
   factory TechnicalData.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class TechnicalData {
       status: json['status'] as String,
       svcHandler: json['service_handler'] as String,
       notesComplete: json['notesComplete'] as String,
+      assignedBy: json['assigned_by'] as String,
     );
   }
 }

@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
     Widget appBarTitle;
 
     if (imagePath.isNotEmpty) {
-      appBarTitle = Image.asset(imagePath);
+      appBarTitle = Image.asset(imagePath, width: MediaQuery.of(context).size.width * 0.6,);
     } else {
       appBarTitle = Text(title, style: TextStyle(color: Colors.white));
     }

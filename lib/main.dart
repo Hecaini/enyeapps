@@ -1,4 +1,3 @@
-import 'package:enye_app/widget/maintenance_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -7,6 +6,7 @@ import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'config/config.dart';
+import 'widget/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -23,6 +23,7 @@ void main() async {
 
   //to update token in database always everytime app opened
   dynamic token = await SessionManager().get("token");
+  bool problemServer = false;
 
   //this is to configure if the user already signed in
   CheckSessionData().getUserSessionStatus().then((userSession) {
@@ -31,6 +32,8 @@ void main() async {
         TokenServices.updateToken(token.toString(), value.userId).then((result) {
           if('success' == result){
             print("Updated token successfully");
+          } else if ("error something" == result) {
+            problemServer = true;
           } else {
             print("Error updating token");
           }
@@ -40,6 +43,8 @@ void main() async {
       TokenServices.updateToken(token.toString(), "").then((result) {
         if('success' == result){
           print("Updated token successfully");
+        } else if ("error something" == result) {
+          problemServer = true;
         } else {
           print("Error updating token");
         }
@@ -70,12 +75,10 @@ void main() async {
           ),
         ),
         navigatorKey: navigatorKey,
-        //home: const CheckSession(),
-        home: MaintenancePage(),
+        home: problemServer == false ? const CheckSession() : const MaintenancePage(),
       );
     })
   );
-
 }
 
 

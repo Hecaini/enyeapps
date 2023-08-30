@@ -37,11 +37,12 @@ class _MaintenancePageState extends State<MaintenancePage> {
               children: [
                 Text(
                   "We are Under Maintenance.",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.paytoneOne(
                     textStyle: TextStyle(
                         fontSize: 24,
                         letterSpacing: 1.2,
-                        color: Colors.deepOrange.shade800
+                        color: Colors.deepOrange.shade700
                     ),
                   )
                 ),
@@ -59,7 +60,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
               ],
             ),
 
-            SizedBox(height: MediaQuery.of(context).size.height * 0.18),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.15),
 
             Container(
               height: MediaQuery.of(context).size.height * 0.04,

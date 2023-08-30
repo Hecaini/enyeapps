@@ -6,7 +6,7 @@ import '../screens.dart';
 
 class TaskTile extends StatelessWidget {
   final TechnicalData services;
-  const TaskTile({super.key, required this.services});
+  TaskTile({super.key, required this.services});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class TaskTile extends StatelessWidget {
                       style: GoogleFonts.lato(
                         textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100], letterSpacing: 0.8),
                       ),),
-                    TextSpan(text: services.clientContact,
+                    TextSpan(text: services.clientEmail,
                       style: GoogleFonts.lato(
                         textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
                       ),),

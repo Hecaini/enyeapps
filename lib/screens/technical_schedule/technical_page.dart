@@ -546,8 +546,11 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                 TextSpan(text: _users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).name,
                                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
 
-                                TextSpan(text: "\n\t ${_users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).position} || ${_users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).contact}",
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+                                TextSpan(text: "\n\t ${_position.where((position) => position.id == _users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).position).elementAt(0).position}",
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
+
+                                TextSpan(text: " || ${_users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).contact}",
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
                               ]
                           )
                       )
