@@ -1,7 +1,6 @@
 
-import 'package:firebase_messaging_platform_interface/src/remote_message.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -9,6 +8,7 @@ import '../../../widget/widgets.dart';
 import '../../config/config.dart';
 import '../screens.dart';
 
+// ignore: must_be_immutable
 class CompletedPage extends StatefulWidget {
   static const String routeName = '/completed';
 
@@ -44,17 +44,17 @@ class _CompletedPageState extends State<CompletedPage> {
     _getPositions();
 
     //calling session data
-    CheckSessionData().getUserSessionStatus().then((bool) {
-      if (bool == true) {
+    CheckSessionData().getUserSessionStatus().then((session) {
+      if (session == true) {
         CheckSessionData().getClientsData().then((value) {
           setState(() {
             userInfo = value;
           });
           _getServices();
         });
-        userSessionFuture = bool;
+        userSessionFuture = session;
       } else {
-        userSessionFuture = bool;
+        userSessionFuture = session;
       }
     });
   }
@@ -136,7 +136,7 @@ class _CompletedPageState extends State<CompletedPage> {
               controller: searchController,
               decoration: InputDecoration(
                 labelText: 'Search SERVICE #',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 suffixIcon: searchController.text.isNotEmpty
                     ? IconButton(
                   onPressed: () {
@@ -144,7 +144,7 @@ class _CompletedPageState extends State<CompletedPage> {
                     FocusScope.of(context).unfocus();
                     filterSystemsList();
                   },
-                  icon: Icon(Icons.clear),
+                  icon: const Icon(Icons.clear),
                 )
                     : null, // Set suffixIcon to null when text is empty
               ),
@@ -182,7 +182,7 @@ class _CompletedPageState extends State<CompletedPage> {
                   _filteredServices = searchController.text.isEmpty ? _services : _filteredServices;
 
                   return Container(
-                    margin: EdgeInsets.only(left: 14.0, right: 14.0, bottom: 12.0),
+                    margin: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 12.0),
                     decoration: BoxDecoration(
                       color: Colors.white10,
                       borderRadius: BorderRadius.circular(10),
@@ -250,7 +250,7 @@ class _CompletedPageState extends State<CompletedPage> {
                               DateFormat.yMMMMd().format(DateTime.parse(_filteredServices[index].dateSched)),
                               style: GoogleFonts.lato(
                                 textStyle:
-                                TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
+                                const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
@@ -277,19 +277,19 @@ class _CompletedPageState extends State<CompletedPage> {
                           [
                             TextSpan(text: "${_filteredServices[index].clientName} || ",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: "${_filteredServices[index].clientCompany} || ",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: "${_filteredServices[index].clientContact} || ",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: _filteredServices[index].clientEmail,
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                           ]
                           ),
@@ -302,11 +302,11 @@ class _CompletedPageState extends State<CompletedPage> {
                           [
                             TextSpan(text: "Notes by Handler : ",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: _filteredServices[index].notesComplete,
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                           ]
                           ),
@@ -319,15 +319,15 @@ class _CompletedPageState extends State<CompletedPage> {
                           [
                             TextSpan(text: "Handled By : ",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: "\n \t ${_users.where((user) => user.user_id == _filteredServices[index].svcHandler).elementAtOrNull(0)?.name}",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: " || ${_position.where((position) => position.id == _users.where((user) => user.user_id == _filteredServices[index].svcHandler).elementAtOrNull(0)?.position).elementAtOrNull(0)?.position}",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                           ]
                           ),
@@ -340,15 +340,15 @@ class _CompletedPageState extends State<CompletedPage> {
                           [
                             TextSpan(text: "Assigned By : ",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: "\n \t ${_users.where((user) => user.user_id == _filteredServices[index].assignedBy).elementAtOrNull(0)?.name}",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                             TextSpan(text: " || ${_position.where((position) => position.id == _users.where((user) => user.user_id == _filteredServices[index].assignedBy).elementAtOrNull(0)?.position).elementAtOrNull(0)?.position}",
                               style: GoogleFonts.lato(
-                                textStyle: TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
+                                textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
                               ),),
                           ]
                           ),
