@@ -21,7 +21,7 @@ class PositionPage extends StatefulWidget {
   State<PositionPage> createState() => _PositionPageState();
 }
 
-class _PositionPageState extends State<PositionPage> {
+class _PositionPageState extends State<PositionPage> with TickerProviderStateMixin{
   late List<Department> _department;
   late List<Position> _position;
   late Position _selectedPosition;
@@ -31,6 +31,8 @@ class _PositionPageState extends State<PositionPage> {
   late bool _isUpdating;
   late String _titleProgess;
   final _formKey = GlobalKey<FormState>();
+
+  bool _isLoading = true;
 
   @override
   void initState(){
@@ -43,6 +45,17 @@ class _PositionPageState extends State<PositionPage> {
     positionName = TextEditingController();
     _getDepartments();
     _getPositions();
+  }
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 10),
+    vsync: this,
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   _showProgress(String message){
@@ -124,22 +137,26 @@ class _PositionPageState extends State<PositionPage> {
     );
   }
 
-  _getDepartments(){
+  _getDepartments() async {
     _showProgress('Loading Departments...');
+    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     DepartmentServices.getDepartments().then((department){
       setState(() {
         _department = department;
       });
+      _isLoading = false;
       _showProgress(widget.title);
     });
   }
 
-  _getPositions(){
+  _getPositions() async {
     _showProgress('Loading Positions...');
+    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     PositionServices.getPositions().then((positions){
       setState(() {
         _position = positions;
       });
+      _isLoading = false;
       _showProgress(widget.title);
     });
   }
@@ -267,72 +284,74 @@ class _PositionPageState extends State<PositionPage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+      body: _isLoading
+        ? Center(child: SpinningContainer(controller: _controller),)
+        : SafeArea(
+      child: Center(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
 
-                const SizedBox(height: 20,),
-                NormalTextField(controller: positionName, hintText: "Department Name", disabling: false,),
+              const SizedBox(height: 20,),
+              NormalTextField(controller: positionName, hintText: "Department Name", disabling: false,),
 
-                const SizedBox(height: 5,),
-                _deptList(),
-                _dropdownError == null
-                    ? SizedBox.shrink()
-                    : Text(
-                  _dropdownError ?? "",
-                  style: TextStyle(color: Colors.red),
-                ),
+              const SizedBox(height: 5,),
+              _deptList(),
+              _dropdownError == null
+                  ? SizedBox.shrink()
+                  : Text(
+                _dropdownError ?? "",
+                style: TextStyle(color: Colors.red),
+              ),
 
-                const SizedBox(height: 20,),
-                _isUpdating ?
-                Row(
-                  children: <Widget>[
-                    const SizedBox(width: 20,),
-                    editButton(
-                      onTap: () {
-                        _closeKeyboard(context);
-                        _editDepartment(_selectedPosition);
-                      },
-                      text: 'UPDATE',
+              const SizedBox(height: 20,),
+              _isUpdating ?
+              Row(
+                children: <Widget>[
+                  const SizedBox(width: 20,),
+                  editButton(
+                    onTap: () {
+                      _closeKeyboard(context);
+                      _editDepartment(_selectedPosition);
+                    },
+                    text: 'UPDATE',
+                  ),
+
+                  delButton(
+                    onTap: () {
+                      setState(() {
+                        _isUpdating = false;
+                      });
+                      _closeKeyboard(context);
+                      _clearValues();
+                    },
+                    text: 'CANCEL',
+                  ),
+                ],
+              )
+                  : Container(),
+
+              const SizedBox(height: 20,),
+              Expanded(
+                child: _position.isEmpty
+                    ? const Center(
+                  child: (Text(
+                    "No Data Available",
+                    style: TextStyle(
+                        fontSize: 40,
+                        color: Colors.grey
                     ),
-
-                    delButton(
-                      onTap: () {
-                        setState(() {
-                          _isUpdating = false;
-                        });
-                        _closeKeyboard(context);
-                        _clearValues();
-                      },
-                      text: 'CANCEL',
-                    ),
-                  ],
+                  )),
                 )
-                    : Container(),
-
-                const SizedBox(height: 20,),
-                Expanded(
-                  child: _position.isEmpty
-                      ? const Center(
-                    child: (Text(
-                      "No Data Available",
-                      style: TextStyle(
-                          fontSize: 40,
-                          color: Colors.grey
-                      ),
-                    )),
-                  )
-                      : _dataBody(),
-                ),
-              ],
-            ),
+                    : _dataBody(),
+              ),
+            ],
           ),
         ),
       ),
+    ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           if(_isUpdating == false){

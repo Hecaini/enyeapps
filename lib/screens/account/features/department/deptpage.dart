@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../../../widget/widgets.dart';
 import '../../../screens.dart';
@@ -21,7 +24,7 @@ class DepartmentPage extends StatefulWidget {
   State<DepartmentPage> createState() => _DepartmentPageState();
 }
 
-class _DepartmentPageState extends State<DepartmentPage> {
+class _DepartmentPageState extends State<DepartmentPage> with TickerProviderStateMixin{
   late List<Department> _department;
   late Department _selectedDept;
 
@@ -31,6 +34,8 @@ class _DepartmentPageState extends State<DepartmentPage> {
   late bool _isUpdating;
   late String _titleProgess;
   final _formKey = GlobalKey<FormState>();
+
+  bool _isLoading = true;
 
   @override
   void initState(){
@@ -42,6 +47,17 @@ class _DepartmentPageState extends State<DepartmentPage> {
     deptName = TextEditingController();
     deptShName = TextEditingController();
     _getDepartments();
+  }
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 10),
+    vsync: this,
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   _showProgress(String message){
@@ -100,12 +116,14 @@ class _DepartmentPageState extends State<DepartmentPage> {
     deptShName.text = department.deptShname;
   }
 
-  _getDepartments(){
+  _getDepartments() async {
     _showProgress('Loading Departments...');
+    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     DepartmentServices.getDepartments().then((department){
       setState(() {
         _department = department;
       });
+      _isLoading = false;
       _showProgress(widget.title);
     });
   }
@@ -202,7 +220,18 @@ class _DepartmentPageState extends State<DepartmentPage> {
             DataCell(IconButton(
               icon: const Icon(Icons.delete, color: Colors.red,),
               onPressed: (){
-                _delDepartment(department);
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.warning,
+                  text: 'Are you sure you want to DELETE \n ${department.deptName} ?',
+                  confirmBtnText: 'Yes',
+                  onConfirmBtnTap: (){
+                    _delDepartment(department);
+                  },
+                  cancelBtnText: 'No',
+                  onCancelBtnTap: () => Navigator.pop(context),
+                  confirmBtnColor: Colors.red,
+                );
               },
             )),
           ])).toList(),
@@ -231,7 +260,9 @@ class _DepartmentPageState extends State<DepartmentPage> {
           ),
         ],
       ),
-      body: SafeArea(
+      body: _isLoading
+        ? Center(child: SpinningContainer(controller: _controller),)
+        :SafeArea(
         child: Center(
           child: Form(
             key: _formKey,

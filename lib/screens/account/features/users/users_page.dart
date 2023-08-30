@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../widget/widgets.dart';
 import '../../../screens.dart';
 
 class UsersPage extends StatefulWidget {
@@ -22,21 +23,25 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
-  late TabController _controller;
+  late TabController _controllerTab;
   List<String> userStatus = <String>['Manager', 'Assistant', 'Admin', 'Employee'];
   int _selectedIndex = 0;
 
-  late List<UsersInfo> _users;
+  late List<UsersInfo> _filterUsersOLD;
+  late List<UsersInfo> _filterUsersNEW;
   late List<Department> _department;
   late List<Position> _position;
+
+  bool _isLoadingNew = true;
+  bool _isLoadingOld = true;
 
   @override
   void initState(){
     super.initState();
-    _controller = TabController(length: 2, vsync: this);
-    _controller.addListener(() {
+    _controllerTab = TabController(length: 2, vsync: this);
+    _controllerTab.addListener(() {
       setState(() {
-        _selectedIndex = _controller.index;
+        _selectedIndex = _controllerTab.index;
         _getUsersInfo();
       });
     });
@@ -44,13 +49,18 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
     _getUsersInfo();
     _getDepartments();
     _getPositions();
-    _users = [];
     _department = [];
     _position = [];
   }
 
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 10),
+    vsync: this,
+  )..repeat();
+
   @override
   void dispose() {
+    _controllerTab.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -95,18 +105,21 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
   }
 
 
-  _getUsersInfo(){
+  _getUsersInfo() async {
+    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     if(_selectedIndex == 0){
       UsersInfoServices.getUsersInfo().then((UsersInfo){
         setState(() {
-          _users = UsersInfo.where((user) => user.status == "").toList();
+          _filterUsersNEW = UsersInfo.where((user) => user.status == "").toList();
         });
+        _isLoadingNew = false;
       });
     } else {
       UsersInfoServices.getUsersInfo().then((UsersInfo){
         setState(() {
-          _users = UsersInfo.where((user) => user.status != "").toList();
+          _filterUsersOLD = UsersInfo.where((user) => user.status != "").toList();
         });
+        _isLoadingOld = false;
       });
     }
   }
@@ -248,7 +261,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
         appBar: AppBar(
           title: const Text('Users Information'),
           bottom: TabBar(
-            controller: _controller,
+            controller: _controllerTab,
             indicatorWeight: 5.0,
             tabs: <Widget>[
               Tab(
@@ -265,17 +278,60 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
           ),
         ),
         body: TabBarView(
-          controller: _controller,
-          children: <Widget>[
-            //NEW USERS
-            ListView.builder(
-              itemCount: _users.length,
+        controller: _controllerTab,
+        children: <Widget>[
+          //NEW USERS
+        _isLoadingNew
+          ? Center(child: SpinningContainer(controller: _controller),)
+          : _filterUsersNEW.isEmpty
+            ? const Center(
+              child: (Text(
+                "No Data Available",
+                style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.grey
+                ),
+              )),
+            )
+            : ListView.builder(
+            itemCount: _filterUsersNEW.length,
+            itemBuilder: (_, index){
+              UsersInfo users = _filterUsersNEW[index];
+
+              return InkWell(
+                onTap: (){
+                  _showStatusChange(context, users);
+                },
+                child: UsertaskTile(
+                  users: users,
+                  departments: _department.where((element) => element.id == users.department).elementAtOrNull(0)!.deptShname.toString(),
+                  position: _position.where((element) => element.id == users.position).elementAtOrNull(0)!.position.toString(),
+                ),
+              );
+            }
+          ),
+
+          //OLD USERS
+        _isLoadingOld
+          ? Center(child: SpinningContainer(controller: _controller),)
+          :_filterUsersOLD.isEmpty
+            ? const Center(
+              child: (Text(
+                "No Data Available",
+                style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.grey
+                ),
+              )),
+            )
+            : ListView.builder(
+              itemCount: _filterUsersOLD.length,
               itemBuilder: (_, index){
-                UsersInfo users = _users[index];
+                UsersInfo users = _filterUsersOLD[index];
 
                 return InkWell(
                   onTap: (){
-                    _showStatusChange(context, users);
+
                   },
                   child: UsertaskTile(
                     users: users,
@@ -285,27 +341,8 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
                 );
               }
             ),
-
-            //OLD USERS
-            ListView.builder(
-                itemCount: _users.length,
-                itemBuilder: (_, index){
-                  UsersInfo users = _users[index];
-
-                  return InkWell(
-                    onTap: (){
-
-                    },
-                    child: UsertaskTile(
-                      users: users,
-                      departments: _department.where((element) => element.id == users.department).elementAtOrNull(0)!.deptShname.toString(),
-                      position: _position.where((element) => element.id == users.position).elementAtOrNull(0)!.position.toString(),
-                    ),
-                  );
-                }
-            ),
-          ],
-        ),
+        ],
+      ),
       ),
     );
   }
