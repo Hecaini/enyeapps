@@ -137,9 +137,8 @@ class _PositionPageState extends State<PositionPage> with TickerProviderStateMix
     );
   }
 
-  _getDepartments() async {
+  _getDepartments() {
     _showProgress('Loading Departments...');
-    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     DepartmentServices.getDepartments().then((department){
       setState(() {
         _department = department;
@@ -149,9 +148,8 @@ class _PositionPageState extends State<PositionPage> with TickerProviderStateMix
     });
   }
 
-  _getPositions() async {
+  _getPositions() {
     _showProgress('Loading Positions...');
-    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     PositionServices.getPositions().then((positions){
       setState(() {
         _position = positions;

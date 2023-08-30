@@ -116,9 +116,8 @@ class _DepartmentPageState extends State<DepartmentPage> with TickerProviderStat
     deptShName.text = department.deptShname;
   }
 
-  _getDepartments() async {
+  _getDepartments() {
     _showProgress('Loading Departments...');
-    await Future.delayed(Duration(seconds: 3)); // Simulating API call
     DepartmentServices.getDepartments().then((department){
       setState(() {
         _department = department;

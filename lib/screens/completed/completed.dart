@@ -77,8 +77,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
 
   late List<TechnicalData> _services;
 
-  _getServices() async {
-    await Future.delayed(Duration(seconds: 3)); // Simulating API call
+  _getServices() {
     if(userInfo?.status == "Employee") {
       TechnicalDataServices.getTechnicalData().then((technicalData){
         setState(() {

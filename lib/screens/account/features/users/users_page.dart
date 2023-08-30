@@ -105,8 +105,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
   }
 
 
-  _getUsersInfo() async {
-    await Future.delayed(Duration(seconds: 3)); // Simulating API call
+  _getUsersInfo() {
     if(_selectedIndex == 0){
       UsersInfoServices.getUsersInfo().then((UsersInfo){
         setState(() {
