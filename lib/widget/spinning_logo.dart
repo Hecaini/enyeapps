@@ -10,7 +10,7 @@ class SpinningContainer extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.rotate(
-      angle: _progress.value * 4.0 * math.pi,
+      angle: _progress.value * 25.0 * math.pi,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.2,
         height: MediaQuery.of(context).size.height * 0.2,
