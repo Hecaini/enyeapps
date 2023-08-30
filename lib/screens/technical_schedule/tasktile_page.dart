@@ -95,7 +95,7 @@ class TaskTile extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
-            height: 60,
+            height: 100,
             width: 0.5,
             color: Colors.grey[200]!.withOpacity(0.7),
           ),

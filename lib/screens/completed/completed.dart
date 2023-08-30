@@ -146,7 +146,7 @@ class _CompletedPageState extends State<CompletedPage> {
                   },
                   icon: const Icon(Icons.clear),
                 )
-                    : null, // Set suffixIcon to null when text is empty
+                : null, // Set suffixIcon to null when text is empty
               ),
               onChanged: (value) {
                 setState(() {
