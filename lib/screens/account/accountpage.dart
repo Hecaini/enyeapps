@@ -160,7 +160,7 @@ class _AccountPageState extends State<AccountPage> {
                     NormalTextField(
                       controller: positionController,
                       hintText: 'Position',
-                      disabling: disabling,
+                      disabling: true,
                     ),
                   ],
                 ),
