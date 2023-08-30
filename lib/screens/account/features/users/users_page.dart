@@ -54,7 +54,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin{
   }
 
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 10),
+    duration: const Duration(seconds: 60),
     vsync: this,
   )..repeat();
 

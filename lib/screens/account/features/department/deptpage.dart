@@ -50,7 +50,7 @@ class _DepartmentPageState extends State<DepartmentPage> with TickerProviderStat
   }
 
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 10),
+    duration: const Duration(seconds: 60),
     vsync: this,
   )..repeat();
 

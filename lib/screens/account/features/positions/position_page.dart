@@ -48,7 +48,7 @@ class _PositionPageState extends State<PositionPage> with TickerProviderStateMix
   }
 
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 10),
+    duration: const Duration(seconds: 60),
     vsync: this,
   )..repeat();
 
