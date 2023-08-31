@@ -47,6 +47,8 @@ dependencies:
   # advance_pdf_viewer_fork: any
   flutter_file_downloader:
 
+  connectivity_plus:
+  shared_preferences:
   dio:
   permission_handler:
   path_provider:
@@ -97,6 +99,7 @@ flutter:
   assets:
     - assets/logo/
     - assets/icons/
+    - assets/lottie/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

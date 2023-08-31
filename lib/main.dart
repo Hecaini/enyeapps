@@ -23,7 +23,6 @@ void main() async {
 
   //to update token in database always everytime app opened
   dynamic token = await SessionManager().get("token");
-  bool problemServer = false;
 
   //this is to configure if the user already signed in
   CheckSessionData().getUserSessionStatus().then((userSession) {
@@ -32,8 +31,6 @@ void main() async {
         TokenServices.updateToken(token.toString(), value.userId).then((result) {
           if('success' == result){
             print("Updated token successfully");
-          } else if ("error something" == result) {
-            problemServer = true;
           } else {
             print("Error updating token");
           }
@@ -43,8 +40,6 @@ void main() async {
       TokenServices.updateToken(token.toString(), "").then((result) {
         if('success' == result){
           print("Updated token successfully");
-        } else if ("error something" == result) {
-          problemServer = true;
         } else {
           print("Error updating token");
         }
@@ -75,7 +70,8 @@ void main() async {
           ),
         ),
         navigatorKey: navigatorKey,
-        home: problemServer == false ? const CheckSession() : const MaintenancePage(),
+        home: const NoInternetHandler(
+            child: CheckSession()),
       );
     })
   );
