@@ -59,6 +59,10 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
         userSessionFuture = session;
       }
     });
+
+    if(widget.message!.data["goToPage"] == "Completed"){
+      searchController.text = '${widget.message!.data["code"]}';
+    }
   }
 
   late final AnimationController _controller = AnimationController(
@@ -129,7 +133,6 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     if(widget.message!.data["goToPage"] == "Completed"){
-      searchController.text = '${widget.message!.data["code"]}';
       filterSystemsList();
     }
 
