@@ -202,13 +202,16 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: Colors.deepOrange,
+                            color: _getStatusColor(_filteredServices[index].status),
                             width: 2,
                             style: BorderStyle.solid,
                           ),
                         ),
                         child: ExpansionTile(
-
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(7))),
+                          textColor: Colors.white,
+                          backgroundColor: _getStatusColor(_filteredServices[index].status),
                           key: Key(_currentExpandedTileIndex.toString()),
                           initiallyExpanded: index == _currentExpandedTileIndex,
                           onExpansionChanged: ((newState) {
@@ -230,146 +233,181 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
                             ),
                           ),
                           children: <Widget>[
-                            const SizedBox(height: 12,),
-                            Text(
-                              _filteredServices[index].svcTitle.toUpperCase(),
-                              style: GoogleFonts.lato(
-                                textStyle: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                              ),
-                            ),
-
-                            const SizedBox(height: 8,),
-                            Text(
-                              _filteredServices[index].svcDesc,
-                              style: GoogleFonts.lato(
-                                textStyle: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black54),
-                              ),
-                            ),
-
-                            const SizedBox(height: 12,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.calendar_month_rounded,
-                                  color: Colors.deepOrange,
-                                  size: 18,
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                //  width: SizeConfig.screenWidth * 0.78,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  DateFormat.yMMMMd().format(DateTime.parse(_filteredServices[index].dateSched)),
-                                  style: GoogleFonts.lato(
-                                    textStyle:
-                                    const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
+                                child: Row(children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          textAlign: TextAlign.center,
+                                          _filteredServices[index].svcTitle.toUpperCase(),
+                                          style: GoogleFonts.lato(
+                                            textStyle: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 8,),
+                                        Text(
+                                          textAlign: TextAlign.center,
+                                          "\t \t ${_filteredServices[index].svcDesc}",
+                                          style: GoogleFonts.lato(
+                                            textStyle: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 12,),
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.calendar_month_rounded,
+                                              color: Colors.grey[200],
+                                              size: 18,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              DateFormat.yMMMd().format(DateTime.parse(_filteredServices[index].dateSched)),
+                                              style: GoogleFonts.lato(
+                                                textStyle:
+                                                TextStyle(fontSize: 15, color: Colors.grey[100]),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
+                                        //clients Info
+                                        const SizedBox(height: 12),
+                                        RichText(
+                                          softWrap: true,
+                                          text: TextSpan(children: <TextSpan>
+                                          [
+                                            TextSpan(text: "${_filteredServices[index].clientName} || ",
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                              ),),
+                                            TextSpan(text: "${_filteredServices[index].clientCompany} || ",
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100], letterSpacing: 0.8),
+                                              ),),
+                                            TextSpan(text: "${_filteredServices[index].clientContact} || ",
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100], letterSpacing: 0.8),
+                                              ),),
+                                            TextSpan(text: _filteredServices[index].clientEmail,
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                              ),),
+                                          ]
+                                          ),
+                                        ),
+
+                                        //notes of service
+                                        const SizedBox(height: 12),
+                                        RichText(
+                                          softWrap: true,
+                                          text: TextSpan(children: <TextSpan>
+                                          [
+                                            TextSpan(text: "Notes by Handler : ",
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100], letterSpacing: 0.8),
+                                              ),),
+                                            TextSpan(text: _filteredServices[index].notesComplete,
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                              ),),
+                                          ]
+                                          ),
+                                        ),
+
+                                        _filteredServices[index].status != "Cancelled"
+                                        ? Column(
+                                          children: [
+
+                                            //handled by info
+                                            const SizedBox(height: 12),
+                                            RichText(
+                                              softWrap: true,
+                                              text: TextSpan(children: <TextSpan>
+                                              [
+                                                TextSpan(text: "Handled By : ",
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100], letterSpacing: 0.8),
+                                                  ),),
+                                                TextSpan(text: "\n \t ${_users.where((user) => user.user_id == _filteredServices[index].svcHandler).elementAtOrNull(0)?.name}",
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                                  ),),
+                                                TextSpan(text: " || ${_position.where((position) => position.id == _users.where((user) => user.user_id == _filteredServices[index].svcHandler).elementAtOrNull(0)?.position).elementAtOrNull(0)?.position}",
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                                  ),),
+                                              ]
+                                              ),
+                                            ),
+
+                                            //assigned by info
+                                            const SizedBox(height: 12),
+                                            RichText(
+                                              softWrap: true,
+                                              text: TextSpan(children: <TextSpan>
+                                              [
+                                                TextSpan(text: "Assigned By : ",
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100], letterSpacing: 0.8),
+                                                  ),),
+                                                TextSpan(text: "\n \t ${_users.where((user) => user.user_id == _filteredServices[index].assignedBy).elementAtOrNull(0)?.name}",
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                                  ),),
+                                                TextSpan(text: " || ${_position.where((position) => position.id == _users.where((user) => user.user_id == _filteredServices[index].assignedBy).elementAtOrNull(0)?.position).elementAtOrNull(0)?.position}",
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(fontSize: 14, color: Colors.grey[100], letterSpacing: 0.8),
+                                                  ),),
+                                              ]
+                                              ),
+                                            ),
+
+                                          ],
+                                        ) : const SizedBox.shrink(),
+
+                                        const SizedBox(height: 12,),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 12),
-                            Text(
-                              "CLIENT INFORMATION :",
-                              style: GoogleFonts.lato(
-                                textStyle: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.8,
-                                  fontStyle: FontStyle.italic,
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.black54),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                                    height: 150,
+                                    width: 0.5,
+                                    color: Colors.grey[200]!.withOpacity(0.7),
+                                  ),
+                                  RotatedBox(
+                                    quarterTurns: 3,
+                                    child: Text(
+                                      _filteredServices[index].status.toUpperCase(),
+                                      style: GoogleFonts.lato(
+                                        textStyle: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
                               ),
                             ),
-                            const SizedBox(height: 5),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              softWrap: true,
-                              text: TextSpan(children: <TextSpan>
-                              [
-                                TextSpan(text: "${_filteredServices[index].clientName} || ",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: "${_filteredServices[index].clientCompany} || ",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: "${_filteredServices[index].clientContact} || ",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: _filteredServices[index].clientEmail,
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                              ]
-                              ),
-                            ),
-
-                            const SizedBox(height: 12),
-                            RichText(
-                              softWrap: true,
-                              text: TextSpan(children: <TextSpan>
-                              [
-                                TextSpan(text: "Notes by Handler : ",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: _filteredServices[index].notesComplete,
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                              ]
-                              ),
-                            ),
-
-                            const SizedBox(height: 12),
-                            RichText(
-                              softWrap: true,
-                              text: TextSpan(children: <TextSpan>
-                              [
-                                TextSpan(text: "Handled By : ",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: "\n \t ${_users.where((user) => user.user_id == _filteredServices[index].svcHandler).elementAtOrNull(0)?.name}",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: " || ${_position.where((position) => position.id == _users.where((user) => user.user_id == _filteredServices[index].svcHandler).elementAtOrNull(0)?.position).elementAtOrNull(0)?.position}",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                              ]
-                              ),
-                            ),
-
-                            const SizedBox(height: 12),
-                            RichText(
-                              softWrap: true,
-                              text: TextSpan(children: <TextSpan>
-                              [
-                                TextSpan(text: "Assigned By : ",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: "\n \t ${_users.where((user) => user.user_id == _filteredServices[index].assignedBy).elementAtOrNull(0)?.name}",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                                TextSpan(text: " || ${_position.where((position) => position.id == _users.where((user) => user.user_id == _filteredServices[index].assignedBy).elementAtOrNull(0)?.position).elementAtOrNull(0)?.position}",
-                                  style: GoogleFonts.lato(
-                                    textStyle: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),
-                                  ),),
-                              ]
-                              ),
-                            ),
-
-                            const SizedBox(height: 12,),
                           ],
                         ),
                       );
@@ -379,6 +417,18 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
             ],
     ),
     );
+  }
+
+  Color _getStatusColor(String? status) {
+    if (status == "On Process") {
+      return Colors.orangeAccent;
+    } else if (status == "Unread") {
+      return Colors.blue;
+    } else if (status == "Completed") {
+      return Colors.green;
+    } else {
+      return Colors.redAccent;
+    }
   }
 }
 

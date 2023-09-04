@@ -95,8 +95,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         PersistentBottomNavBarItem(
-          icon: Image(image: AssetImage("assets/icons/approved.png")),
-          title: ("Completed"),
+          icon: Image(image: AssetImage("assets/icons/history.png")),
+          title: ("History"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
