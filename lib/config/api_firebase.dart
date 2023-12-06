@@ -35,11 +35,11 @@ class FirebaseApi{
     //  arguments: message,
     //  );
   }
+
   Future initLocalNotifications() async{
-    //  const iOS = IOSInitializationSettings();
+    const iOS = DarwinInitializationSettings();
     const android = AndroidInitializationSettings('drawable/ic_launcher');
-    //const settings =  InitializationSettings(android: android, iOS: iOS);
-    const settings =  InitializationSettings(android: android);
+    const settings =  InitializationSettings(android: android, iOS: iOS);
 
     await _localNotifications.initialize(
         settings,
@@ -77,12 +77,16 @@ class FirebaseApi{
             channelDescription: _androidChannel.description,
             icon: 'drawable/ic_launcher',
           ),
+          iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true
+          ),
         ),
         payload: jsonEncode(message.toMap()),
       );
     });
   }
-
 
   Future<void> initNotifications() async{
     await _firebaseMessaging.requestPermission(
