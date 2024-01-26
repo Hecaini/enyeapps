@@ -344,7 +344,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
         return Container(
           padding: const EdgeInsets.only(top: 4),
           height: (services.status == "On Process" && userInfo?.status == "Employee")
-            || (services.status == "Unread" && userInfo?.status != "Employee")
             || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId)
             ? MediaQuery.of(context).size.height * 0.34
             : MediaQuery.of(context).size.height * 0.24,
@@ -494,10 +493,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            DateFormat.yMMMMd().format(DateTime.parse(services.dateSched)),
+                            '${DateFormat.yMMMMd().format(DateTime.parse(services.sDateSched))} TO ${DateFormat.yMMMMd().format(DateTime.parse(services.eDateSched))}',
                             style: GoogleFonts.lato(
                               textStyle:
-                              const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
