@@ -197,7 +197,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     if(userInfo?.status == "Employee") {
       TechnicalDataServices.getTechnicalData().then((technicalData){
         setState(() {
-          _services = technicalData.where((element) => element.status == "On Process" || element.status == "Set-sched" && element.svcHandler == userInfo?.userId).toList();
+          _services = technicalData.where((element) => (element.status == "On Process" || element.status == "Set-sched") && element.svcHandler == userInfo?.userId).toList();
         });
       });
     } else {
