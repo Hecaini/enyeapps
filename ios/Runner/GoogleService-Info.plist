@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>992119846808-p37qksdirltdl344d13j1d6h4re1f31i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.992119846808-p37qksdirltdl344d13j1d6h4re1f31i</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>992119846808-oh6a1b7jg2uvbj28qdvennanv7v4cl61.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAMmP1AZjwalvfcRE--YkCGxLRn1XJiT1A</string>
+	<key>GCM_SENDER_ID</key>
+	<string>992119846808</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.enyeApp</string>
+	<key>PROJECT_ID</key>
+	<string>enyecontrols-c9eda</string>
+	<key>STORAGE_BUCKET</key>
+	<string>enyecontrols-c9eda.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:992119846808:ios:ecb7934a44d50fac751ded</string>
+</dict>
+</plist>

@@ -72,16 +72,62 @@ class _TechSchedPageState extends State<TechSchedPage> {
       }
     });
 
-    if(widget.message!.data["datesched"] != null){
-      _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
-
-      /*WidgetsBinding.instance?.addPostFrameCallback((_) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (BuildContext context) => CategoriesPage()),
-        );
-      });*/
+    if(userInfo?.status == "Employee") {
+      if (widget.message!.data["goToPage"] == "Set-sched Handler") {
+        if (widget.message!.data["datesched"] != null) {
+          _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
+        } else {
+          _selectedDay = _focusedDay;
+        }
+      } else if (widget.message!.data["goToPage"] == "Accepted") {
+        if (widget.message!.data["datesched"] != null) {
+          _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
+        } else {
+          _selectedDay = _focusedDay;
+        }
+      } else if (widget.message!.data["goToPage"] == "Re-sched Handler") {
+        if (widget.message!.data["datesched"] != null) {
+          _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
+        } else {
+          _selectedDay = _focusedDay;
+        }
+      } else {
+        _selectedDay = _focusedDay;
+      }
     } else {
-      _selectedDay = _focusedDay;
+      if(widget.message!.data["goToPage"] == "Booking"){
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) => UnreadPage(message: widget.message!)),
+          );
+        });
+      } else if (widget.message!.data["goToPage"] == "Set-sched Handler"){
+        if(widget.message!.data["datesched"] != null) {
+          _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
+        } else {
+          _selectedDay = _focusedDay;
+        }
+      } else if (widget.message!.data["goToPage"] == "Accepted") {
+        if (widget.message!.data["datesched"] != null) {
+          _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
+        } else {
+          _selectedDay = _focusedDay;
+        }
+      } else if (widget.message!.data["goToPage"] == "Re-sched Handler") {
+        if (widget.message!.data["datesched"] != null) {
+          _selectedDay = DateTime.parse(widget.message?.data["datesched"]);
+        } else {
+          _selectedDay = _focusedDay;
+        }
+      } else if(widget.message!.data["goToPage"] == "Re-sched"){
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) => UnreadPage(message: widget.message!)),
+          );
+        });
+      } else {
+        _selectedDay = _focusedDay;
+      }
     }
   }
 
@@ -151,13 +197,13 @@ class _TechSchedPageState extends State<TechSchedPage> {
     if(userInfo?.status == "Employee") {
       TechnicalDataServices.getTechnicalData().then((technicalData){
         setState(() {
-          _services = technicalData.where((element) => element.status != "Completed" && element.status != "Cancelled" && element.svcHandler == userInfo?.userId).toList();
+          _services = technicalData.where((element) => element.status == "On Process" || element.status == "Set-sched" && element.svcHandler == userInfo?.userId).toList();
         });
       });
     } else {
       TechnicalDataServices.getTechnicalData().then((technicalData){
         setState(() {
-          _services = technicalData.where((element) => element.status != "Completed" && element.status != "Cancelled").toList();
+          _services = technicalData.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
         });
       });
     }
@@ -257,7 +303,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
               itemBuilder: (_, index){
                 TechnicalData services = _services[index];
 
-                if (DateFormat.yMd().format(DateTime.parse(services.dateSched)) == DateFormat.yMd().format(_selectedDay!)){
+                if (DateFormat.yMd().format(DateTime.parse(services.sDateSched)) == DateFormat.yMd().format(_selectedDay!)
+                  || DateFormat.yMd().format(DateTime.parse(services.eDateSched)) == DateFormat.yMd().format(_selectedDay!)
+                  || (_selectedDay!.isAfter(DateTime.parse(services.sDateSched)) && _selectedDay!.isBefore(DateTime.parse(services.eDateSched)))){
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     child: SlideAnimation(
@@ -927,7 +975,26 @@ class _TechSchedPageState extends State<TechSchedPage> {
         rangeEndDay: _rangeEnd,
         calendarFormat: _calendarFormat,
         rangeSelectionMode: _rangeSelectionMode,
-        eventLoader: (day) => _services.where((services) => isSameDay(DateTime.parse(services.dateSched),day)).toList(),
+        /*eventLoader: (day) => _services.where((services) => isSameDay(DateTime.parse(services.dateSched),day)).toList(),*/
+        eventLoader: (day) {
+          return _services.where((service) {
+            // Check if the service date is within the specified range
+            DateTime serviceStartDate = DateTime.parse(service.sDateSched.toString()); // Remove "00:00:00"
+            DateTime serviceEndDate = DateTime.parse(service.eDateSched.toString());   // Remove "00:00:00"
+
+            if(serviceStartDate == serviceEndDate){
+              return isSameDay(serviceStartDate,day);
+            } else if (isSameDay(day, serviceStartDate)
+                || (day.isAfter(serviceStartDate) && day.isBefore(serviceEndDate))) {
+              return true;
+            } else if (isSameDay(day, serviceEndDate)
+                || (day.isAfter(serviceStartDate) && day.isBefore(serviceEndDate))) {
+              return true;
+            } else {
+              return false;
+            }
+          }).toList();
+        },
         startingDayOfWeek: StartingDayOfWeek.sunday,
         calendarStyle: CalendarStyle(
           weekendTextStyle: GoogleFonts.lato(

@@ -9,6 +9,7 @@ class TechnicalDataServices {
   static const GET_ALL_TECHNICAL = 'get_all_technical';
   static const EDIT_TO_ON_PROCESS = 'edit_to_on_process';
   static const EDIT_TO_COMPLETED = 'edit_to_completed';
+  static const EDIT_TO_SET_SCHED = 'edit_to_set_sched';
 
   //get data categories from database
   static Future <List<TechnicalData>> getTechnicalData() async {
@@ -103,4 +104,30 @@ class TechnicalDataServices {
       return "error";
     }
   }
+
+  //edit TO ON PROCESS in database
+  static Future<String> editToSetSched(String id, String svcId, String sDateSched, String eDateSched, String personInCharge, String assignedBy) async {
+    try{
+      var map = Map<String, dynamic>();
+      map['action'] = EDIT_TO_SET_SCHED;
+      map['id'] = id;
+      map['svcId'] = svcId;
+      map['sDateSched'] = sDateSched;
+      map['eDateSched'] = eDateSched;
+      map['personInCharge'] = personInCharge;
+      map['assignedBy'] = assignedBy;
+
+      final res = await http.post(Uri.parse(API.technicalData), body: map); //passing value to result
+      print('editToSetSched Response: ${res.body}');
+
+      if(res.statusCode == 200){
+        return res.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
+
 }

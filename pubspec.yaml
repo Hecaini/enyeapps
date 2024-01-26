@@ -71,7 +71,7 @@ dependencies:
   firebase_core:
   google_sign_in:
   firebase_auth:
-  quickalert: ^1.0.2
+  quickalert:
 
 dev_dependencies:
   flutter_test:

@@ -53,7 +53,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
     if (ModalRoute.of(context)!.settings.arguments != null) {
       message = ModalRoute.of(context)!.settings.arguments as RemoteMessage;
 
-      if (message.data["goToPage"].toString() == 'Appointment'){
+      if (message.data["goToPage"].toString() == 'Appointment' || message.data["goToPage"].toString() == 'Re-sched' || message.data["goToPage"].toString() == 'Accepted' || message.data["goToPage"].toString() == 'Booking'){
         _initialIndex = 0;
       } else if (message.data["goToPage"].toString() == 'Completed'){
         _initialIndex = 1;

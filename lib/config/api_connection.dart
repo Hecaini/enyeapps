@@ -1,5 +1,5 @@
 class API {
-  static const hostConnect = "https://enye.com.ph/enyecontrols_app";
+  static const hostConnect = "https://enye.com.ph/enyecontrols_app_test";
   //static const hostConnect = "http://192.168.0.137/adminenye";
 
   //login admin
@@ -53,4 +53,7 @@ class API {
 
   //token table
   static const token = "$hostConnect/admin/token.php";
+
+  //booking
+  static const ec_calendar = "$hostConnect/ec_calendar.php"; //calendar disable holidays and events
 }
