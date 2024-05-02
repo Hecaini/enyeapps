@@ -268,6 +268,34 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
                                           ),
                                         ),
 
+                                        const SizedBox(height: 8,),
+                                        RichText(
+                                            textAlign: TextAlign.justify,
+                                            softWrap: true,
+                                            text:TextSpan(
+                                                children: <TextSpan> [
+                                                  TextSpan(
+                                                    text: 'Requestor : ',
+                                                    style: GoogleFonts.lato(
+                                                      textStyle: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+
+                                                  TextSpan(
+                                                    text: '${_filteredServices[index].reqName} | ${_filteredServices[index].reqPosition}',
+                                                    style: GoogleFonts.lato(
+                                                      textStyle: const TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ]
+                                            )
+                                        ),
+
                                         const SizedBox(height: 12,),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,

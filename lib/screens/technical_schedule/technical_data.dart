@@ -9,6 +9,8 @@ class TechnicalData {
   String dateSched;
   String sDateSched;
   String eDateSched;
+  String reqName;
+  String reqPosition;
   String clientId;
   String clientName;
   String clientCompany;
@@ -31,6 +33,8 @@ class TechnicalData {
     required this.dateSched,
     required this.sDateSched,
     required this.eDateSched,
+    required this.reqName,
+    required this.reqPosition,
     required this.clientId,
     required this.clientName,
     required this.clientCompany,
@@ -55,6 +59,8 @@ class TechnicalData {
       dateSched: json['date_sched'] as String,
       sDateSched: json['sDate_sched'] as String,
       eDateSched: json['eDate_sched'] as String,
+      reqName: json['requestor_name'] as String,
+      reqPosition: json['requestor_position'] as String,
       clientId: json['client_id'] as String,
       clientName: json['client_name'] as String,
       clientCompany: json['client_company'] as String,

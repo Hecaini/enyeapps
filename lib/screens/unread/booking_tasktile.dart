@@ -88,6 +88,46 @@ class BookingtaskTile extends StatelessWidget {
                     ),
                   ),
 
+                  //requestor
+                  const SizedBox(height: 5.0,),
+                  RichText(
+                    softWrap: true,
+                    text: TextSpan(children:
+                    [
+                      TextSpan(text: 'Requestor Name : ',
+                          style: GoogleFonts.lato(
+                            textStyle:
+                            const TextStyle(fontSize: 12, letterSpacing: 0.8, color: Colors.grey),)
+                      ),
+                      TextSpan(text: services.reqName,
+                          style: GoogleFonts.lato(
+                            textStyle:
+                            const TextStyle(fontSize: 12, letterSpacing: 0.8, fontWeight: FontWeight.bold, color: Colors.grey),)
+                      ),
+                    ]
+                    ),
+                  ),
+
+                  //position
+                  const SizedBox(height: 5.0,),
+                  RichText(
+                    softWrap: true,
+                    text: TextSpan(children:
+                    [
+                      TextSpan(text: 'Position : ',
+                          style: GoogleFonts.lato(
+                            textStyle:
+                            const TextStyle(fontSize: 12, letterSpacing: 0.8, color: Colors.grey),)
+                      ),
+                      TextSpan(text: services.reqPosition,
+                          style: GoogleFonts.lato(
+                            textStyle:
+                            const TextStyle(fontSize: 12, letterSpacing: 0.8, fontWeight: FontWeight.bold, color: Colors.grey),)
+                      ),
+                    ]
+                    ),
+                  ),
+
                   //project company side
                   const SizedBox(height: 5.0,),
                   RichText(

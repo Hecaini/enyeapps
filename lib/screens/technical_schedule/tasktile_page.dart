@@ -47,6 +47,34 @@ class TaskTile extends StatelessWidget {
                       color: Colors.white),
                   ),
                 ),
+
+                const SizedBox(height: 12,),
+                Text(
+                  "Requestor : ",
+                  style: GoogleFonts.lato(
+                    textStyle: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
+                RichText(
+                  textAlign: TextAlign.justify,
+                  softWrap: true,
+                  text:TextSpan(
+                      children: <TextSpan> [
+                        TextSpan(
+                          text: '\t ${services.reqName} | ${services.reqPosition}',
+                          style: GoogleFonts.lato(
+                            textStyle: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.white),
+                          ),
+                        ),
+                      ]
+                  )
+                ),
+
                 const SizedBox(height: 12,),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -482,6 +482,25 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         )
                       ),
 
+                      const SizedBox(height: 10,),
+                      RichText(
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                          text:TextSpan(
+                              children: <TextSpan> [
+                                const TextSpan(
+                                  text: 'Requestor : ',
+                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),
+                                ),
+
+                                TextSpan(
+                                  text: '${services.reqName} | ${services.reqPosition}',
+                                  style: const TextStyle(fontSize: 13, color: Colors.black54, letterSpacing: 0.8),
+                                ),
+                              ]
+                          )
+                      ),
+
                       const SizedBox(height: 15,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
