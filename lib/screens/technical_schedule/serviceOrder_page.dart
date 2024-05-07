@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 
+import '../../config/config.dart';
 import '../../widget/widgets.dart';
 import '../screens.dart';
 
@@ -116,7 +117,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
 
   Uint8List? exportedImage;
 
-  processImage(Uint8List exportedImage) {
+  processImage(Uint8List? exportedImage) {
     if (exportedImage != null) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
@@ -125,7 +126,11 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
       print('File name: $imageName');
       print('Base64 data: $imageData');
     } else {
+      imageName = ""; // Image name with date-time
+      imageData = "";
       print("Failed to capture image");
+      print('File name: $imageName');
+      print('Base64 data: $imageData');
     }
   }
 
@@ -169,7 +174,8 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                   ElevatedButton(
                     onPressed: () async {
                       exportedImage = await controller.toPngBytes();
-                      processImage(exportedImage!);
+                      processImage(exportedImage);
+                      controller.clear();
                       Navigator.of(context).pop(); // Close the dialog
                       setState(() {});
                     },
@@ -261,7 +267,45 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
     SODataServices.getSONumber(widget.services.id, widget.selectedDay).then((getSONumber) {
       setState(() {
         _soNumber = getSONumber;
+        if (_soNumber.isNotEmpty) {
+          if(_soNumber[0].soStatus == "Saved"){
+            _getServiceOrder();
+          } else {
+            _isLoading = false;
+          }
+        } else {
+          // Handle the case where no SO numbers are retrieved.
+          _isLoading = false;
+          print("No service order numbers retrieved");
+        }
+      });
+    });
+  }
+
+  List<ServiceOrder> _serviceOrder = [];
+  _getServiceOrder(){
+    SODataServices.getServiceOrder(_soNumber[0].soId).then((getServiceOrder) {
+      setState(() {
+        _serviceOrder = getServiceOrder;
         _isLoading = false;
+
+        if (_serviceOrder.isNotEmpty) {
+          txtTimeIn.text = _serviceOrder[0].timeIn;
+          txtTimeOut.text = _serviceOrder[0].timeOut;
+          txtSysProduct.text = _serviceOrder[0].systemProduct;
+          txtLocation.text = _serviceOrder[0].location;
+          txtComplaint.text = _serviceOrder[0].complaint;
+          txtStatus.text = _serviceOrder[0].status;
+          txtRemarks.text = _serviceOrder[0].remark;
+          selSysProd = _serviceOrder[0].service;
+          txtConforme.text = _serviceOrder[0].conforme;
+          selSvcBy = _serviceOrder[0].servicedBy;
+
+        } else {
+          // Handle the case where no SO numbers are retrieved.
+          _isLoading = false;
+          print("No service order retrieved");
+        }
       });
     });
   }
@@ -285,13 +329,45 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
     });
   }
 
-  _updateSO(){
+  _saveSO(){
     DateTime now = DateTime.now();
 
-    SODataServices.updateSO(
+    SODataServices.saveSO(
         widget.services.id, _soNumber[0].soId,
         txtTimeIn.text, txtTimeOut.text,
         now.toString(), txtSysProduct.text,
+        txtLocation.text, txtComplaint.text,
+        txtStatus.text, txtRemarks.text,
+        selSysProd!, selSvcBy!,
+        txtConforme.text, imageName, imageData
+    ).then((result) {
+      if('success' == result){
+        // sendPushNotifications();
+        // _getServices();
+        // clearFields();
+        // Navigator.of(context).pop();
+
+        _custSnackbar(
+            context,
+            "Success... $result",
+            Colors.green,
+            Icons.check_box
+        );
+      } else {
+        _custSnackbar(
+            context,
+            "Error occured...$result",
+            Colors.redAccent,
+            Icons.dangerous_rounded
+        );
+      }
+    });
+  }
+
+  _updateSO(){
+    SODataServices.updateSO(
+        _soNumber[0].soId, txtTimeIn.text,
+        txtTimeOut.text, txtSysProduct.text,
         txtLocation.text, txtComplaint.text,
         txtStatus.text, txtRemarks.text,
         selSysProd!, selSvcBy!,
@@ -348,6 +424,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                   onRefresh: () async {
                     await Future.delayed(Duration(seconds: 2));
                     setState(() {
+                      _getSONumber();
                       _getPositions();
                       _getAccounts();
                       _getSONumber();
@@ -526,42 +603,56 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                               ),
 
                               SizedBox(height: screenHeight * 0.01),
-                              if (exportedImage != null)
-                                InkWell(
-                                  onTap: () => _showSignatureDialog(context),
-                                  child: Container(
-                                    width: screenWidth * 0.83,
-                                    height: screenHeight * 0.2,
-                                    color: Colors.white,
-                                    child: Image.memory(
-                                      exportedImage!,
-                                      fit: BoxFit.contain,
+                                if (exportedImage != null)
+                                  InkWell(
+                                    onTap: () => _showSignatureDialog(context),
+                                    child: Container(
+                                      width: screenWidth * 0.83,
+                                      height: screenHeight * 0.2,
+                                      color: Colors.white,
+                                      child: Image.memory(
+                                        exportedImage!,
+                                        fit: BoxFit.contain,
+                                      ),
                                     ),
-                                  ),
-                                )
-                              else
-                                InkWell(
-                                  onTap: () => _showSignatureDialog(context),
-                                  child: Container(
-                                    width: screenWidth * 0.83,
-                                    height: screenHeight * 0.13,
-                                    color: Colors.grey.shade300,
-                                    child: Center(
-                                      child: Text(
-                                        "No Signature Captured.\nTap to sign",
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                              fontSize: fontSmallSize,
-                                              fontWeight: FontWeight.w500,
-                                              letterSpacing: 1.2,
-                                              color: Colors.black54
+                                  )
+                                else
+                                  if (_serviceOrder.isNotEmpty)
+                                    InkWell(
+                                      onTap: () => _showSignatureDialog(context),
+                                      child: Container(
+                                        width: screenWidth * 0.83,
+                                        height: screenHeight * 0.2,
+                                        color: Colors.white,
+                                        child: Image.network(
+                                          API.conformeSig + _serviceOrder[0].conformeSignature,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                  InkWell(
+                                    onTap: () => _showSignatureDialog(context),
+                                    child: Container(
+                                      width: screenWidth * 0.83,
+                                      height: screenHeight * 0.13,
+                                      color: Colors.grey.shade300,
+                                      child: Center(
+                                        child: Text(
+                                          "No Signature Captured.\nTap to sign",
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontSize: fontSmallSize,
+                                                fontWeight: FontWeight.w500,
+                                                letterSpacing: 1.2,
+                                                color: Colors.black54
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
 
                               SizedBox(height: screenHeight * 0.03),
                               Container(
@@ -645,12 +736,20 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                         ),
 
                         SizedBox(height: screenHeight * 0.04),
-                        addButton(
-                          onTap: () {
-                            _updateSO();
-                          },
-                          text: 'SAVE'
-                        ),
+                        if (_serviceOrder.isNotEmpty)
+                          editButton(
+                            onTap: () {
+                              _updateSO();
+                            },
+                            text: 'UPDATE'
+                          )
+                        else
+                          addButton(
+                            onTap: () {
+                              _saveSO();
+                            },
+                            text: 'SAVE'
+                          ),
 
                         SizedBox(height: screenHeight * 0.02,),
                         if (isKeyboardVisible) SizedBox(height: screenHeight * 0.05,),

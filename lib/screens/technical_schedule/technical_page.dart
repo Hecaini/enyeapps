@@ -388,12 +388,12 @@ class _TechSchedPageState extends State<TechSchedPage> {
               (services.status == "On Process" && userInfo?.status == "Employee")
                 || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId) ?
               _bottomSheetButton(
-                label: "Task Completed",
+                label: "Service Order",
                 onTap: (){
                   setState(() {
                     // Navigator.pop(context);
                     // _showAnotherBottomSheet(context, services, "Task Completed");
-                    _getSONumber(services, selectedDay);
+                    _getSONumber(services, _selectedDay.toString());
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => ServiceOrderPage(services: services, selectedDay: selectedDay)),
                     );

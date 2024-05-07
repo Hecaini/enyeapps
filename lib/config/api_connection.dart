@@ -26,6 +26,7 @@ class API {
 
   //service order data's
   static const serviceOrderData = "$hostConnect/admin/technical/service_order.php";
+  static const conformeSig = "$hostConnect/admin/conforme_signature/";
 
   //product images
   static const productImages = "$hostConnect/admin/products_img/";

@@ -1,5 +1,5 @@
 //values na meron si categories
-class ServiceOrderData {
+class ServiceOrder {
   String soId;
   String soNo;
   String svcId;
@@ -22,7 +22,7 @@ class ServiceOrderData {
   String conformeSignature;
   String stat;
 
-  ServiceOrderData({
+  ServiceOrder({
     required this.soId,
     required this.soNo,
     required this.svcId,
@@ -46,8 +46,8 @@ class ServiceOrderData {
     required this.stat
   });
 
-  factory ServiceOrderData.fromJson(Map<String, dynamic> json) {
-    return ServiceOrderData(
+  factory ServiceOrder.fromJson(Map<String, dynamic> json) {
+    return ServiceOrder(
       soId: json['so_id'] as String,
       soNo: json['so_no'] as String,
       svcId: json['svc_id'] as String,
