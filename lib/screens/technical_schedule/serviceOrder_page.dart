@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 
 import '../../widget/widgets.dart';
@@ -27,6 +29,8 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
   String? selSysProd;
   String? selSvcBy;
   bool _isLoading = true;
+  String imageName = '';
+  String imageData = '';
 
   final txtTimeIn = TextEditingController();
   final txtTimeOut = TextEditingController();
@@ -63,7 +67,67 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
     exportBackgroundColor: Colors.white,
   );
 
+  _custSnackbar(context, message, Color color, IconData iconData){
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 3),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(
+              iconData,
+              color: Colors.white,
+              size: (screenHeight + screenWidth) / 75,
+            ),
+            SizedBox(width: screenWidth * 0.01,),
+            Expanded(
+              child: RichText(
+                softWrap: true,
+                textAlign: TextAlign.start,
+                text: TextSpan(children: <TextSpan>
+                [
+                  TextSpan(
+                    text: message,
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: fontNormalSize,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
+                          color: Colors.white
+                      ),
+                    ),
+                  ),
+                ]
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Uint8List? exportedImage;
+
+  processImage(Uint8List exportedImage) {
+    if (exportedImage != null) {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
+      imageName = "IMG_$formattedDate.png"; // Image name with date-time
+      imageData = base64Encode(exportedImage);
+      print('File name: $imageName');
+      print('Base64 data: $imageData');
+    } else {
+      print("Failed to capture image");
+    }
+  }
 
   void _showSignatureDialog(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -105,6 +169,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                   ElevatedButton(
                     onPressed: () async {
                       exportedImage = await controller.toPngBytes();
+                      processImage(exportedImage!);
                       Navigator.of(context).pop(); // Close the dialog
                       setState(() {});
                     },
@@ -217,6 +282,41 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
       setState(() {
         _users = accountInfo;
       });
+    });
+  }
+
+  _updateSO(){
+    DateTime now = DateTime.now();
+
+    SODataServices.updateSO(
+        widget.services.id, _soNumber[0].soId,
+        txtTimeIn.text, txtTimeOut.text,
+        now.toString(), txtSysProduct.text,
+        txtLocation.text, txtComplaint.text,
+        txtStatus.text, txtRemarks.text,
+        selSysProd!, selSvcBy!,
+        txtConforme.text, imageName, imageData
+    ).then((result) {
+      if('success' == result){
+        // sendPushNotifications();
+        // _getServices();
+        // clearFields();
+        // Navigator.of(context).pop();
+
+        _custSnackbar(
+            context,
+            "Success... $result",
+            Colors.green,
+            Icons.check_box
+        );
+      } else {
+        _custSnackbar(
+            context,
+            "Error occured...$result",
+            Colors.redAccent,
+            Icons.dangerous_rounded
+        );
+      }
     });
   }
 
@@ -547,7 +647,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                         SizedBox(height: screenHeight * 0.04),
                         addButton(
                           onTap: () {
-
+                            _updateSO();
                           },
                           text: 'SAVE'
                         ),
