@@ -240,6 +240,15 @@ class _TechSchedPageState extends State<TechSchedPage> {
     });
   }
 
+  List<GetSONumber> _soNumber = [];
+  _getSONumber(TechnicalData services, String selectedDay){
+    SODataServices.getSONumber(services.id, selectedDay).then((getSONumber) {
+      setState(() {
+        _soNumber = getSONumber;
+      });
+    });
+  }
+
   String? _dropdownError; //kapag wala pa na-select sa option
   _editToOnProcess(TechnicalData services){
     TechnicalDataServices.editToOnProcess(services.id, services.svcId, valueChooseAccount!.toString(), userInfo!.userId.toString()).then((result) {
@@ -314,7 +323,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           children: [
                             GestureDetector(
                               onTap: (){
-                                _showBottomSheet(context, services);
+                                print('selected Date: ${_selectedDay.toString()}');
+                                _showBottomSheet(context, services, _selectedDay.toString());
                               },
                               child: TaskTile(services: services),
                             )
@@ -335,7 +345,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     );
   }
 
-  _showBottomSheet (BuildContext context, TechnicalData services) {
+  _showBottomSheet (BuildContext context, TechnicalData services, String selectedDay) {
     showModalBottomSheet(
       isScrollControlled: true,
       useRootNavigator: true,
@@ -381,8 +391,12 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 label: "Task Completed",
                 onTap: (){
                   setState(() {
-                    Navigator.pop(context);
-                    _showAnotherBottomSheet(context, services, "Task Completed");
+                    // Navigator.pop(context);
+                    // _showAnotherBottomSheet(context, services, "Task Completed");
+                    _getSONumber(services, selectedDay);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ServiceOrderPage(services: services, selectedDay: selectedDay)),
+                    );
                   });
                 },
                 clr: Colors.green,

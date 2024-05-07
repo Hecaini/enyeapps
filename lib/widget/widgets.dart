@@ -11,3 +11,5 @@ export 'mybutton.dart';
 export 'toastmessage.dart';
 
 export 'utils.dart';
+
+export 'responsive_text_utils.dart';

@@ -335,14 +335,14 @@ class _UnreadPageState extends State<UnreadPage> with TickerProviderStateMixin {
 
   //below this are for account infos get to server
   late List<UsersInfo> _users;
-  late List<UsersInfo> _filteredUsers;
-  _getAccounts(){
-    UsersInfoServices.getUsersInfo().then((accountInfo){
-      setState(() {
-        _users = accountInfo;
+    late List<UsersInfo> _filteredUsers;
+    _getAccounts(){
+      UsersInfoServices.getUsersInfo().then((accountInfo){
+        setState(() {
+          _users = accountInfo;
+        });
       });
-    });
-  }
+    }
 
   String? _dropdownError; //kapag wala pa na-select sa option
   _setSched(TechnicalData services){

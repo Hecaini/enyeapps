@@ -72,6 +72,8 @@ dependencies:
   google_sign_in:
   firebase_auth:
   quickalert:
+  flutter_keyboard_visibility:
+  signature:
 
 dev_dependencies:
   flutter_test:

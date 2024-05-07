@@ -1,5 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'widgets.dart';
 
 class NormalTextField extends StatelessWidget {
   final controller;
@@ -10,10 +13,20 @@ class NormalTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
       child: TextFormField(
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            fontSize: fontNormalSize,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1.2
+          ),
+        ),
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -26,16 +39,22 @@ class NormalTextField extends StatelessWidget {
         keyboardType: TextInputType.multiline,
         controller: controller,
         decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.deepOrange),
           ),
           fillColor: Colors.deepOrange.shade50,
           filled: true,
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey.shade400)
+          hintStyle: GoogleFonts.poppins(
+            textStyle: TextStyle(
+                fontSize: fontNormalSize,
+                color: Colors.grey.shade400,
+                letterSpacing: 1.2
+            ),
+          ),
         ),
       ),
     ) ;
@@ -58,10 +77,20 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
       child: TextFormField(
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+              fontSize: fontNormalSize,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.2
+          ),
+        ),
         readOnly: widget.disabling,
         onEditingComplete: (){},
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -77,7 +106,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         controller: widget.controller,
         obscureText: passToggle,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.lock),
+          prefixIcon: const Icon(Icons.lock),
           suffixIcon: InkWell(
             onTap: (){
               setState((){
@@ -86,16 +115,22 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             },
             child: Icon(passToggle ? Icons.visibility : Icons.visibility_off),
           ),
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.deepOrange),
           ),
           fillColor: Colors.deepOrange.shade50,
           filled: true,
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: Colors.grey.shade400)
+          hintStyle: GoogleFonts.poppins(
+            textStyle: TextStyle(
+                fontSize: fontNormalSize,
+                color: Colors.grey.shade400,
+                letterSpacing: 1.2
+            ),
+          ),
         ),
       ),
     ) ;
@@ -111,10 +146,20 @@ class EmailTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
       child: TextFormField(
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+              fontSize: fontNormalSize,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.2
+          ),
+        ),
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -127,17 +172,23 @@ class EmailTextField extends StatelessWidget {
         },
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.email),
-            enabledBorder: OutlineInputBorder(
+          prefixIcon: const Icon(Icons.email),
+            enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
-            focusedBorder: OutlineInputBorder(
+            focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.deepOrange),
             ),
             fillColor: Colors.deepOrange.shade50,
             filled: true,
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.grey.shade400)
+            hintStyle: GoogleFonts.poppins(
+              textStyle: TextStyle(
+                  fontSize: fontNormalSize,
+                  color: Colors.grey.shade400,
+                  letterSpacing: 1.2
+              ),
+            ),
         ),
       ),
     ) ;
@@ -153,10 +204,20 @@ class PersonNameTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
       child: TextFormField(
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+              fontSize: fontNormalSize,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.2
+          ),
+        ),
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -167,17 +228,23 @@ class PersonNameTextField extends StatelessWidget {
         },
         controller: controller,
         decoration: InputDecoration(
-            prefixIcon: Icon(Icons.person),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+          prefixIcon: const Icon(Icons.person),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.deepOrange),
+          ),
+          fillColor: Colors.deepOrange.shade50,
+          filled: true,
+          hintText: hintText,
+          hintStyle: GoogleFonts.poppins(
+            textStyle: TextStyle(
+                fontSize: fontNormalSize,
+                color: Colors.grey.shade400,
+                letterSpacing: 1.2
             ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.deepOrange),
-            ),
-            fillColor: Colors.deepOrange.shade50,
-            filled: true,
-            hintText: hintText,
-            hintStyle: TextStyle(color: Colors.grey.shade400)
+          ),
         ),
       ),
     ) ;
@@ -196,10 +263,20 @@ class ContactTextField extends StatelessWidget {
     String patttern = r'(^(?:[+0]9)?[0-9]{11,12}$)';
     RegExp regExp = new RegExp(patttern);
 
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
       child: TextFormField(
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+              fontSize: fontNormalSize,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.2
+          ),
+        ),
         readOnly: disabling,
         onEditingComplete: (){},
         validator: (value) {
@@ -212,17 +289,23 @@ class ContactTextField extends StatelessWidget {
         },
         controller: controller,
         decoration: InputDecoration(
-            prefixIcon: Icon(Icons.call),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+          prefixIcon: const Icon(Icons.call),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.deepOrange),
+          ),
+          fillColor: Colors.deepOrange.shade50,
+          filled: true,
+          hintText: hintText,
+          hintStyle: GoogleFonts.poppins(
+            textStyle: TextStyle(
+                fontSize: fontNormalSize,
+                color: Colors.grey.shade400,
+                letterSpacing: 1.2
             ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.deepOrange),
-            ),
-            fillColor: Colors.deepOrange.shade50,
-            filled: true,
-            hintText: hintText,
-            hintStyle: TextStyle(color: Colors.grey.shade400)
+          ),
         ),
       ),
     ) ;
