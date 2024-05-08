@@ -53,15 +53,26 @@ void main() async {
         title: 'ADMIN ENYE',
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
-          textTheme: GoogleFonts.latoTextTheme(
+          textTheme: GoogleFonts.poppinsTextTheme(
             Theme.of(context).textTheme.copyWith(
               // Modify the TextStyle for different text elements here
               displayLarge: const TextStyle(
                 fontSize: 24,
+                color: Colors.black,
                 letterSpacing: 1.5, // Adjust the letter spacing here
               ),
               bodyLarge: const TextStyle(
                 fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                letterSpacing: 0.8, // Adjust the letter spacing here
+              ),
+              displaySmall: const TextStyle(
+                fontSize: 12,
+                letterSpacing: 1.5, // Adjust the letter spacing here
+              ),
+              bodySmall: const TextStyle(
+                fontSize: 9,
                 color: Colors.black,
                 letterSpacing: 0.8, // Adjust the letter spacing here
               ),

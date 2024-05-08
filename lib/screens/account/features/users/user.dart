@@ -9,6 +9,7 @@ class UsersInfo {
   String position;
   String status;
   String image;
+  String signImg;
 
   UsersInfo({
     required this.user_id,
@@ -20,6 +21,7 @@ class UsersInfo {
     required this.position,
     required this.status,
     required this.image,
+    required this.signImg,
   });
 
   factory UsersInfo.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class UsersInfo {
       position: json['position'] as String,
       status: json['status'] as String,
       image: json['image'] as String,
+      signImg: json['signature_img'] as String,
     );
   }
 }

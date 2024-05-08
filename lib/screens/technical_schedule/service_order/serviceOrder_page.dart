@@ -7,9 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 
-import '../../config/config.dart';
-import '../../widget/widgets.dart';
-import '../screens.dart';
+import '../../../config/config.dart';
+import '../../../widget/widgets.dart';
+import '../../screens.dart';
 
 class ServiceOrderPage extends StatefulWidget {
   final TechnicalData services;
@@ -750,6 +750,55 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                             },
                             text: 'SAVE'
                           ),
+
+                        SizedBox(height: screenHeight * 0.04),
+                        if (_serviceOrder.isNotEmpty)
+                          TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => SOPdfPreviewPage(serviceOrder: _serviceOrder[0]),
+                              ),
+                            );
+                            // rootBundle.
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.blue.shade300,
+                                  width: 1.0, // Thickness of the underline
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,  // Use min to prevent the Row from occupying more space than its children need.
+                              children: <Widget>[
+                                Icon(
+                                  Icons.download_for_offline_rounded,
+                                  color: Colors.blue.shade300,
+                                  size: (screenHeight + screenWidth) / 40,
+                                ),// Example icon
+                                SizedBox(width: 8),  // Space between icon and text
+                                Text(
+                                  "GENERATE PDF FILE",
+                                  style: TextStyle(
+                                    height: 1.5,
+                                    fontSize: fontNormalSize,
+                                    fontFamily: 'Rowdies',
+                                    color: Colors.blue.shade300,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
 
                         SizedBox(height: screenHeight * 0.02,),
                         if (isKeyboardVisible) SizedBox(height: screenHeight * 0.05,),

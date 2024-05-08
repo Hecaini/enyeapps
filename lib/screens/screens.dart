@@ -53,9 +53,12 @@ export 'technical_schedule/technical_page.dart';
 export 'technical_schedule/technical_data.dart';
 export 'technical_schedule/technical_svc.dart';
 export 'technical_schedule/tasktile_page.dart';
-export 'technical_schedule/serviceOrder_page.dart';
-export 'technical_schedule/so_data.dart';
-export 'technical_schedule/serviceOrder_svc.dart';
+
+export 'technical_schedule/service_order/serviceOrder_page.dart';
+export 'technical_schedule/service_order/so_data.dart';
+export 'technical_schedule/service_order/serviceOrder_svc.dart';
+export 'technical_schedule/service_order/serviceOrderPDF.dart';
+export 'technical_schedule/service_order/serviceOrderPDF_helper.dart';
 
 export 'completed/completed.dart';
 

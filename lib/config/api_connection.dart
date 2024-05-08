@@ -7,6 +7,7 @@ class API {
 
   //add user admin
   static const signUpAdmin = "$hostConnect/admin/signup.php";
+  static const userSign = "$hostConnect/admin/users_signature/";
 
   //reset password
   static const resetPassword = "$hostConnect/admin/resetPassword.php";
