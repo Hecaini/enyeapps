@@ -349,14 +349,14 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
 
         _custSnackbar(
             context,
-            "Success... $result",
+            "Successfully saved !",
             Colors.green,
             Icons.check_box
         );
       } else {
         _custSnackbar(
             context,
-            "Error occured...$result",
+            "Error occured... $result",
             Colors.redAccent,
             Icons.dangerous_rounded
         );
@@ -381,7 +381,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
 
         _custSnackbar(
             context,
-            "Success... $result",
+            "Successfully updated !",
             Colors.green,
             Icons.check_box
         );
