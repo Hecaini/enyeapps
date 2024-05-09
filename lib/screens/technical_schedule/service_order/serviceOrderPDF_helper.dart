@@ -308,13 +308,14 @@ Future<Uint8List> pdfBuilderSO(ServiceOrder serviceOrder, UsersInfo user, Techni
                 if (imgConSign != null)
                   Container(
                       width: 200,
+                      height: 30,
                       alignment: Alignment.center,
                       child: Image(imgConSign, height: 50, width: 50)
                   )
                 else
                   Container(
                     width: 200,
-                    height: 50,
+                    height: 30,
                     alignment: Alignment.center,
                   ),
 
@@ -358,13 +359,14 @@ Future<Uint8List> pdfBuilderSO(ServiceOrder serviceOrder, UsersInfo user, Techni
                 if (imgUserSign != null)
                   Container(
                       width: 200,
+                      height: 30,
                       alignment: Alignment.center,
                       child: Image(imgUserSign, height: 50, width: 50)
                   )
                 else
                   Container(
                     width: 200,
-                    height: 50,
+                    height: 30,
                     alignment: Alignment.center,
                   ),
 
