@@ -479,6 +479,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                           ),
                         ),
 
+                        SizedBox(height: screenHeight * 0.015),
                         Form(
                           child: Column(
                             children: [
@@ -502,42 +503,42 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                                 ],
                               ),
 
-                              SizedBox(height: screenHeight * 0.01),
+                              SizedBox(height: screenHeight * 0.015),
                               NormalTextField(
                                 controller: txtSysProduct,
                                 hintText: 'System / Product',
                                 disabling: disabling,
                               ),
 
-                              SizedBox(height: screenHeight * 0.01),
+                              SizedBox(height: screenHeight * 0.015),
                               NormalTextField(
                                 controller: txtLocation,
                                 hintText: 'Location',
                                 disabling: disabling,
                               ),
 
-                              SizedBox(height: screenHeight * 0.01),
+                              SizedBox(height: screenHeight * 0.015),
                               NormalTextField(
                                 controller: txtComplaint,
                                 hintText: 'Complaint',
                                 disabling: disabling,
                               ),
 
-                              SizedBox(height: screenHeight * 0.01),
+                              SizedBox(height: screenHeight * 0.015),
                               NormalTextField(
                                 controller: txtStatus,
                                 hintText: 'Status',
                                 disabling: disabling,
                               ),
 
-                              SizedBox(height: screenHeight * 0.01),
+                              SizedBox(height: screenHeight * 0.015),
                               NormalTextField(
                                 controller: txtRemarks,
                                 hintText: 'Remarks / Recommendation',
                                 disabling: disabling,
                               ),
 
-                              SizedBox(height: screenHeight * 0.01),
+                              SizedBox(height: screenHeight * 0.015),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
                                 height: screenHeight * 0.065,

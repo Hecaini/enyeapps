@@ -47,11 +47,11 @@ class NormalTextField extends StatelessWidget {
           ),
           fillColor: Colors.deepOrange.shade50,
           filled: true,
-          hintText: hintText,
-          hintStyle: GoogleFonts.poppins(
+          labelText: hintText,
+          labelStyle: GoogleFonts.poppins(
             textStyle: TextStyle(
                 fontSize: fontNormalSize,
-                color: Colors.grey.shade400,
+                color: Colors.grey.shade500,
                 letterSpacing: 1.2
             ),
           ),
