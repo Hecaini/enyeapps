@@ -25,11 +25,6 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
   final txtStartDate = TextEditingController();
   final txtEndDate = TextEditingController();
   final txtNotes = TextEditingController();
-  final txtLocation = TextEditingController();
-  final txtComplaint = TextEditingController();
-  final txtStatus = TextEditingController();
-  final txtRemarks = TextEditingController();
-  final txtConforme = TextEditingController();
 
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
@@ -71,6 +66,10 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
     });
   }
 
+  void _unfocusAll() {
+    FocusScope.of(context).unfocus();
+  }
+
   _custSnackbar(context, message, Color color, IconData iconData){
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -88,7 +87,7 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
             Icon(
               iconData,
               color: Colors.white,
-              size: (screenHeight + screenWidth) / 75,
+              size: (screenHeight + screenWidth) / 50,
             ),
             SizedBox(width: screenWidth * 0.01,),
             Expanded(
@@ -231,7 +230,7 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
 
                       SizedBox(height: screenHeight * 0.015),
                       NormalTextField(
-                        controller: txtRemarks,
+                        controller: txtNotes,
                         hintText: 'Notes',
                         disabling: disabling,
                       ),
@@ -245,6 +244,7 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                   child: ElevatedButton(
                     onPressed: () {
+                      _unfocusAll();
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -308,6 +308,7 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                   child: ElevatedButton(
                     onPressed: () {
+                      _unfocusAll();
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -367,9 +368,25 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
                     ),
                   ),
 
-                SizedBox(height: screenHeight * 0.04),
+                SizedBox(height: screenHeight * 0.05),
                 addButton(
                   onTap: () {
+                    if((_usersEngineers.isEmpty && _usersTechnicians.isEmpty) || _selectedStartDate == null ||
+                    _selectedEndDate == null || widget.services.id == null){
+                      _custSnackbar(
+                        context,
+                        "Kindly fill out the fields and select handlers",
+                        Colors.redAccent,
+                        Icons.error
+                      );
+                    }
+
+                    String engineerIds = _usersEngineers.map((engineer) => engineer.user_id.toString()).join(', ');
+                    print(engineerIds);
+
+                    String technicianIds = _usersTechnicians.map((technician) => technician.user_id.toString()).join(', ');
+                    print(technicianIds);
+
                     // _saveSO();
                   },
                   text: 'SAVE'
