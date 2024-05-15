@@ -7,14 +7,10 @@ import '../screens.dart';
 class CalendarServices {
 
   //get handler data from database
-  static Future <List<CalendarData>> calendarData(String firstDate, String lastDate) async {
+  static Future <List<CalendarData>> calendarData() async {
     try {
-      var map = Map<String, dynamic>();
-      map['firstDate'] = firstDate;
-      map['lastDate'] = lastDate;
-
       //get all data of categories
-      final res = await http.post(Uri.parse(API.ec_calendar), body: map); //passing value to result
+      final res = await http.get(Uri.parse(API.ec_calendar)); //passing value to result
       print('Calendar Data Response: ${res.body}');
 
       if (res.statusCode == 200) {

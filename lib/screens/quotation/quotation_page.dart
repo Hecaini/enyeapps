@@ -20,6 +20,7 @@ class QuotationPage extends StatefulWidget {
 
 class _QuotationPageState extends State<QuotationPage> {
   late TextEditingController searchTransaction;
+  FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class _QuotationPageState extends State<QuotationPage> {
       /*drawer: CustomDrawer(),*/
       body: Column(
         children: [
-          NormalTextField(controller: searchTransaction, hintText: "Transaction #", disabling: false,),
+          NormalTextField(controller: searchTransaction, hintText: "Transaction #", disabling: false, focusNode: _focusNode,),
 
           Expanded(
             child: ListView(

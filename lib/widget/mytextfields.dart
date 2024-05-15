@@ -61,6 +61,65 @@ class NormalTextField extends StatelessWidget {
   }
 }
 
+class OnTapTextField extends StatelessWidget {
+  final controller;
+  final String hintText;
+  final bool disabling;
+  final Function()? onTap;
+
+  const OnTapTextField({super.key, required this.controller, required this.hintText, required this.disabling, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+      child: TextFormField(
+        onTap: onTap,
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+              fontSize: fontNormalSize,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.2
+          ),
+        ),
+        readOnly: disabling,
+        onEditingComplete: (){},
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Required !';
+          }
+          return null;
+        },
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        controller: controller,
+        decoration: InputDecoration(
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.deepOrange),
+          ),
+          fillColor: Colors.deepOrange.shade50,
+          filled: true,
+          labelText: hintText,
+          labelStyle: GoogleFonts.poppins(
+            textStyle: TextStyle(
+                fontSize: fontNormalSize,
+                color: Colors.grey.shade500,
+                letterSpacing: 1.2
+            ),
+          ),
+        ),
+      ),
+    ) ;
+  }
+}
+
 class PasswordTextField extends StatefulWidget {
   final controller;
   final String hintText;

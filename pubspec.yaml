@@ -76,6 +76,7 @@ dependencies:
   signature:
   pdf: any
   printing: any
+  omni_datetime_picker:
 
 dev_dependencies:
   flutter_test:

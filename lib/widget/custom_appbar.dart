@@ -1,3 +1,4 @@
+import 'package:enye_app/screens/unread/bookings_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -99,7 +100,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return UnreadPage(message: message as RemoteMessage);
+                    return BookingsPage(message: message as RemoteMessage);
                   },
                 ),
               );
