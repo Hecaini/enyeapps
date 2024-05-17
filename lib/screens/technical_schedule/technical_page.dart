@@ -372,20 +372,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
               const Spacer(),
               Container(),
 
-              services.status == "Unread" ?
-              _bottomSheetButton(
-                label: "Acknowledge",
-                onTap: (){
-                  setState(() {
-                    Navigator.pop(context);
-                    _showAnotherBottomSheet(context, services, "Acknowledge");
-                  });
-                },
-                clr: Colors.blue,
-                context:context,
-              ): Container(),
-
-              (services.status == "On Process" && userInfo?.status == "Employee")
+              (services.statusCategory == 'service') && (services.status == "On Process" && userInfo?.status == "Employee")
                 || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId) ?
               _bottomSheetButton(
                 label: "Service Order",
@@ -1059,7 +1046,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
         ),
         calendarBuilders: CalendarBuilders(
           markerBuilder: (context, day, events) => events.isNotEmpty
-              ? Container(
+          ? Container(
             width: 16,
             height: 16,
             alignment: Alignment.center,
@@ -1072,7 +1059,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
             ),
           )
-              : null,
+          : null,
         ),
         onFormatChanged: (format) {
           if (_calendarFormat != format) {
