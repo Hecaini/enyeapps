@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:enye_app/screens/technical_schedule/technical_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:http/http.dart' as http;
 
+import '../../config/config.dart';
 import '../../widget/widgets.dart';
 import '../screens.dart';
 
@@ -17,7 +21,7 @@ class SetServicePage extends StatefulWidget {
   State<SetServicePage> createState() => _SetServicePageState();
 }
 
-class _SetServicePageState extends State<SetServicePage> with TickerProviderStateMixin {
+class _SetServicePageState extends State<SetServicePage> {
 
   bool _isLoading = true;
   bool disabling = false;
@@ -26,24 +30,38 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
   final txtEndDate = TextEditingController();
   final txtNotes = TextEditingController();
 
+  String engineerIds = '';
+  String technicianIds = '';
+
+  UserLogin? userInfo; //users session
+  bool? userSessionFuture;
+
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
-
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 60),
-    vsync: this,
-  )..repeat();
 
   @override
   void initState() {
     super.initState();
+
+    //calling session data
+    CheckSessionData().getUserSessionStatus().then((session) {
+      if (session == true) {
+        CheckSessionData().getClientsData().then((value) {
+          setState(() {
+            userInfo = value;
+          });
+        });
+        userSessionFuture = session;
+      } else {
+        userSessionFuture = session;
+      }
+    });
 
     _getAccounts();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -166,6 +184,60 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
           txtEndDate.text = DateFormat('MMM d, yyyy hh:mm a').format(_selectedEndDate!).toString();
         }
       });
+    }
+  }
+
+  _saveAppointment(){
+    AppointmentServices.setServiceAppointment(
+        widget.services.id, _selectedStartDate.toString(),
+        _selectedEndDate.toString(), txtNotes.text,
+        engineerIds, technicianIds, userInfo!.userId.toString()
+    ).then((result) {
+      Map<String, dynamic> jsonResult = jsonDecode(result);
+
+      if(jsonResult['message'].toString().contains("success")){
+        // sendPushNotifications();
+        // _getServices();
+        // clearFields();
+        // Navigator.of(context).pop();
+
+        _custSnackbar(
+            context,
+            "Successfully saved !",
+            Colors.green,
+            Icons.check_box
+        );
+        sendPushNotifications("Set-sched", widget.services.id, jsonResult['supportId'].toString());
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.pop(context, true);
+        });
+      } else {
+        _custSnackbar(
+            context,
+            "Error occured... $result",
+            Colors.redAccent,
+            Icons.dangerous_rounded
+        );
+      }
+    });
+  }
+
+  Future<void> sendPushNotifications(String status, String svcId, String appId) async {
+    //final url = 'https://enye.com.ph/enyecontrols_app/login_user/send1.php'; // Replace this with the URL to your PHP script
+    final response = await http.post(
+      Uri.parse(API.pushNotif),
+      body: {
+        'action' : status,
+        'svc_id' : svcId,
+        'appointment_id' : appId,
+      },
+    );
+    if (response.statusCode == 200) {
+      if(response.body == "success"){
+        print('send push notifications.');
+      }
+    } else {
+      print('Failed to send push notifications.');
     }
   }
 
@@ -379,15 +451,15 @@ class _SetServicePageState extends State<SetServicePage> with TickerProviderStat
                         Colors.redAccent,
                         Icons.error
                       );
+                    } else {
+                      engineerIds = _usersEngineers.map((engineer) => engineer.user_id.toString()).join(', ');
+                      print(engineerIds);
+
+                      technicianIds = _usersTechnicians.map((technician) => technician.user_id.toString()).join(', ');
+                      print(technicianIds);
+
+                      _saveAppointment();
                     }
-
-                    String engineerIds = _usersEngineers.map((engineer) => engineer.user_id.toString()).join(', ');
-                    print(engineerIds);
-
-                    String technicianIds = _usersTechnicians.map((technician) => technician.user_id.toString()).join(', ');
-                    print(technicianIds);
-
-                    // _saveSO();
                   },
                   text: 'SAVE'
                 ),

@@ -115,7 +115,7 @@ class _BookingsPageState extends State<BookingsPage> with TickerProviderStateMix
         setState(() {
           _svcSupport =
               technicalData.where((element) => (element.service == "Installation" || element.service == "Survey" || element.service == "Technical Support")
-                  && (element.status == "Unread" || element.status == "Set-sched" || element.status == "Re-sched")).toList();
+                  && (element.status == "Unread" || element.status == "Re-sched")).toList();
         });
         _isLoadingUR = false;
       });
@@ -124,7 +124,7 @@ class _BookingsPageState extends State<BookingsPage> with TickerProviderStateMix
         setState(() {
           _svcMeeting =
               technicalData.where((element) => (element.status == "Presentaion/Consultation" || element.service == "Technical Meeting")
-                  && (element.status == "Unread" || element.status == "Set-sched" || element.status == "Re-sched")).toList();
+                  && (element.status == "Unread" || element.status == "Re-sched")).toList();
         });
         _isLoadingACC = false;
       });
@@ -133,7 +133,7 @@ class _BookingsPageState extends State<BookingsPage> with TickerProviderStateMix
         setState(() {
           _svcOthers =
               technicalData.where((element) => element.status == "Other"
-                  && (element.status == "Unread" || element.status == "Set-sched" || element.status == "Re-sched")).toList();
+                  && (element.status == "Unread" || element.status == "Re-sched")).toList();
         });
         _isLoadingRS = false;
       });
@@ -143,12 +143,12 @@ class _BookingsPageState extends State<BookingsPage> with TickerProviderStateMix
       setState(() {
         _services = technicalData;
         svcSupportCount = technicalData.where((element) => (element.service == "Installation" || element.service == "Survey" || element.service == "Technical Support")
-            && (element.status == "Unread" || element.status == "Set-sched" || element.status == "Re-sched")).length;
+            && (element.status == "Unread" || element.status == "Re-sched")).length;
 
-        svcMeetingCount = technicalData.where((element) => (element.status == "Presentaion/Consultation" || element.service == "Technical Meeting")
-            && (element.status == "Unread" || element.status == "Set-sched" || element.status == "Re-sched")).length;
+        svcMeetingCount = technicalData.where((element) => (element.service == "Presentaion/Consultation" || element.service == "Technical Meeting")
+            && (element.status == "Unread" || element.status == "Re-sched")).length;
 
-        svcOthersCount = technicalData.where((element) => element.status == "Other" && (element.status == "Unread" || element.status == "Set-sched" || element.status == "Re-sched")).length;
+        svcOthersCount = technicalData.where((element) => element.service == "Other" && (element.status == "Unread" || element.status == "Re-sched")).length;
       });
     });
   }
@@ -465,7 +465,12 @@ class _BookingsPageState extends State<BookingsPage> with TickerProviderStateMix
                             // _showStatusChange(context, svcUnread);
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => SetServicePage(services: svcUnread)),
-                            );
+                            ).then((value) {
+                              // Refresh the services once the StatusPage is popped
+                              _getServices();
+                              _getEcCalendar();
+                              setState(() {});
+                            });
                           },
                           child: BookingtaskTile(services: svcUnread),
                         );
