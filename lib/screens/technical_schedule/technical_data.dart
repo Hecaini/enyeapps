@@ -19,6 +19,7 @@ class TechnicalData {
   String clientContact;
   String clientEmail;
   String status;
+  String statusCategory;
   String svcHandler;
   String notesComplete;
   String assignedBy;
@@ -43,6 +44,7 @@ class TechnicalData {
     required this.clientContact,
     required this.clientEmail,
     required this.status,
+    required this.statusCategory,
     required this.svcHandler,
     required this.notesComplete,
     required this.assignedBy
@@ -69,6 +71,7 @@ class TechnicalData {
       clientContact: json['client_contact'] as String,
       clientEmail: json['client_email'] as String,
       status: json['status'] as String,
+      statusCategory: json['status_category'] as String,
       svcHandler: json['service_handler'] as String,
       notesComplete: json['notesComplete'] as String,
       assignedBy: json['assigned_by'] as String,
