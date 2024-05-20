@@ -39,7 +39,7 @@ class AppointmentData {
       endDatetime: json['end_datetime'] as String,
       agenda: json['agenda'] as String,
       location: json['location'] as String,
-      inCharge: json['in_charge	'] as String,
+      inCharge: json['in_charge'] as String,
       notes: json['notes'] as String,
       attachFile: json['attach_file'] as String,
       engineer: json['engineer'] as String,

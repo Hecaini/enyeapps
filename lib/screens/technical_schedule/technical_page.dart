@@ -56,6 +56,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _getAccounts();
     _getDepartments();
     _getPositions();
+    _getOnProcessAppointment();
 
     //calling session data
     CheckSessionData().getUserSessionStatus().then((userSession) {
@@ -194,19 +195,48 @@ class _TechSchedPageState extends State<TechSchedPage> {
   //below this are for technical datas get to server
   late List<TechnicalData> _services;
   _getServices(){
+    TechnicalDataServices.getTechnicalData().then((technicalData){
+      setState(() {
+        _services = technicalData.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
+      });
+    });
+  }
+
+  List<AppointmentData> _opAppointment = [];
+  _getOnProcessAppointment(){
     if(userInfo?.status == "Employee") {
-      TechnicalDataServices.getTechnicalData().then((technicalData){
+      AppointmentServices.getOnProcessAppointment().then((Appointment){
         setState(() {
-          _services = technicalData.where((element) => (element.status == "On Process" || element.status == "Set-sched") && element.svcHandler == userInfo?.userId).toList();
+          _opAppointment = Appointment.where((element) => (element.status == "On Process" || element.status == "Set-sched") &&
+              _isUserAssigned(element, userInfo!.userId)).toList();
         });
       });
     } else {
-      TechnicalDataServices.getTechnicalData().then((technicalData){
+      AppointmentServices.getOnProcessAppointment().then((Appointment){
         setState(() {
-          _services = technicalData.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
+          _opAppointment = Appointment.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
         });
       });
     }
+  }
+
+  bool _isUserAssigned(AppointmentData appointment, String userId) {
+    if (appointment.engineer != null) {
+      List<String> engineerList = appointment.engineer.split(',').map((e) => e.trim()).toList();
+      return engineerList.contains(userId);
+    }
+
+    if (appointment.technician != null) {
+      List<String> technicianList = appointment.technician.split(',').map((e) => e.trim()).toList();
+      return technicianList.contains(userId);
+    }
+
+    if (appointment.inCharge != null) {
+      List<String> inChargeList = appointment.inCharge.split(',').map((e) => e.trim()).toList();
+      return inChargeList.contains(userId);
+    }
+
+    return false;
   }
 
   late List<Department> _department;
@@ -217,7 +247,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
       });
     });
   }
-
 
   late List<Position> _position;
   late List<Position> _filteredPosition;
@@ -308,13 +337,15 @@ class _TechSchedPageState extends State<TechSchedPage> {
           const SizedBox(height: 10,),
           Expanded(
             child: ListView.builder(
-              itemCount: _services.length,
+              itemCount: _opAppointment.length,
               itemBuilder: (_, index){
-                TechnicalData services = _services[index];
+                AppointmentData appointment = _opAppointment[index];
 
-                if (DateFormat.yMd().format(DateTime.parse(services.sDateSched)) == DateFormat.yMd().format(_selectedDay!)
-                  || DateFormat.yMd().format(DateTime.parse(services.eDateSched)) == DateFormat.yMd().format(_selectedDay!)
-                  || (_selectedDay!.isAfter(DateTime.parse(services.sDateSched)) && _selectedDay!.isBefore(DateTime.parse(services.eDateSched)))){
+                TechnicalData? services = _services.where((service) => service.id == appointment.svcId).elementAtOrNull(0);
+
+                if (DateFormat.yMd().format(DateTime.parse(appointment.startDatetime)) == DateFormat.yMd().format(_selectedDay!)
+                  || DateFormat.yMd().format(DateTime.parse(appointment.endDatetime)) == DateFormat.yMd().format(_selectedDay!)
+                  || (_selectedDay!.isAfter(DateTime.parse(appointment.startDatetime)) && _selectedDay!.isBefore(DateTime.parse(appointment.endDatetime)))){
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     child: SlideAnimation(
@@ -324,9 +355,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
                             GestureDetector(
                               onTap: (){
                                 print('selected Date: ${_selectedDay.toString()}');
-                                _showBottomSheet(context, services, _selectedDay.toString());
+                                _showBottomSheet(context, services!, _selectedDay.toString());
                               },
-                              child: TaskTile(services: services),
+                              child: TaskTile(services: services!),
                             )
                           ],
                         ),
@@ -996,10 +1027,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
         rangeSelectionMode: _rangeSelectionMode,
         /*eventLoader: (day) => _services.where((services) => isSameDay(DateTime.parse(services.dateSched),day)).toList(),*/
         eventLoader: (day) {
-          return _services.where((service) {
+          return _opAppointment.where((appointment) {
             // Check if the service date is within the specified range
-            DateTime serviceStartDate = DateTime.parse(service.sDateSched.toString()); // Remove "00:00:00"
-            DateTime serviceEndDate = DateTime.parse(service.eDateSched.toString());   // Remove "00:00:00"
+            DateTime serviceStartDate = DateTime.parse(appointment.startDatetime.toString()); // Remove "00:00:00"
+            DateTime serviceEndDate = DateTime.parse(appointment.endDatetime.toString());   // Remove "00:00:00"
 
             if(serviceStartDate == serviceEndDate){
               return isSameDay(serviceStartDate,day);
