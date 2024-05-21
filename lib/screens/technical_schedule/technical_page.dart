@@ -208,7 +208,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
       AppointmentServices.getOnProcessAppointment().then((Appointment){
         setState(() {
           _opAppointment = Appointment.where((element) => (element.status == "On Process" || element.status == "Set-sched") &&
-              _isUserAssigned(element, userInfo!.userId)).toList();
+              (_isUserAssigned(element.engineer, userInfo!.userId) || _isUserAssigned(element.technician, userInfo!.userId)
+              || _isUserAssigned(element.inCharge, userInfo!.userId))).toList();
         });
       });
     } else {
@@ -220,20 +221,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
-  bool _isUserAssigned(AppointmentData appointment, String userId) {
-    if (appointment.engineer != null) {
-      List<String> engineerList = appointment.engineer.split(',').map((e) => e.trim()).toList();
-      return engineerList.contains(userId);
-    }
-
-    if (appointment.technician != null) {
-      List<String> technicianList = appointment.technician.split(',').map((e) => e.trim()).toList();
-      return technicianList.contains(userId);
-    }
-
-    if (appointment.inCharge != null) {
-      List<String> inChargeList = appointment.inCharge.split(',').map((e) => e.trim()).toList();
-      return inChargeList.contains(userId);
+  bool _isUserAssigned(String usersInCharge, String userId) {
+    if (usersInCharge != null || usersInCharge != "") {
+      List<String> userInChargeList = usersInCharge.split(',').map((e) => e.trim()).toList();
+      return userInChargeList.contains(userId);
     }
 
     return false;
@@ -385,7 +376,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
         return Container(
           padding: const EdgeInsets.only(top: 4),
           height: (services.status == "On Process" && userInfo?.status == "Employee")
-            || (services.status == "On Process" && userInfo?.status != "Employee" && _isUserAssigned(appointment, userInfo!.userId))
+            || (services.status == "On Process" && userInfo?.status != "Employee" &&
+              (_isUserAssigned(appointment.engineer, userInfo!.userId) || _isUserAssigned(appointment.technician, userInfo!.userId) || _isUserAssigned(appointment.inCharge, userInfo!.userId)))
             ? MediaQuery.of(context).size.height * 0.34
             : MediaQuery.of(context).size.height * 0.24,
           color: Colors.white,
@@ -404,8 +396,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
               Container(),
 
               (services.statusCategory == 'service') && (services.status == "On Process" && userInfo?.status == "Employee")
-                || (services.status == "On Process" && userInfo?.status != "Employee" && _isUserAssigned(appointment, userInfo!.userId)) ?
-              _bottomSheetButton(
+                || (services.status == "On Process" && userInfo?.status != "Employee" &&
+                  (_isUserAssigned(appointment.engineer, userInfo!.userId) || _isUserAssigned(appointment.technician, userInfo!.userId) || _isUserAssigned(appointment.inCharge, userInfo!.userId)))
+              ? _bottomSheetButton(
                 label: "Service Order",
                 onTap: (){
                   setState(() {
@@ -832,7 +825,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                     ),
 
                     ..._users.map((engineer) {
-                      if(_isUserAssigned(appointment, engineer.user_id)) {
+                      if(_isUserAssigned(appointment.engineer, engineer.user_id)) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -916,7 +909,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                     ),
 
                     ..._users.map((technician) {
-                      if(_isUserAssigned(appointment, technician.user_id)) {
+                      if(_isUserAssigned(appointment.technician, technician.user_id)) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -975,54 +968,91 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 )
                 : const SizedBox.shrink(),
 
-                whatToDo == "View"
-                 ? Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 30,),
+                SizedBox(height: screenHeight * 0.01,),
+                appointment.inCharge.isNotEmpty || appointment.inCharge != ""
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: screenWidth * 0.15),
+                        decoration: BoxDecoration(
+                          color: Colors.deepOrange.shade300,
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(color: Colors.white70, width: 1.5),
+                        ),
+                        child: Text(
+                          'Person In Charge',
+                          style: TextStyle(
+                            fontSize: fontSmallSize,
+                            letterSpacing: 0.8,
+                            color: Colors.white, // Optionally, set text color
+                          ),
+                        ),
+                      ),
+                    ),
 
-                      services.svcHandler != ''
-                       ? RichText(
-                          softWrap: true,
-                          text:TextSpan(
-                              children: <TextSpan> [
-                                const TextSpan(text: "Person In Charge :  ",
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
+                    ..._users.map((incharge) {
+                      if(_isUserAssigned(appointment.inCharge, incharge.user_id)) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              width: (screenWidth + screenHeight) / 25,
+                              height: (screenWidth + screenHeight) / 25,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: incharge.image.isNotEmpty == true && incharge.image != ""
+                                      ? Image.network(API.usersImages + incharge.image).image
+                                      : const AssetImage("assets/icons/user.png"),
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.75,
+                                child: RichText(
+                                  softWrap: true,
+                                  text: TextSpan(children: <TextSpan>
+                                  [
+                                    TextSpan(text: incharge.name,
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontSmallSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: Colors.black54
+                                        ),
+                                      ),
+                                    ),
 
-                                TextSpan(text: _users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).name,
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
-
-                                TextSpan(text: "\n\t ${_position.where((position) => position.id == _users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).position).elementAt(0).position}",
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
-
-                                TextSpan(text: " || ${_users.where((accInfo) => accInfo.user_id == services.svcHandler).elementAt(0).contact}",
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
-                              ]
-                          )
-                      )
-                       : const SizedBox.shrink(),
-
-                      const SizedBox(height: 20,),
-                      services.notesComplete != ''
-                        ? RichText(
-                        softWrap: true,
-                        text:TextSpan(
-                            children: <TextSpan> [
-                              const TextSpan(text: "Notes :  ",
-                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.deepOrange, letterSpacing: 0.8),),
-
-                              TextSpan(text: services.notesComplete,
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black54, letterSpacing: 0.8),),
-                            ]
-                        )
-                    )
-                        : const SizedBox.shrink(),
-                    ],
-                  ),
+                                    TextSpan(text: "\n${_position.where((position) => position.id == incharge.position).elementAtOrNull(0)?.position}",
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontXSmallSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: Colors.grey
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    }).toList(),
+                  ],
                 )
-                 : const SizedBox.shrink(),
+                : const SizedBox.shrink(),
+
+
 
                 //save data into Task Completed
                 whatToDo == "Task Completed"
