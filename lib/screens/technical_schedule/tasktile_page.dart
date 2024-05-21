@@ -6,7 +6,8 @@ import '../screens.dart';
 
 class TaskTile extends StatelessWidget {
   final TechnicalData services;
-  TaskTile({super.key, required this.services});
+  final AppointmentData appointment;
+  TaskTile({super.key, required this.services, required this.appointment});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +87,7 @@ class TaskTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${DateFormat.yMMMd().format(DateTime.parse(services.sDateSched))} TO ${DateFormat.yMMMd().format(DateTime.parse(services.eDateSched))}',
+                      '${DateFormat.yMMMd().format(DateTime.parse(appointment.startDatetime))} TO ${DateFormat.yMMMd().format(DateTime.parse(appointment.endDatetime))}',
                       style: GoogleFonts.lato(
                         textStyle:
                         TextStyle(fontSize: 13, color: Colors.grey[100]),
@@ -94,6 +95,26 @@ class TaskTile extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 12,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.access_time_filled_rounded,
+                      color: Colors.grey[200],
+                      size: 18,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${DateFormat.jm().format(DateTime.parse(appointment.startDatetime))} - ${DateFormat.jm().format(DateTime.parse(appointment.endDatetime))}',
+                      style: GoogleFonts.lato(
+                        textStyle:
+                        TextStyle(fontSize: 13, color: Colors.grey[100]),
+                      ),
+                    ),
+                  ],
+                ),
+
                 const SizedBox(height: 12),
                 RichText(
                   softWrap: true,

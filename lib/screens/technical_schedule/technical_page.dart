@@ -355,9 +355,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
                             GestureDetector(
                               onTap: (){
                                 print('selected Date: ${_selectedDay.toString()}');
-                                _showBottomSheet(context, services!, _selectedDay.toString());
+                                _showBottomSheet(context, services!, _selectedDay.toString(), appointment);
                               },
-                              child: TaskTile(services: services!),
+                              child: TaskTile(services: services!, appointment: appointment),
                             )
                           ],
                         ),
@@ -376,7 +376,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     );
   }
 
-  _showBottomSheet (BuildContext context, TechnicalData services, String selectedDay) {
+  _showBottomSheet (BuildContext context, TechnicalData services, String selectedDay, AppointmentData appointment) {
     showModalBottomSheet(
       isScrollControlled: true,
       useRootNavigator: true,
@@ -385,7 +385,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
         return Container(
           padding: const EdgeInsets.only(top: 4),
           height: (services.status == "On Process" && userInfo?.status == "Employee")
-            || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId)
+            || (services.status == "On Process" && userInfo?.status != "Employee" && _isUserAssigned(appointment, userInfo!.userId))
             ? MediaQuery.of(context).size.height * 0.34
             : MediaQuery.of(context).size.height * 0.24,
           color: Colors.white,
@@ -404,7 +404,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
               Container(),
 
               (services.statusCategory == 'service') && (services.status == "On Process" && userInfo?.status == "Employee")
-                || (services.status == "On Process" && userInfo?.status != "Employee" && services.svcHandler == userInfo?.userId) ?
+                || (services.status == "On Process" && userInfo?.status != "Employee" && _isUserAssigned(appointment, userInfo!.userId)) ?
               _bottomSheetButton(
                 label: "Service Order",
                 onTap: (){
@@ -427,7 +427,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 onTap: (){
                   setState(() {
                     Navigator.pop(context);
-                    _showAnotherBottomSheet(context, services, "View");
+                    _showAnotherBottomSheet(context, services, "View", appointment);
                   });
                 },
                 clr: Colors.orangeAccent,
@@ -456,7 +456,14 @@ class _TechSchedPageState extends State<TechSchedPage> {
   String? valueChooseAccount;
   String? valueChooseDepartment;
   String? valueChoosePosition;
-  _showAnotherBottomSheet (BuildContext context, TechnicalData services, String whatToDo) {
+  _showAnotherBottomSheet (BuildContext context, TechnicalData services, String whatToDo, AppointmentData appointment) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontXSmallSize = ResponsiveTextUtils.getXSmallFontSize(screenWidth);
+    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
     showModalBottomSheet(
         isScrollControlled: true,
         useRootNavigator: true,
@@ -473,16 +480,16 @@ class _TechSchedPageState extends State<TechSchedPage> {
               children: <Widget> [
                 Container(
                   height: 6,
-                  margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.4, right: MediaQuery.of(context).size.width * 0.4, top: 4),
+                  margin: EdgeInsets.only(left: screenWidth * 0.4, right: screenWidth* 0.4, top: 4),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.grey[300]
                   ),
                 ),
 
-                const SizedBox(height: 30,),
+                SizedBox(height: screenHeight * 0.03,),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -490,50 +497,96 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         softWrap: true,
                         text:TextSpan(
                           children: <TextSpan> [
-                            const TextSpan(text: "Title :  ",
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                            TextSpan(text: "Title :  ",
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    fontSize: fontXSmallSize,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.8,
+                                    color: Colors.grey
+                                ),
+                              ),
+                            ),
 
                             TextSpan(text: services.svcTitle,
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    fontSize: fontNormalSize,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.8,
+                                    color: Colors.black54
+                                ),
+                              ),
+                            ),
                           ]
                         )
                       ),
 
-                      const SizedBox(height: 10,),
+                      SizedBox(height: screenHeight * 0.005,),
                       RichText(
                         textAlign: TextAlign.justify,
                         softWrap: true,
                         text:TextSpan(
                             children: <TextSpan> [
-                              const TextSpan(text: "Description :  ",
-                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),),
+                              TextSpan(text: "Description :  ",
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                      fontSize: fontXSmallSize,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.8,
+                                      color: Colors.grey
+                                  ),
+                                ),
+                              ),
 
                               TextSpan(text: services.svcDesc,
-                                style: const TextStyle(fontSize: 14, color: Colors.black54, letterSpacing: 0.8),),
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                      fontSize: fontSmallSize,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.8,
+                                      color: Colors.black54
+                                  ),
+                                ),
+                              ),
                             ]
                         )
                       ),
 
-                      const SizedBox(height: 10,),
+                      SizedBox(height: screenHeight * 0.005,),
                       RichText(
                           textAlign: TextAlign.justify,
                           softWrap: true,
                           text:TextSpan(
                               children: <TextSpan> [
-                                const TextSpan(
+                                TextSpan(
                                   text: 'Requestor : ',
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8),
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
                                 ),
 
                                 TextSpan(
                                   text: '${services.reqName} | ${services.reqPosition}',
-                                  style: const TextStyle(fontSize: 13, color: Colors.black54, letterSpacing: 0.8),
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontSmallSize,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.8,
+                                        color: Colors.black54
+                                    ),
+                                  ),
                                 ),
                               ]
                           )
                       ),
 
-                      const SizedBox(height: 15,),
+                      SizedBox(height: screenHeight * 0.01,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -544,45 +597,123 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${DateFormat.yMMMMd().format(DateTime.parse(services.sDateSched))} TO ${DateFormat.yMMMMd().format(DateTime.parse(services.eDateSched))}',
-                            style: GoogleFonts.lato(
-                              textStyle:
-                              const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                            '${DateFormat.yMMMMd().format(DateTime.parse(appointment.startDatetime))} TO ${DateFormat.yMMMMd().format(DateTime.parse(appointment.endDatetime))}',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                  fontSize: fontSmallSize,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.8,
+                              ),
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 15,),
+                      SizedBox(height: screenHeight * 0.005,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.access_time_filled_rounded,
+                            size: 18,
+                            color: Colors.deepOrange,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${DateFormat.jm().format(DateTime.parse(appointment.startDatetime))} - ${DateFormat.jm().format(DateTime.parse(appointment.endDatetime))}',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: fontSmallSize,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: screenHeight * 0.012,),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.52,
+                            width: screenWidth * 0.52,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text("Client Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                Text("Client Name : ",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t${services.clientName}",
-                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontSize: fontSmallSize,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  ),
                                 ),
 
-                                const SizedBox(height: 5,),
-                                const Text("Contact : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                SizedBox(height: screenHeight * 0.0025,),
+                                Text("Contact : ",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t${services.clientContact}",
-                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontSize: fontSmallSize,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  ),
                                 ),
 
-                                const SizedBox(height: 5,),
-                                const Text("Email : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                SizedBox(height: screenHeight * 0.0025,),
+                                Text("Email : ",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: services.clientEmail,
-                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 0.8),),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontSize: fontSmallSize,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 //Text(services.svcDesc, maxLines: 5, softWrap: false,),
                               ],
@@ -590,31 +721,82 @@ class _TechSchedPageState extends State<TechSchedPage> {
                           ),
 
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.38,
+                            width: screenWidth * 0.38,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text("Project Name : ", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                Text("Project Name : ",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t${services.clientProjName}",
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontSize: fontSmallSize,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  ),
                                 ),
 
-                                const SizedBox(height: 5,),
-                                const Text("Company :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                SizedBox(height: screenHeight * 0.0025,),
+                                Text("Company : ",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t${services.clientCompany}",
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontSize: fontSmallSize,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  ),
                                 ),
 
-                                const SizedBox(height: 5,),
-                                const Text("Location :", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.8)),
+                                SizedBox(height: screenHeight * 0.0025,),
+                                Text("Location : ",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontXSmallSize,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
                                 RichText(
                                   softWrap: true,
                                   text: TextSpan(text: "\t${services.clientLocation}",
-                                    style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500, letterSpacing: 0.8),),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontSize: fontSmallSize,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -624,6 +806,174 @@ class _TechSchedPageState extends State<TechSchedPage> {
                     ],
                   ),
                 ),
+
+                SizedBox(height: screenHeight * 0.02,),
+                appointment.engineer.isNotEmpty || appointment.engineer != ""
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: screenWidth * 0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.deepOrange.shade300,
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(color: Colors.white70, width: 1.5),
+                        ),
+                        child: Text(
+                          'Engineers',
+                          style: TextStyle(
+                            fontSize: fontSmallSize,
+                            letterSpacing: 0.8,
+                            color: Colors.white, // Optionally, set text color
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    ..._users.map((engineer) {
+                      if(_isUserAssigned(appointment, engineer.user_id)) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              width: (screenWidth + screenHeight) / 25,
+                              height: (screenWidth + screenHeight) / 25,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: engineer.image.isNotEmpty == true && engineer.image != ""
+                                      ? Image.network(API.usersImages + engineer.image).image
+                                      : const AssetImage("assets/icons/user.png"),
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.75,
+                                child: RichText(
+                                  softWrap: true,
+                                  text: TextSpan(children: <TextSpan>
+                                  [
+                                    TextSpan(text: engineer.name,
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontSmallSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: Colors.black54
+                                        ),
+                                      ),
+                                    ),
+
+                                    TextSpan(text: "\n${_position.where((position) => position.id == engineer.position).elementAtOrNull(0)?.position}",
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontXSmallSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: Colors.grey
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    }).toList(),
+                  ],
+                )
+                : const SizedBox.shrink(),
+
+                SizedBox(height: screenHeight * 0.01,),
+                appointment.technician.isNotEmpty || appointment.technician != ""
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: screenWidth * 0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.deepOrange.shade300,
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(color: Colors.white70, width: 1.5),
+                        ),
+                        child: Text(
+                          'Technicians',
+                          style: TextStyle(
+                            fontSize: fontSmallSize,
+                            letterSpacing: 0.8,
+                            color: Colors.white, // Optionally, set text color
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    ..._users.map((technician) {
+                      if(_isUserAssigned(appointment, technician.user_id)) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              width: (screenWidth + screenHeight) / 25,
+                              height: (screenWidth + screenHeight) / 25,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: technician.image.isNotEmpty == true && technician.image != ""
+                                      ? Image.network(API.usersImages + technician.image).image
+                                      : const AssetImage("assets/icons/user.png"),
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.75,
+                                child: RichText(
+                                  softWrap: true,
+                                  text: TextSpan(children: <TextSpan>
+                                  [
+                                    TextSpan(text: technician.name,
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontSmallSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: Colors.black54
+                                        ),
+                                      ),
+                                    ),
+
+                                    TextSpan(text: "\n${_position.where((position) => position.id == technician.position).elementAtOrNull(0)?.position}",
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontXSmallSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: Colors.grey
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    }).toList(),
+                  ],
+                )
+                : const SizedBox.shrink(),
 
                 whatToDo == "View"
                  ? Container(
@@ -671,187 +1021,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
                         : const SizedBox.shrink(),
                     ],
                   ),
-                )
-                 : const SizedBox.shrink(),
-
-                //save data into On Process
-                whatToDo == "Acknowledge"
-                 ? StatefulBuilder(
-                  builder: (BuildContext context, setState){
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        children: [
-
-                          const SizedBox(height: 10,),
-                          Row(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 12),
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                height: 55,
-                                width: MediaQuery.of(context).size.width * 0.35,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 2, color: Colors.deepOrange.shade300),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: DropdownButton(
-                                  alignment: Alignment.bottomCenter,
-                                  underline:Container(),
-                                  style: const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
-                                  isDense: true,
-                                  iconSize: 36,
-                                  iconEnabledColor: Colors.deepOrange,
-                                  isExpanded: true,
-                                  value: valueChooseDepartment,
-                                  onChanged: (value){
-                                    setState(() {
-                                      //use for clearing lang para once magbago
-                                      //  yung department mag-empty muna yung position (iwas error)
-                                      if(valueChoosePosition != null){
-                                        valueChoosePosition = null;
-                                      }
-
-                                      valueChooseDepartment = value;
-                                      _filteredPosition = _position.where((element) => element.departmentId == value).toList();
-                                      _filteredUsers = _users.where((element) => element.department == value).toList();
-
-                                      if(_filteredUsers.isEmpty){
-                                        _dropdownError = "Selected Department has NO DATA, SHOW ALL USERS";
-                                      } else {
-                                        _dropdownError = null;
-                                      }
-                                    });
-                                  },
-                                  hint: const Text("Department"),
-                                  items: _department.map((department) => DropdownMenuItem(
-                                    alignment: Alignment.bottomCenter,
-                                    value: department.id.toString(),
-                                    child: Text(department.deptShname.toString(), textAlign: TextAlign.center,),
-                                  )).toList(),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(right: 12),
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                height: 55,
-                                width: MediaQuery.of(context).size.width * 0.52,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 2, color: Colors.deepOrange.shade300),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: DropdownButton(
-                                  alignment: Alignment.bottomCenter,
-                                  underline:Container(),
-                                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
-                                  isDense: true,
-                                  iconSize: 36,
-                                  iconEnabledColor: Colors.deepOrange,
-                                  isExpanded: true,
-                                  value: valueChoosePosition,
-                                  onChanged: (value){
-                                    setState(() {
-                                      valueChoosePosition = value;
-                                      if(valueChooseDepartment != null) {
-                                        _filteredUsers = _users.where((element) => element.position == value && element.department == valueChooseDepartment).toList();
-                                      } else {
-                                        _filteredUsers = _users.where((element) => element.position == value).toList();
-                                      }
-
-                                      if(_filteredUsers.isEmpty){
-                                        _dropdownError = "Selected Position has NO DATA, SHOW ALL USERS";
-                                      } else {
-                                        _dropdownError = null;
-                                      }
-                                    });
-                                  },
-                                  hint: const Text("Position"),
-                                  items: _filteredPosition.isEmpty
-                                  ? _position.map((position) => DropdownMenuItem(
-                                    alignment: Alignment.bottomCenter,
-                                    value: position.id.toString(),
-                                    child: Text(position.position.toString(), textAlign: TextAlign.center,),
-                                  )).toList()
-                                  : _filteredPosition.map((position) => DropdownMenuItem(
-                                    alignment: Alignment.bottomCenter,
-                                    value: position.id.toString(),
-                                    child: Text(position.position.toString(), textAlign: TextAlign.center,),
-                                  )).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          //drop-down button svc handler
-                          const SizedBox(height: 10,),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 12),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            height: 55,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Colors.deepOrange.shade300),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: DropdownButton(
-                              alignment: Alignment.bottomCenter,
-                              underline:Container(),
-                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 0.8),
-                              isDense: true,
-                              iconSize: 36,
-                              iconEnabledColor: Colors.deepOrange,
-                              isExpanded: true,
-                              value: valueChooseAccount,
-                              onChanged: (value){
-                                setState(() {
-                                  valueChooseAccount = value;
-                                });
-                              },
-                              hint: const Text("Select Person In Charge * "),
-                              items: _filteredUsers.isEmpty
-                               ? _users.map((accountInfo) => DropdownMenuItem(
-                                alignment: Alignment.bottomCenter,
-                                value: accountInfo.user_id.toString(),
-                                child: Text("${accountInfo.name.toString()} || ${_position.where((element) => element.id == accountInfo.position).elementAtOrNull(0)?.position}", textAlign: TextAlign.center,),
-                              )).toList()
-                              : _filteredUsers.map((accountInfo) => DropdownMenuItem(
-                                alignment: Alignment.bottomCenter,
-                                value: accountInfo.user_id.toString(),
-                                child: Text("${accountInfo.name.toString()} || ${_position.where((element) => element.id == accountInfo.position).elementAtOrNull(0)?.position}", textAlign: TextAlign.center,),
-                              )).toList(),
-                            ),
-                          ),
-
-                          _dropdownError == null
-                              ? const SizedBox.shrink()
-                              : Center(
-                            child: Text(
-                              _dropdownError ?? "",
-                              style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-
-                          //save button for acknowledge
-                          const SizedBox(height: 10,),
-                          _bottomSheetButton(
-                            label: "Proceed to Processing",
-                            onTap: (){
-                              if (valueChooseAccount == null || valueChooseAccount!.isEmpty) {
-                                setState(() => _dropdownError = "Please select Person In Charge !");
-                              } else {
-                                setState(() {
-                                  _editToOnProcess(services);
-                                  Navigator.of(context).pop();
-                                });
-                              }
-                            },
-                            clr: Colors.green,
-                            context:context,
-                          ),
-                        ],
-                      )
-                    );
-                  }
                 )
                  : const SizedBox.shrink(),
 
