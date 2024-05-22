@@ -338,7 +338,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
         now.toString(), txtSysProduct.text,
         txtLocation.text, txtComplaint.text,
         txtStatus.text, txtRemarks.text,
-        selSysProd!, selSvcBy!,
+        selSysProd!, selSvcBy!, widget.selectedDay,
         txtConforme.text, imageName, imageData
     ).then((result) {
       if('success' == result){

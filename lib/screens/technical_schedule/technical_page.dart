@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
@@ -56,7 +60,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     _getAccounts();
     _getDepartments();
     _getPositions();
-    _getOnProcessAppointment();
+    _getServiceOrder();
 
     //calling session data
     CheckSessionData().getUserSessionStatus().then((userSession) {
@@ -66,6 +70,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
             userInfo = value;
           });
           _getServices();
+          _getOnProcessAppointment();
         });
         userSessionFuture = userSession;
       } else {
@@ -197,13 +202,23 @@ class _TechSchedPageState extends State<TechSchedPage> {
   _getServices(){
     TechnicalDataServices.getTechnicalData().then((technicalData){
       setState(() {
-        _services = technicalData.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
+        _services = technicalData;
+      });
+    });
+  }
+
+  List<ServiceOrder> _serviceOrder = [];
+  _getServiceOrder(){
+    SODataServices.getAllServiceOrder().then((serviceOrder){
+      setState(() {
+        _serviceOrder = serviceOrder;
       });
     });
   }
 
   List<AppointmentData> _opAppointment = [];
   _getOnProcessAppointment(){
+    print(userInfo?.status);
     if(userInfo?.status == "Employee") {
       AppointmentServices.getOnProcessAppointment().then((Appointment){
         setState(() {
@@ -314,6 +329,32 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
+  File? filePath;
+  String? fileName;
+  String? fileData;
+  String? showData;
+  bool disabling = false;
+  ImagePicker imagePicker = ImagePicker();
+
+  Future<void> selectFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        filePath = File(result.files.single.path!);
+        fileName = result.files.single.name;
+        fileData = base64Encode(filePath!.readAsBytesSync());
+        print(filePath);
+      });
+    }
+  }
+
+  bool _isImage(String filePath) {
+    final imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    final ext = filePath.split('.').last.toLowerCase();
+    return imageExtensions.contains(ext);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -334,31 +375,34 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
                 TechnicalData? services = _services.where((service) => service.id == appointment.svcId).elementAtOrNull(0);
 
-                if (DateFormat.yMd().format(DateTime.parse(appointment.startDatetime)) == DateFormat.yMd().format(_selectedDay!)
-                  || DateFormat.yMd().format(DateTime.parse(appointment.endDatetime)) == DateFormat.yMd().format(_selectedDay!)
-                  || (_selectedDay!.isAfter(DateTime.parse(appointment.startDatetime)) && _selectedDay!.isBefore(DateTime.parse(appointment.endDatetime)))){
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    child: SlideAnimation(
-                      child: FadeInAnimation(
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                print('selected Date: ${_selectedDay.toString()}');
-                                _showBottomSheet(context, services!, _selectedDay.toString(), appointment);
-                              },
-                              child: TaskTile(services: services!, appointment: appointment),
-                            )
-                          ],
+                if(services?.status == "Completed"){
+                  return Container();
+                } else {
+                  if (DateFormat.yMd().format(DateTime.parse(appointment.startDatetime)) == DateFormat.yMd().format(_selectedDay!)
+                      || DateFormat.yMd().format(DateTime.parse(appointment.endDatetime)) == DateFormat.yMd().format(_selectedDay!)
+                      || (_selectedDay!.isAfter(DateTime.parse(appointment.startDatetime)) && _selectedDay!.isBefore(DateTime.parse(appointment.endDatetime)))){
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      child: SlideAnimation(
+                        child: FadeInAnimation(
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: (){
+                                  print('selected Date: ${_selectedDay.toString()}');
+                                  _showBottomSheet(context, services, _selectedDay.toString(), appointment);
+                                },
+                                child: TaskTile(services: services!, appointment: appointment),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                } else {
-                  return Container();
+                    );
+                  } else {
+                    return Container();
+                  }
                 }
-
               }
             ),
           ),
@@ -375,11 +419,10 @@ class _TechSchedPageState extends State<TechSchedPage> {
       builder: (context) {
         return Container(
           padding: const EdgeInsets.only(top: 4),
-          height: (services.status == "On Process" && userInfo?.status == "Employee")
-            || (services.status == "On Process" && userInfo?.status != "Employee" &&
+          height: (services.status == "On Process" && userInfo?.status != "Employee" &&
               (_isUserAssigned(appointment.engineer, userInfo!.userId) || _isUserAssigned(appointment.technician, userInfo!.userId) || _isUserAssigned(appointment.inCharge, userInfo!.userId)))
-            ? MediaQuery.of(context).size.height * 0.34
-            : MediaQuery.of(context).size.height * 0.24,
+            ? MediaQuery.of(context).size.height * 0.44
+            : MediaQuery.of(context).size.height * 0.34,
           color: Colors.white,
           child: Column(
             children: [
@@ -407,6 +450,22 @@ class _TechSchedPageState extends State<TechSchedPage> {
                     _getSONumber(services, _selectedDay.toString());
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => ServiceOrderPage(services: services, selectedDay: selectedDay)),
+                    );
+                  });
+                },
+                clr: Colors.blueAccent,
+                context:context,
+              ): Container(),
+
+              (services.status == "On Process" && userInfo?.status != "Employee") ?
+              _bottomSheetButton(
+                label: "Task Completed",
+                onTap: (){
+                  setState(() {
+                    // Navigator.pop(context);
+                    // _showAnotherBottomSheet(context, services, "Task Completed", appointment);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => TaskCompletedPage(services: services, appointment: appointment, selectedDay: selectedDay)),
                     );
                   });
                 },
@@ -464,12 +523,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
         builder: (BuildContext context) {
           return Padding(
             padding: MediaQuery.of(context).viewInsets,
-            child: MasonryGridView(
-              physics: const NeverScrollableScrollPhysics(),
+            child: ListView(
               shrinkWrap: true,
-              gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-              ),
               children: <Widget> [
                 Container(
                   height: 6,
@@ -1052,59 +1107,174 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 )
                 : const SizedBox.shrink(),
 
+                appointment.category == "service"
+                ? Center(
+                  child: Wrap(
+                    children: <Widget>[
+                      ..._serviceOrder.map((serviceOrder) {
+                        if ((serviceOrder.stat == "Saved" || serviceOrder.stat == "Completed") && serviceOrder.svcId == services.id) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => SOPdfPreviewPage(serviceOrder: serviceOrder),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.deepOrange.shade300),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    side: BorderSide(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              child: RichText(
+                                  softWrap: true,
+                                  text:TextSpan(
+                                      children: [
+                                        WidgetSpan(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right: 8.0),
+                                            child: Icon(
+                                              Icons.download_for_offline_rounded,
+                                              color: Colors.white,
+                                              size: fontNormalSize, // Specify your desired icon size
+                                            ),
+                                          ),
+                                        ),
 
+                                        TextSpan(text: "SO# ${serviceOrder.soNo}",
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                              fontSize: fontXSmallSize,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 0.8,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ]
+                                  )
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }).toList()
+                    ],
+                  ),
+                )
+                : const SizedBox.shrink(),
 
                 //save data into Task Completed
                 whatToDo == "Task Completed"
-                    ? StatefulBuilder(
-                    builder: (BuildContext context, setState){
-                      return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Column(
+                ? StatefulBuilder(
+                builder: (BuildContext context, setState){
+                  return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                        children: [
+
+                          //drop-down button
+                          SizedBox(height: screenHeight * 0.01,),
+                          NormalTextField(
+                            controller: note,
+                            hintText: 'Note',
+                            disabling: false,
+                          ),
+
+                          SizedBox(height: screenHeight * 0.01,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-
-                              //drop-down button
-                              const SizedBox(height: 10,),
-                              NormalTextField(
-                                controller: note,
-                                hintText: 'Note',
-                                disabling: false,
-                              ),
-
-                              _dropdownError == null
-                                  ? const SizedBox.shrink()
-                                  : Center(
-                                child: Text(
-                                  _dropdownError ?? "",
-                                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                              InkWell(
+                                onTap: (){
+                                  // if(disabling != true){
+                                  //   selectFile();
+                                  // }
+                                },
+                                child: Stack(
+                                  children: [
+                                    if (filePath != null && _isImage(filePath!.path))
+                                      CircleAvatar(
+                                        radius: fontSmallSize * 1.7,
+                                        backgroundImage: FileImage(filePath!),
+                                      )
+                                    else if (showData != null && showData!.isNotEmpty && _isImage(showData!))
+                                      CircleAvatar(
+                                        radius: fontSmallSize * 1.7,
+                                        backgroundImage: FileImage(File(API.attachment + showData!)),
+                                      )
+                                    else
+                                      CircleAvatar(
+                                        radius: fontSmallSize * 1.7,
+                                        foregroundColor: Colors.deepOrange,
+                                        child: Icon(Icons.insert_drive_file, color: Colors.deepOrange, size: fontSmallSize * 1.5),
+                                      ),
+                                    if (!disabling)
+                                      Positioned(
+                                        bottom: fontSmallSize * 0.05,
+                                        left: fontSmallSize * 1.8,
+                                        child: Icon(Icons.add, color: Colors.deepOrange),
+                                      ),
+                                  ],
                                 ),
                               ),
-
-                              //save button for acknowledge
-                              const SizedBox(height: 10,),
-                              _bottomSheetButton(
-                                label: "Task Completed",
-                                onTap: (){
-                                  setState(() {
-                                    if (note.text.trim().isEmpty) {
-                                      setState(() => _dropdownError = "Fill out the fields!");
-                                    } else {
-                                      setState(() {
-                                        _editToCompleted(services);
-                                        Navigator.of(context).pop();
-                                      });
-                                    }
-                                  });
-                                },
-                                clr: Colors.green,
-                                context:context,
+                              SizedBox(width: 8), // Add some space between the avatar and the text
+                              Text(
+                                filePath != null ? filePath!.path.split('/').last : "Attach file", // Display file name if file is selected
+                                softWrap: true,
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                    fontSize: fontXSmallSize,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.8,
+                                    color: Colors.black54,
+                                  ),
+                                ),
                               ),
                             ],
-                          )
-                      );
-                    }
-                )
-                    : const SizedBox.shrink(),
+                          ),
+
+                          _dropdownError == null
+                              ? const SizedBox.shrink()
+                              : Center(
+                            child: Text(
+                              _dropdownError ?? "",
+                              style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+
+                          //save button for acknowledge
+                          const SizedBox(height: 10,),
+                          _bottomSheetButton(
+                            label: "Task Completed",
+                            onTap: (){
+                              setState(() {
+                                if (note.text.trim().isEmpty) {
+                                  setState(() => _dropdownError = "Fill out the fields!");
+                                } else {
+                                  setState(() {
+                                    _editToCompleted(services);
+                                    Navigator.of(context).pop();
+                                  });
+                                }
+                              });
+                            },
+                            clr: Colors.green,
+                            context:context,
+                          ),
+                        ],
+                      )
+                  );
+                }
+            )
+                : const SizedBox.shrink(),
 
                 const SizedBox(height: 20,),
                 Container(
@@ -1227,20 +1397,25 @@ class _TechSchedPageState extends State<TechSchedPage> {
         /*eventLoader: (day) => _services.where((services) => isSameDay(DateTime.parse(services.dateSched),day)).toList(),*/
         eventLoader: (day) {
           return _opAppointment.where((appointment) {
+            TechnicalData? services = _services.where((service) => service.id == appointment.svcId).elementAtOrNull(0);
             // Check if the service date is within the specified range
             DateTime serviceStartDate = DateTime.parse(appointment.startDatetime.toString()); // Remove "00:00:00"
             DateTime serviceEndDate = DateTime.parse(appointment.endDatetime.toString());   // Remove "00:00:00"
 
-            if(serviceStartDate == serviceEndDate){
-              return isSameDay(serviceStartDate,day);
-            } else if (isSameDay(day, serviceStartDate)
-                || (day.isAfter(serviceStartDate) && day.isBefore(serviceEndDate))) {
-              return true;
-            } else if (isSameDay(day, serviceEndDate)
-                || (day.isAfter(serviceStartDate) && day.isBefore(serviceEndDate))) {
-              return true;
-            } else {
+            if(services?.status == "Completed"){
               return false;
+            } else{
+              if(serviceStartDate == serviceEndDate){
+                return isSameDay(serviceStartDate,day);
+              } else if (isSameDay(day, serviceStartDate)
+                  || (day.isAfter(serviceStartDate) && day.isBefore(serviceEndDate))) {
+                return true;
+              } else if (isSameDay(day, serviceEndDate)
+                  || (day.isAfter(serviceStartDate) && day.isBefore(serviceEndDate))) {
+                return true;
+              } else {
+                return false;
+              }
             }
           }).toList();
         },

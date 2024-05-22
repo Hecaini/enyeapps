@@ -10,6 +10,7 @@ class SODataServices {
   static const GET_SO_DATA = 'get_so_data';
   static const SAVE_SO = 'save_so';
   static const UPDATE_SO = 'update_so';
+  static const GET_ALL_SO = 'get_all_so';
 
   //get data categories from database
   static Future<List<GetSONumber>> getSONumber(String svcId, String selectedDay) async {
@@ -63,13 +64,37 @@ class SODataServices {
     return parsed.map<ServiceOrder>((json) => ServiceOrder.fromJson(json)).toList();
   }
 
+  static Future<List<ServiceOrder>> getAllServiceOrder() async {
+
+    var map = Map<String, dynamic>();
+    map['action'] = GET_ALL_SO;
+
+    //get all data of categories
+    final res = await http.post(Uri.parse(API.serviceOrderData), body: map); //passing value to result
+    print('getSO Response: ${res.body}');
+
+    if(res.statusCode == 200){
+      List<ServiceOrder> list = parseResponseAllSO(res.body);
+      return list;
+    } else {
+      throw Exception('Failed to retrieve Technical Data');
+      //return List<Categories>();
+    }
+  }
+
+  static List<ServiceOrder> parseResponseAllSO(String responseBody){
+    //conversion from web server into data by using categories.dart
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<ServiceOrder>((json) => ServiceOrder.fromJson(json)).toList();
+  }
+
   static Future<String> saveSO(
       String svc_id, String so_id,
       String time_in, String time_out,
       String date_so, String system_product,
       String location, String complaint,
       String status, String remark,
-      String service, String serviced_by,
+      String service, String serviced_by, String selectedDay,
       String conforme, String signCon, String signDataCon) async {
     try{
       var map = Map<String, dynamic>();
@@ -88,6 +113,7 @@ class SODataServices {
       map['remark'] = remark;
       map['service'] = service;
       map['serviced_by'] = serviced_by;
+      map['selectedDay'] = selectedDay;
       map['conforme'] = conforme;
       map['signCon'] = signCon;
       map['signDataCon'] = signDataCon;

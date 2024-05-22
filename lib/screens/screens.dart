@@ -53,6 +53,7 @@ export 'technical_schedule/technical_page.dart';
 export 'technical_schedule/technical_data.dart';
 export 'technical_schedule/technical_svc.dart';
 export 'technical_schedule/tasktile_page.dart';
+export 'technical_schedule/task_complete_page.dart';
 
 export 'technical_schedule/service_order/serviceOrder_page.dart';
 export 'technical_schedule/service_order/so_data.dart';
