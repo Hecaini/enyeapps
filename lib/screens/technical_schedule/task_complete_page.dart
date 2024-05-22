@@ -190,6 +190,32 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
     }
   }
 
+  _taskComplete(){
+    TechnicalDataServices.editTaskCompleted(
+      widget.services.id, widget.appointment.id, widget.selectedDay,
+      note.text, fileName.toString(), fileData.toString()
+    ).then((result) {
+      if(result.contains("success")){
+        // _getServices(); //refresh the list after update
+        // sendPushNotifications("Completed", services.svcId);
+        _custSnackbar(
+            context,
+            "Task Completed Successfully !",
+            Colors.green,
+            Icons.check_box
+        );
+        print("Result Task Complete : $result");
+      } else {
+        _custSnackbar(
+            context,
+            "Error occured... $result",
+            Colors.redAccent,
+            Icons.dangerous_rounded
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -198,6 +224,7 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
     var fontXSmallSize = ResponsiveTextUtils.getXSmallFontSize(screenWidth);
     var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
     var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+    var fontXSize = ResponsiveTextUtils.getXFontSize(screenWidth);
 
     return KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible){
@@ -206,12 +233,17 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
             resizeToAvoidBottomInset: true,
             body: ListView(
               children: [
-                Container(
-                  height: 6,
-                  margin: EdgeInsets.only(left: screenWidth * 0.4, right: screenWidth* 0.4, top: 4),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300]
+                SizedBox(height: screenHeight * 0.03),
+                Center(
+                  child: Text(
+                      'TASK COMPLETE',
+                      style: GoogleFonts.rowdies(
+                          textStyle: TextStyle(
+                              fontSize: fontXSize,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54
+                          )
+                      )
                   ),
                 ),
 
@@ -851,100 +883,116 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
                 )
                 : const SizedBox.shrink(),
 
+                SizedBox(height: screenHeight * 0.05),
                 Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      children: [
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    children: [
 
-                        //drop-down button
-                        SizedBox(height: screenHeight * 0.01,),
-                        NormalTextField(
-                          controller: note,
-                          hintText: 'Note',
-                          disabling: false,
-                        ),
+                      //drop-down button
+                      SizedBox(height: screenHeight * 0.01,),
+                      NormalTextField(
+                        controller: note,
+                        hintText: 'Note',
+                        disabling: false,
+                      ),
 
-                        SizedBox(height: screenHeight * 0.01,),
-                        InkWell(
-                          onTap: (){
-                            if(disabling != true){
-                              selectFile();
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                            child: Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    if (filePath != null && _isImage(filePath!.path))
-                                      CircleAvatar(
-                                        radius: fontSmallSize * 1.7,
-                                        backgroundImage: FileImage(filePath!),
-                                      )
-                                    else if (showData != null && showData!.isNotEmpty && _isImage(showData!))
-                                      CircleAvatar(
-                                        radius: fontSmallSize * 1.7,
-                                        backgroundImage: FileImage(File(API.attachment + showData!)),
-                                      )
-                                    else
-                                      CircleAvatar(
-                                        radius: fontSmallSize * 1.7,
-                                        foregroundColor: Colors.deepOrange,
-                                        child: Icon(Icons.insert_drive_file, color: Colors.deepOrange, size: fontSmallSize * 1.5),
-                                      ),
-                                    if (!disabling)
-                                      Positioned(
-                                        bottom: fontSmallSize * 0.05,
-                                        left: fontSmallSize * 1.8,
-                                        child: Icon(Icons.add, color: Colors.deepOrange),
-                                      ),
-                                  ],
-                                ),
-                                SizedBox(width: 8), // Add some space between the avatar and the text
-                                Expanded(
-                                  child: RichText(
-                                    softWrap: true,
-                                    textAlign: TextAlign.start,
-                                    text: TextSpan(children: <TextSpan>
-                                    [
-                                      TextSpan(
-                                        text: filePath != null ? filePath!.path.split('/').last : "Attach file",
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                            fontSize: fontXSmallSize,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 0.8,
-                                            color: Colors.black54,
-                                          ),
+                      SizedBox(height: screenHeight * 0.01,),
+                      InkWell(
+                        onTap: (){
+                          if(disabling != true){
+                            selectFile();
+                          }
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                          child: Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  if (filePath != null && _isImage(filePath!.path))
+                                    CircleAvatar(
+                                      radius: fontSmallSize * 1.7,
+                                      backgroundImage: FileImage(filePath!),
+                                    )
+                                  else if (showData != null && showData!.isNotEmpty && _isImage(showData!))
+                                    CircleAvatar(
+                                      radius: fontSmallSize * 1.7,
+                                      backgroundImage: FileImage(File(API.attachment + showData!)),
+                                    )
+                                  else
+                                    CircleAvatar(
+                                      radius: fontSmallSize * 1.7,
+                                      foregroundColor: Colors.deepOrange,
+                                      child: Icon(Icons.insert_drive_file, color: Colors.deepOrange, size: fontSmallSize * 1.5),
+                                    ),
+                                  if (!disabling)
+                                    Positioned(
+                                      bottom: fontSmallSize * 0.05,
+                                      left: fontSmallSize * 1.8,
+                                      child: Icon(Icons.add, color: Colors.deepOrange),
+                                    ),
+                                ],
+                              ),
+                              SizedBox(width: 8), // Add some space between the avatar and the text
+                              Expanded(
+                                child: RichText(
+                                  softWrap: true,
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(children: <TextSpan>
+                                  [
+                                    TextSpan(
+                                      text: filePath != null ? filePath!.path.split('/').last : "Attach file",
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                          fontSize: fontXSmallSize,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0.8,
+                                          color: Colors.black54,
                                         ),
                                       ),
-                                    ]
                                     ),
+                                  ]
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
+                      ),
 
-                        _dropdownError == null
-                            ? const SizedBox.shrink()
-                            : Center(
-                          child: Text(
-                            _dropdownError ?? "",
-                            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                          ),
+                      _dropdownError == null
+                          ? const SizedBox.shrink()
+                          : Center(
+                        child: Text(
+                          _dropdownError ?? "",
+                          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                         ),
+                      ),
 
-                        //save button for acknowledge
-                        const SizedBox(height: 10,),
+                      //save button for acknowledge
+                      const SizedBox(height: 10,),
 
-                      ],
-                    )
+                    ],
+                  )
                 ),
 
-                SizedBox(height: screenHeight * 0.05),
+                SizedBox(height: screenHeight * 0.02),
+                addButton(
+                  onTap: () {
+                    setState(() {
+                      if (note.text.trim().isEmpty) {
+                        setState(() => _dropdownError = "Fill out the fields!");
+                      } else {
+                        setState(() {
+                          _taskComplete();
+                          // Navigator.of(context).pop();
+                        });
+                      }
+                    });
+                  },
+                  text: 'Task Complete'
+                ),
 
                 if (isKeyboardVisible) SizedBox(height: screenHeight * 0.05,),
 

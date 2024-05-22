@@ -64,13 +64,18 @@ class TechnicalDataServices {
   }
 
   //edit TO TASK COMPLETED in database
-  static Future<String> editTaskCompleted(String id, String svcId, String notes) async {
+  static Future<String> editTaskCompleted(
+    String svcId, String appointmentId, String selectedDay,
+    String notes, String fileName, String fileData) async {
     try{
       var map = Map<String, dynamic>();
       map['action'] = EDIT_TO_COMPLETED;
-      map['id'] = id;
       map['svcId'] = svcId;
+      map['appointmentId'] = appointmentId;
+      map['selectedDay'] = selectedDay;
       map['notes'] = notes;
+      map['fileName'] = fileName;
+      map['fileData'] = fileData;
 
       final res = await http.post(Uri.parse(API.technicalData), body: map); //passing value to result
       print('editToCompleted Response: ${res.body}');

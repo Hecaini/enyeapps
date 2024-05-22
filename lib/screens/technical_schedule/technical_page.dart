@@ -299,16 +299,16 @@ class _TechSchedPageState extends State<TechSchedPage> {
   }
 
   _editToCompleted(TechnicalData services){
-    TechnicalDataServices.editTaskCompleted(services.id, services.svcId, note.text.trim()).then((result) {
-      if('success' == result){
-        _getServices(); //refresh the list after update
-        sendPushNotifications("Completed", services.svcId);
-        _successSnackbar(context, "Task Completed Successfully");
-        note.text = '';
-      } else {
-        _errorSnackbar(context, "Error occured...");
-      }
-    });
+    // TechnicalDataServices.editTaskCompleted(services.id, services.svcId, note.text.trim()).then((result) {
+    //   if('success' == result){
+    //     _getServices(); //refresh the list after update
+    //     sendPushNotifications("Completed", services.svcId);
+    //     _successSnackbar(context, "Task Completed Successfully");
+    //     note.text = '';
+    //   } else {
+    //     _errorSnackbar(context, "Error occured...");
+    //   }
+    // });
   }
 
   Future<void> sendPushNotifications(String status, String svcId) async {
@@ -1260,7 +1260,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                                   setState(() => _dropdownError = "Fill out the fields!");
                                 } else {
                                   setState(() {
-                                    _editToCompleted(services);
+                                    // _editToCompleted(services);
                                     Navigator.of(context).pop();
                                   });
                                 }
