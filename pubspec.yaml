@@ -66,6 +66,7 @@ dependencies:
   email_otp:
   pinput:
   flutter_local_notifications:
+  flutter_inappwebview:
 
   firebase_messaging:
   firebase_core:
