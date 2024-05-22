@@ -5,6 +5,7 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../screens/screens.dart';
+import '../screens/webview/webview_system.dart';
 
 class CustomNavBar extends StatefulWidget {
 
@@ -75,6 +76,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
         TechSchedPage(message: message as RemoteMessage),
         CompletedPage(message: message as RemoteMessage),
         AccountPage(),
+        WebViewPage(),
       ];
     }
 
@@ -104,6 +106,13 @@ class _CustomNavBarState extends State<CustomNavBar> {
         PersistentBottomNavBarItem(
           icon: Image(image: AssetImage("assets/icons/profile.png")),
           title: ("Account"),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.white70,
+          textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+        PersistentBottomNavBarItem(
+          icon: Image(image: AssetImage("assets/logo/enyelogo.png")),
+          title: ("System"),
           activeColorPrimary: Colors.white,
           inactiveColorPrimary: Colors.white70,
           textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
