@@ -236,7 +236,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
-  bool _isUserAssigned(String usersInCharge, String userId) {
+    bool _isUserAssigned(String usersInCharge, String userId) {
     if (usersInCharge != null || usersInCharge != "") {
       List<String> userInChargeList = usersInCharge.split(',').map((e) => e.trim()).toList();
       return userInChargeList.contains(userId);
