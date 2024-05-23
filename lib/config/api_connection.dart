@@ -27,6 +27,7 @@ class API {
 
   //appointment data's
   static const technicalData = "$hostConnect/admin/technical/technical.php";
+  static const completeAttachment = "$hostConnect/admin/attachment/";
 
   //service order data's
   static const serviceOrderData = "$hostConnect/admin/technical/service_order.php";

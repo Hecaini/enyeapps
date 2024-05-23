@@ -7,7 +7,7 @@ import '../screens.dart';
 class AppointmentServices {
 
   static const SET_SERVICE_APP = 'set_service_appointment';
-  static const GET_ON_PROCESS_APP = 'get_on_process_app';
+  static const GET_ALL_APP = 'get_all_app';
 
   //edit TO ON PROCESS in database
   static Future<String> setServiceAppointment(String svcId, String startDate, String endDate, String notes,
@@ -36,17 +36,17 @@ class AppointmentServices {
     }
   }
 
-  static Future<List<AppointmentData>> getOnProcessAppointment() async {
+  static Future<List<AppointmentData>> getAllAppointment() async {
 
     var map = Map<String, dynamic>();
-    map['action'] = GET_ON_PROCESS_APP;
+    map['action'] = GET_ALL_APP;
 
     //get all data of categories
     final res = await http.post(Uri.parse(API.appointmentData), body: map); //passing value to result
     print('getOnProcess Appoint Response: ${res.body}');
 
     if(res.statusCode == 200){
-      List<AppointmentData> list = parseResponseOPApp(res.body);
+      List<AppointmentData> list = parseResponseApp(res.body);
       return list;
     } else {
       throw Exception('Failed to retrieve Technical Data');
@@ -54,7 +54,7 @@ class AppointmentServices {
     }
   }
 
-  static List<AppointmentData> parseResponseOPApp(String responseBody){
+  static List<AppointmentData> parseResponseApp(String responseBody){
     //conversion from web server into data by using categories.dart
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<AppointmentData>((json) => AppointmentData.fromJson(json)).toList();

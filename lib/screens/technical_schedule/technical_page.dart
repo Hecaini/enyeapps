@@ -69,8 +69,8 @@ class _TechSchedPageState extends State<TechSchedPage> {
           setState(() {
             userInfo = value;
           });
-          _getServices();
           _getOnProcessAppointment();
+          _getServices();
         });
         userSessionFuture = userSession;
       } else {
@@ -220,7 +220,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
   _getOnProcessAppointment(){
     print(userInfo?.status);
     if(userInfo?.status == "Employee") {
-      AppointmentServices.getOnProcessAppointment().then((Appointment){
+      AppointmentServices.getAllAppointment().then((Appointment){
         setState(() {
           _opAppointment = Appointment.where((element) => (element.status == "On Process" || element.status == "Set-sched") &&
               (_isUserAssigned(element.engineer, userInfo!.userId) || _isUserAssigned(element.technician, userInfo!.userId)
@@ -228,7 +228,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
         });
       });
     } else {
-      AppointmentServices.getOnProcessAppointment().then((Appointment){
+      AppointmentServices.getAllAppointment().then((Appointment){
         setState(() {
           _opAppointment = Appointment.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
         });
@@ -236,7 +236,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
-    bool _isUserAssigned(String usersInCharge, String userId) {
+  bool _isUserAssigned(String usersInCharge, String userId) {
     if (usersInCharge != null || usersInCharge != "") {
       List<String> userInChargeList = usersInCharge.split(',').map((e) => e.trim()).toList();
       return userInChargeList.contains(userId);
@@ -390,7 +390,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
                               GestureDetector(
                                 onTap: (){
                                   print('selected Date: ${_selectedDay.toString()}');
-                                  _showBottomSheet(context, services, _selectedDay.toString(), appointment);
+                                  _showBottomSheet(context, services!, _selectedDay.toString(), appointment);
                                 },
                                 child: TaskTile(services: services!, appointment: appointment),
                               )

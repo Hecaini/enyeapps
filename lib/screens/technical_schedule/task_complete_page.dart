@@ -135,6 +135,7 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
         duration: Duration(seconds: 3),
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(left: screenWidth * 0.05, right: screenWidth * 0.05, bottom: screenHeight * 0.82),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
         content: Row(
           children: [
