@@ -35,7 +35,7 @@ class TechSchedPage extends StatefulWidget {
   State<TechSchedPage> createState() => _TechSchedPageState();
 }
 
-class _TechSchedPageState extends State<TechSchedPage> {
+class _TechSchedPageState extends State<TechSchedPage> with TickerProviderStateMixin {
   final RemoteMessage message = const RemoteMessage();
 
   TextEditingController? searchTransaction;
@@ -47,6 +47,9 @@ class _TechSchedPageState extends State<TechSchedPage> {
 
   UserLogin? userInfo; //users session
   bool? userSessionFuture;
+
+  bool _isLoadingApp = true;
+  bool _isLoadingService = true;
 
   @override
   void initState(){
@@ -157,46 +160,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
-
-  //snackbars
-  _successSnackbar(context, message){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        content: Row(
-          children: [
-            const Icon(Icons.check, color: Colors.white,),
-            const SizedBox(width: 10,),
-            Text(message),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _errorSnackbar(context, message){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.7,),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.redAccent,
-        behavior: SnackBarBehavior.floating,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-        content: Row(
-          children: [
-            const Icon(Icons.error, color: Colors.white,),
-            const SizedBox(width: 10,),
-            Text(message),
-          ],
-        ),
-      ),
-    );
-  }
-
   //below this are for technical datas get to server
   late List<TechnicalData> _services;
   _getServices(){
@@ -204,6 +167,7 @@ class _TechSchedPageState extends State<TechSchedPage> {
       setState(() {
         _services = technicalData;
       });
+      _isLoadingService = false;
     });
   }
 
@@ -226,12 +190,14 @@ class _TechSchedPageState extends State<TechSchedPage> {
               (_isUserAssigned(element.engineer, userInfo!.userId) || _isUserAssigned(element.technician, userInfo!.userId)
               || _isUserAssigned(element.inCharge, userInfo!.userId))).toList();
         });
+        _isLoadingApp = false;
       });
     } else {
       AppointmentServices.getAllAppointment().then((Appointment){
         setState(() {
           _opAppointment = Appointment.where((element) => element.status == "On Process" || element.status == "Set-sched").toList();
         });
+        _isLoadingApp = false;
       });
     }
   }
@@ -284,33 +250,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
     });
   }
 
-  String? _dropdownError; //kapag wala pa na-select sa option
-  _editToOnProcess(TechnicalData services){
-    TechnicalDataServices.editToOnProcess(services.id, services.svcId, valueChooseAccount!.toString(), userInfo!.userId.toString()).then((result) {
-      if('success' == result){
-        _getServices(); //refresh the list after update
-        sendPushNotifications("On Process", services.svcId);
-        _successSnackbar(context, "Acknowledge Successfully");
-        _dropdownError = null;
-      } else {
-        _errorSnackbar(context, "Error occured...");
-      }
-    });
-  }
-
-  _editToCompleted(TechnicalData services){
-    // TechnicalDataServices.editTaskCompleted(services.id, services.svcId, note.text.trim()).then((result) {
-    //   if('success' == result){
-    //     _getServices(); //refresh the list after update
-    //     sendPushNotifications("Completed", services.svcId);
-    //     _successSnackbar(context, "Task Completed Successfully");
-    //     note.text = '';
-    //   } else {
-    //     _errorSnackbar(context, "Error occured...");
-    //   }
-    // });
-  }
-
   Future<void> sendPushNotifications(String status, String svcId) async {
     //final url = 'https://enye.com.ph/enyecontrols_app/login_user/send1.php'; // Replace this with the URL to your PHP script
     final response = await http.post(
@@ -349,65 +288,78 @@ class _TechSchedPageState extends State<TechSchedPage> {
     }
   }
 
-  bool _isImage(String filePath) {
-    final imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-    final ext = filePath.split('.').last.toLowerCase();
-    return imageExtensions.contains(ext);
-  }
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 60),
+    vsync: this,
+  )..repeat();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
       resizeToAvoidBottomInset: true,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          //_addTaskBar(),
-          _addDateBar(),
+      body: _isLoadingApp || _isLoadingService
+        ? Center(child: SpinningContainer(controller: _controller),)
+        : RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(Duration(seconds: 2));
+            setState(() {
+              _getServices();
+              _getOnProcessAppointment();
+              _getAccounts();
+              _getPositions();
+              _getServiceOrder();
+            });
+          },
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            //_addTaskBar(),
+            _addDateBar(),
 
-          const SizedBox(height: 10,),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _opAppointment.length,
-              itemBuilder: (_, index){
-                AppointmentData appointment = _opAppointment[index];
+            const SizedBox(height: 10,),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _opAppointment.length,
+                itemBuilder: (_, index){
+                  AppointmentData appointment = _opAppointment[index];
 
-                TechnicalData? services = _services.where((service) => service.id == appointment.svcId).elementAtOrNull(0);
+                  TechnicalData services = _services.where((service) => service.id == appointment.svcId).elementAt(0);
 
-                if(services?.status == "Completed"){
-                  return Container();
-                } else {
-                  if (DateFormat.yMd().format(DateTime.parse(appointment.startDatetime)) == DateFormat.yMd().format(_selectedDay!)
-                      || DateFormat.yMd().format(DateTime.parse(appointment.endDatetime)) == DateFormat.yMd().format(_selectedDay!)
-                      || (_selectedDay!.isAfter(DateTime.parse(appointment.startDatetime)) && _selectedDay!.isBefore(DateTime.parse(appointment.endDatetime)))){
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      child: SlideAnimation(
-                        child: FadeInAnimation(
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  print('selected Date: ${_selectedDay.toString()}');
-                                  _showBottomSheet(context, services!, _selectedDay.toString(), appointment);
-                                },
-                                child: TaskTile(services: services!, appointment: appointment),
-                              )
-                            ],
+                  if(services.status == "Completed"){
+                    return Container();
+                  } else {
+                    if (DateFormat.yMd().format(DateTime.parse(appointment.startDatetime)) == DateFormat.yMd().format(_selectedDay!)
+                        || DateFormat.yMd().format(DateTime.parse(appointment.endDatetime)) == DateFormat.yMd().format(_selectedDay!)
+                        || (_selectedDay!.isAfter(DateTime.parse(appointment.startDatetime)) && _selectedDay!.isBefore(DateTime.parse(appointment.endDatetime)))){
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        child: SlideAnimation(
+                          child: FadeInAnimation(
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: (){
+                                    print('selected Date: ${_selectedDay.toString()}');
+                                    _showBottomSheet(context, services, _selectedDay.toString(), appointment);
+                                  },
+                                  child: TaskTile(services: services, appointment: appointment),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  } else {
-                    return Container();
+                      );
+                    } else {
+                      return Container();
+                    }
                   }
                 }
-              }
+              ),
             ),
-          ),
-        ],
+          ],
       ),
+        ),
     );
   }
 
@@ -1171,118 +1123,12 @@ class _TechSchedPageState extends State<TechSchedPage> {
                 )
                 : const SizedBox.shrink(),
 
-                //save data into Task Completed
-                whatToDo == "Task Completed"
-                ? StatefulBuilder(
-                builder: (BuildContext context, setState){
-                  return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        children: [
-
-                          //drop-down button
-                          SizedBox(height: screenHeight * 0.01,),
-                          NormalTextField(
-                            controller: note,
-                            hintText: 'Note',
-                            disabling: false,
-                          ),
-
-                          SizedBox(height: screenHeight * 0.01,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: (){
-                                  // if(disabling != true){
-                                  //   selectFile();
-                                  // }
-                                },
-                                child: Stack(
-                                  children: [
-                                    if (filePath != null && _isImage(filePath!.path))
-                                      CircleAvatar(
-                                        radius: fontSmallSize * 1.7,
-                                        backgroundImage: FileImage(filePath!),
-                                      )
-                                    else if (showData != null && showData!.isNotEmpty && _isImage(showData!))
-                                      CircleAvatar(
-                                        radius: fontSmallSize * 1.7,
-                                        backgroundImage: FileImage(File(API.attachment + showData!)),
-                                      )
-                                    else
-                                      CircleAvatar(
-                                        radius: fontSmallSize * 1.7,
-                                        foregroundColor: Colors.deepOrange,
-                                        child: Icon(Icons.insert_drive_file, color: Colors.deepOrange, size: fontSmallSize * 1.5),
-                                      ),
-                                    if (!disabling)
-                                      Positioned(
-                                        bottom: fontSmallSize * 0.05,
-                                        left: fontSmallSize * 1.8,
-                                        child: Icon(Icons.add, color: Colors.deepOrange),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 8), // Add some space between the avatar and the text
-                              Text(
-                                filePath != null ? filePath!.path.split('/').last : "Attach file", // Display file name if file is selected
-                                softWrap: true,
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: fontXSmallSize,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.8,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          _dropdownError == null
-                              ? const SizedBox.shrink()
-                              : Center(
-                            child: Text(
-                              _dropdownError ?? "",
-                              style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-
-                          //save button for acknowledge
-                          const SizedBox(height: 10,),
-                          _bottomSheetButton(
-                            label: "Task Completed",
-                            onTap: (){
-                              setState(() {
-                                if (note.text.trim().isEmpty) {
-                                  setState(() => _dropdownError = "Fill out the fields!");
-                                } else {
-                                  setState(() {
-                                    // _editToCompleted(services);
-                                    Navigator.of(context).pop();
-                                  });
-                                }
-                              });
-                            },
-                            clr: Colors.green,
-                            context:context,
-                          ),
-                        ],
-                      )
-                  );
-                }
-            )
-                : const SizedBox.shrink(),
-
                 const SizedBox(height: 20,),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: _bottomSheetButton(
                     label: "Close",
                     onTap: (){
-                      _dropdownError = null;
                       valueChooseAccount = null;
                       valueChooseDepartment = null;
                       valueChoosePosition = null;
@@ -1305,7 +1151,6 @@ class _TechSchedPageState extends State<TechSchedPage> {
       valueChooseAccount = null;
       valueChooseDepartment = null;
       valueChoosePosition = null;
-      _dropdownError = null;
       _filteredUsers.clear();
       _filteredPosition.clear();
     });

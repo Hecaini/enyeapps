@@ -36,6 +36,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
   bool? userSessionFuture;
 
   bool _isLoading = true;
+  bool _isLoadingApp = true;
   double? _progress;
 
   @override
@@ -142,6 +143,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
       setState(() {
         _opAppointment = Appointment;
       });
+      _isLoadingApp = false;
     });
   }
 
@@ -175,7 +177,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
     return Scaffold(
       appBar: const CustomAppBar(title: 'History', imagePath: 'assets/logo/enyecontrols.png',),
       /*drawer: CustomDrawer(),*/
-      body: _isLoading
+      body: _isLoading || _isLoadingApp
         ? Center(child: SpinningContainer(controller: _controller),)
         : RefreshIndicator(
           onRefresh: () async {
@@ -243,7 +245,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
                       itemBuilder: (_, index){
                         _filteredServices = searchController.text.isEmpty ? _services : _filteredServices;
 
-                        AppointmentData? appointment = _opAppointment.where((appointment) => _filteredServices[index].id == appointment.svcId).elementAtOrNull(0);
+                        AppointmentData appointment = _opAppointment.where((appointment) => _filteredServices[index].id == appointment.svcId).elementAt(0);
 
                         return Container(
                           margin: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 12.0),
@@ -359,7 +361,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  '${DateFormat.yMMMd().format(DateTime.parse(appointment!.startDatetime))} TO ${DateFormat.yMMMd().format(DateTime.parse(appointment!.endDatetime))}',
+                                                  '${DateFormat.yMMMd().format(DateTime.parse(appointment.startDatetime))} TO ${DateFormat.yMMMd().format(DateTime.parse(appointment.endDatetime))}',
                                                   style: GoogleFonts.lato(
                                                     textStyle:
                                                     TextStyle(fontSize: 13, color: Colors.grey[100]),
@@ -378,7 +380,7 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  '${DateFormat.jm().format(DateTime.parse(appointment!.startDatetime))} - ${DateFormat.jm().format(DateTime.parse(appointment!.endDatetime))}',
+                                                  '${DateFormat.jm().format(DateTime.parse(appointment.startDatetime))} - ${DateFormat.jm().format(DateTime.parse(appointment.endDatetime))}',
                                                   style: GoogleFonts.lato(
                                                     textStyle:
                                                     TextStyle(fontSize: 13, color: Colors.grey[100]),
