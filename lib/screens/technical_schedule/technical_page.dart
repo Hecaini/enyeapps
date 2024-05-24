@@ -284,6 +284,14 @@ class _TechSchedPageState extends State<TechSchedPage> with TickerProviderStateM
   )..repeat();
 
   @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),

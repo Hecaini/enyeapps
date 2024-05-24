@@ -147,15 +147,6 @@ class _CompletedPageState extends State<CompletedPage> with TickerProviderStateM
     });
   }
 
-  bool _isUserAssigned(String usersInCharge, String userId) {
-    if (usersInCharge != null || usersInCharge != "") {
-      List<String> userInChargeList = usersInCharge.split(',').map((e) => e.trim()).toList();
-      return userInChargeList.contains(userId);
-    }
-
-    return false;
-  }
-
   List<ServiceOrder> _serviceOrder = [];
   _getServiceOrder(){
     SODataServices.getAllServiceOrder().then((serviceOrder){
