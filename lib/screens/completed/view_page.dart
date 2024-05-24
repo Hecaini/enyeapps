@@ -107,9 +107,9 @@ class _ViewCompletePageState extends State<ViewCompletePage> {
             Icon(
               iconData,
               color: Colors.white,
-              size: (screenHeight + screenWidth) / 50,
+              size: fontNormalSize * 1.8,
             ),
-            SizedBox(width: screenWidth * 0.01,),
+            SizedBox(width: screenWidth * 0.03,),
             Expanded(
               child: RichText(
                 softWrap: true,

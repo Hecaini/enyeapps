@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:enye_app/screens/technical_schedule/technical_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -106,9 +105,9 @@ class _SetServicePageState extends State<SetServicePage> {
             Icon(
               iconData,
               color: Colors.white,
-              size: (screenHeight + screenWidth) / 50,
+              size: fontNormalSize * 1.8,
             ),
-            SizedBox(width: screenWidth * 0.01,),
+            SizedBox(width: screenWidth * 0.03,),
             Expanded(
               child: RichText(
                 softWrap: true,
@@ -292,7 +291,7 @@ class _SetServicePageState extends State<SetServicePage> {
                       SizedBox(height: screenHeight * 0.015),
                       OnTapTextField(
                         onTap: () {
-                          if(_selectedStartDate != null && txtStartDate.text != null){
+                          if(_selectedStartDate != null){
                             _showDateTimePicker(false);
                           }
                         },
@@ -445,7 +444,7 @@ class _SetServicePageState extends State<SetServicePage> {
                 addButton(
                   onTap: () {
                     if((_usersEngineers.isEmpty && _usersTechnicians.isEmpty) || _selectedStartDate == null ||
-                    _selectedEndDate == null || widget.services.id == null){
+                    _selectedEndDate == null){
                       _custSnackbar(
                         context,
                         "Kindly fill out the fields and select handlers",
@@ -514,6 +513,23 @@ class _MultipleUsersDialogWidgetState extends State<MultipleUsersDialogWidget> {
             ?.toLowerCase()
             ?.contains("technician") ?? false)
       .toList();
+    } else if (widget.chosenPosition == "Engineer & Technician") {
+      _users = widget.users.where((user) =>
+      (widget.position
+          .where((position) => position.id == user.position)
+          .elementAtOrNull(0)
+          ?.position
+          ?.toLowerCase()
+          ?.contains("engineer") ??
+          false) ||
+              (widget.position
+                  .where((position) => position.id == user.position)
+                  .elementAtOrNull(0)
+                  ?.position
+                  ?.toLowerCase()
+                  ?.contains("technician") ??
+          false))
+          .toList();
     } else {
       _users = widget.users;
     }
@@ -529,7 +545,14 @@ class _MultipleUsersDialogWidgetState extends State<MultipleUsersDialogWidget> {
       });
     } else {
       setState(() {
-        _filteredUsers = _users.where((user) => user.name.toLowerCase().contains(query.toLowerCase())).toList();
+        _filteredUsers = _users.where((user) => user.name.toLowerCase().contains(query.toLowerCase()) ||
+            (widget.position
+                .where((position) => position.id == user.position)
+                .elementAtOrNull(0)
+                ?.position
+                ?.toLowerCase()
+                ?.contains(query.toLowerCase()) ??
+                false)).toList();
       });
     }
   }
@@ -549,15 +572,17 @@ class _MultipleUsersDialogWidgetState extends State<MultipleUsersDialogWidget> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
+    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
     var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
     var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
 
     return AlertDialog(
+      contentPadding: EdgeInsets.all(2.0),
       title: Text(widget.chosenPosition),
       content: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(2.0),
+            padding: const EdgeInsets.all(1.0),
             child: TextField(
               onChanged: _filterSearchResults,
               decoration: InputDecoration(
@@ -567,11 +592,11 @@ class _MultipleUsersDialogWidgetState extends State<MultipleUsersDialogWidget> {
                 ),
                 hintText: "Search",
                 hintStyle: TextStyle(
-                  fontSize: fontNormalSize,
+                  fontSize: fontSmallSize,
                 ),
-                prefixIcon: Icon(Icons.search, size: (screenWidth + screenHeight) / 40,),
+                prefixIcon: Icon(Icons.search, size: fontNormalSize * 1.5,),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
                 ),
               ),
             ),
@@ -584,7 +609,10 @@ class _MultipleUsersDialogWidgetState extends State<MultipleUsersDialogWidget> {
                 UsersInfo user = _filteredUsers[index];
                 return CheckboxListTile(
                   title: Text(
-                    user.name,
+                    "${user.name} - ${widget.position
+                        .where((position) => position.id == user.position)
+                        .elementAtOrNull(0)
+                        !.position}",
                     style: TextStyle(
                       fontSize: fontNormalSize
                     ),

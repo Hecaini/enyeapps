@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -59,6 +61,9 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
     'Parts need to be Replaced'
   ];
 
+  List<UsersInfo> _servicedBy = [];
+  String servicedByIds = '';
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 60),
     vsync: this,
@@ -88,9 +93,9 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
             Icon(
               iconData,
               color: Colors.white,
-              size: (screenHeight + screenWidth) / 75,
+              size: fontNormalSize * 1.8,
             ),
-            SizedBox(width: screenWidth * 0.01,),
+            SizedBox(width: screenWidth * 0.03,),
             Expanded(
               child: RichText(
                 softWrap: true,
@@ -338,8 +343,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
     SODataServices.saveSO(
         widget.services.id, _soNumber[0].soId,
         txtTimeIn.text, txtTimeOut.text,
-        now.toString(), txtSysProduct.text,
-        txtLocation.text, txtComplaint.text,
+        txtSysProduct.text, txtLocation.text, txtComplaint.text,
         txtStatus.text, txtRemarks.text,
         selSysProd!, selSvcBy!, widget.selectedDay,
         txtConforme.text, imageName, imageData
@@ -430,11 +434,16 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
     super.dispose();
   }
 
+  void _unfocusAll() {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
+    var fontXSmallSize = ResponsiveTextUtils.getXSmallFontSize(screenWidth);
     var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
     var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
     var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
@@ -680,87 +689,75 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                                       ),
                                     ),
                                   ),
-
-                              SizedBox(height: screenHeight * 0.03),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
-                                height: screenHeight * 0.075,
-                                width: screenWidth * 0.83,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 2, color: Colors.deepOrange.shade300),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: DropdownButton(
-                                  alignment: Alignment.center,
-                                  underline:Container(),
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: fontSmallSize,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 1.2
-                                    ),
-                                  ),
-                                  isDense: true,
-                                  iconSize: (screenHeight + screenWidth) / 25,
-                                  iconEnabledColor: Colors.deepOrange,
-                                  isExpanded: true,
-                                  value: selSvcBy, // Ensures the selected item is shown
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selSvcBy = newValue;
-                                    });
-                                  },
-                                  hint: RichText(
-                                    softWrap: true,
-                                    textAlign: TextAlign.start,
-                                    text: TextSpan(children: <TextSpan>
-                                    [
-                                      TextSpan(
-                                        text: "Service by *",
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                              fontSize: fontSmallSize,
-                                              fontWeight: FontWeight.w500,
-                                              letterSpacing: 1.2,
-                                              color: Colors.black54
-                                          ),
-                                        ),
-                                      ),
-                                    ]
-                                    ),
-                                  ),
-                                  items: _users.map((accountInfo) => DropdownMenuItem(
-                                    alignment: Alignment.bottomCenter,
-                                    value: accountInfo.user_id.toString(),
-                                    child: RichText(
-                                      softWrap: true,
-                                      textAlign: TextAlign.start,
-                                      text: TextSpan(children: <TextSpan>
-                                      [
-                                        TextSpan(
-                                          text: "${accountInfo.name.toString()} || ${_position.where((element) => element.id == accountInfo.position).elementAtOrNull(0)?.position}",
-                                          style: GoogleFonts.poppins(
-                                            textStyle: TextStyle(
-                                                fontSize: fontSmallSize,
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: 1.2,
-                                                color: Colors.black54
-                                            ),
-                                          ),
-                                        ),
-                                      ]
-                                      ),
-                                    ),
-                                  )).toList(),
-                                ),
-                              ),
-
-                              SizedBox(height: screenHeight * 0.01),
-
                             ],
                           ),
                         ),
+
+                        SizedBox(height: screenHeight * 0.03),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _unfocusAll();
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return MultipleUsersDialogWidget(users: _users, position: _position, chosenPosition: "Engineer & Technician");
+                                },
+                              ).then((selectedItems) {
+                                setState(() {
+                                  if (selectedItems != null) {
+                                    // Display selected items
+                                    _servicedBy = selectedItems;
+                                  }
+                                });
+                              });
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(Colors.deepOrange.shade300),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  side: BorderSide(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Serviced By : ',
+                              style: TextStyle(
+                                fontSize: fontNormalSize,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (_servicedBy != null)
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                              child: Wrap(
+                                children: _servicedBy.map((eng_tech) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                                    child: Chip(
+                                      label: Text(
+                                        eng_tech.username,
+                                        style: TextStyle(color: Colors.grey.shade800, fontSize: fontXSmallSize),
+                                      ),
+                                      backgroundColor: Colors.deepOrange.shade50,
+                                      deleteIcon: Icon(Icons.cancel, size: (screenHeight + screenWidth) / 70,), // Add delete icon
+                                      deleteIconColor: Colors.deepOrange,
+                                      onDeleted: () {
+                                        setState(() {
+                                          _servicedBy.remove(eng_tech); // Remove item from the list
+                                        });
+                                      },
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
 
                         SizedBox(height: screenHeight * 0.04),
                         if (_serviceOrder.isNotEmpty)
@@ -773,7 +770,22 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                         else
                           addButton(
                             onTap: () {
-                              _saveSO();
+                              if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
+                                txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
+                                txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                                _custSnackbar(
+                                    context,
+                                    "Kindly fill out the fields and select service by !",
+                                    Colors.redAccent,
+                                    Icons.error
+                                );
+                              } else {
+                                servicedByIds = _servicedBy.map((serviceBy) => serviceBy.user_id.toString()).join(', ');
+                                print(servicedByIds);
+
+                                _saveSO();
+                              }
+
                             },
                             text: 'SAVE'
                           ),

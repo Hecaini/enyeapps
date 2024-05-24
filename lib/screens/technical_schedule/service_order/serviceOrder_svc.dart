@@ -92,8 +92,7 @@ class SODataServices {
   static Future<String> saveSO(
       String svc_id, String so_id,
       String time_in, String time_out,
-      String date_so, String system_product,
-      String location, String complaint,
+      String system_product, String location, String complaint,
       String status, String remark,
       String service, String serviced_by, String selectedDay,
       String conforme, String signCon, String signDataCon) async {
@@ -106,7 +105,6 @@ class SODataServices {
       map['so_id'] = so_id;
       map['time_in'] = time_in;
       map['time_out'] = time_out;
-      map['date_so'] = date_so;
       map['system_product'] = system_product;
       map['location'] = location;
       map['complaint'] = complaint;
