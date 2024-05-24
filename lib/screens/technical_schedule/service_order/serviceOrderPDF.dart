@@ -6,8 +6,8 @@ import '../../../widget/widgets.dart';
 import '../../screens.dart';
 
 class SOPdfPreviewPage extends StatefulWidget {
-  final ServiceOrder serviceOrder;
-  const SOPdfPreviewPage({Key? key, required this.serviceOrder}) : super(key: key);
+  final String soId;
+  const SOPdfPreviewPage({Key? key, required this.soId}) : super(key: key);
 
   @override
   State<SOPdfPreviewPage> createState() => _SOPdfPreviewPageState();
@@ -26,7 +26,7 @@ class _SOPdfPreviewPageState extends State<SOPdfPreviewPage> with TickerProvider
   
   List<ServiceOrder> _serviceOrder = [];
   _getServiceOrder(){
-    SODataServices.getServiceOrder(widget.serviceOrder.soId).then((getServiceOrder) {
+    SODataServices.getServiceOrder(widget.soId).then((getServiceOrder) {
       setState(() {
         _serviceOrder = getServiceOrder;
         if (_serviceOrder.isNotEmpty) {

@@ -750,7 +750,7 @@ class _ViewCompletePageState extends State<ViewCompletePage> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => SOPdfPreviewPage(serviceOrder: serviceOrder),
+                              builder: (context) => SOPdfPreviewPage(soId: serviceOrder.soId,),
                             ),
                           );
                         },

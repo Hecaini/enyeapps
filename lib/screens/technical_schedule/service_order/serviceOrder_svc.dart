@@ -13,12 +13,13 @@ class SODataServices {
   static const GET_ALL_SO = 'get_all_so';
 
   //get data categories from database
-  static Future<List<GetSONumber>> getSONumber(String svcId, String selectedDay) async {
+  static Future<List<GetSONumber>> getSONumber(String svcId, String selectedDay, String appointmentId) async {
 
       var map = Map<String, dynamic>();
       map['action'] = GET_SO;
       map['svc_id'] = svcId;
       map['selectedDay'] = selectedDay;
+      map['appointment_id'] = appointmentId;
 
       //get all data of categories
       final res = await http.post(Uri.parse(API.serviceOrderData), body: map); //passing value to result

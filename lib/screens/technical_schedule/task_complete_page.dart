@@ -206,6 +206,11 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
             Icons.check_box
         );
         print("Result Task Complete : $result");
+        sendPushNotifications("Completed", widget.services.id, widget.appointment.id);
+        
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.pop(context, true);
+        });
       } else {
         _custSnackbar(
             context,
@@ -832,7 +837,7 @@ class _TaskCompletedPageState extends State<TaskCompletedPage> {
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => SOPdfPreviewPage(serviceOrder: serviceOrder),
+                                    builder: (context) => SOPdfPreviewPage(soId: serviceOrder.soId),
                                   ),
                                 );
                               },

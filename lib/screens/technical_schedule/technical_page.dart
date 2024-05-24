@@ -240,16 +240,6 @@ class _TechSchedPageState extends State<TechSchedPage> with TickerProviderStateM
       });
     });
   }
-
-  List<GetSONumber> _soNumber = [];
-  _getSONumber(TechnicalData services, String selectedDay){
-    SODataServices.getSONumber(services.id, selectedDay).then((getSONumber) {
-      setState(() {
-        _soNumber = getSONumber;
-      });
-    });
-  }
-
   Future<void> sendPushNotifications(String status, String svcId) async {
     //final url = 'https://enye.com.ph/enyecontrols_app/login_user/send1.php'; // Replace this with the URL to your PHP script
     final response = await http.post(
@@ -399,9 +389,8 @@ class _TechSchedPageState extends State<TechSchedPage> with TickerProviderStateM
                   setState(() {
                     // Navigator.pop(context);
                     // _showAnotherBottomSheet(context, services, "Task Completed");
-                    _getSONumber(services, _selectedDay.toString());
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ServiceOrderPage(services: services, selectedDay: selectedDay)),
+                      MaterialPageRoute(builder: (context) => ServiceOrderPage(services: services, selectedDay: selectedDay, appointment: appointment)),
                     );
                   });
                 },
@@ -414,11 +403,19 @@ class _TechSchedPageState extends State<TechSchedPage> with TickerProviderStateM
                 label: "Task Completed",
                 onTap: (){
                   setState(() {
-                    // Navigator.pop(context);
+                    Navigator.pop(context);
                     // _showAnotherBottomSheet(context, services, "Task Completed", appointment);
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => TaskCompletedPage(services: services, appointment: appointment, selectedDay: selectedDay)),
-                    );
+                    ).then((value) {
+                      // Refresh the services once the StatusPage is popped
+                      _getServices();
+                      _getOnProcessAppointment();
+                      _getAccounts();
+                      _getPositions();
+                      _getServiceOrder();
+                      setState(() {});
+                    });
                   });
                 },
                 clr: Colors.green,
@@ -1071,7 +1068,7 @@ class _TechSchedPageState extends State<TechSchedPage> with TickerProviderStateM
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => SOPdfPreviewPage(serviceOrder: serviceOrder),
+                                    builder: (context) => SOPdfPreviewPage(soId: serviceOrder.soId),
                                   ),
                                 );
                               },

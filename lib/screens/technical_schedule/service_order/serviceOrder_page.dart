@@ -14,11 +14,13 @@ import '../../screens.dart';
 class ServiceOrderPage extends StatefulWidget {
   final TechnicalData services;
   final String selectedDay;
+  final AppointmentData appointment;
 
   const ServiceOrderPage({
     super.key,
     required this.services,
     required this.selectedDay,
+    required this.appointment,
   });
 
   @override
@@ -265,7 +267,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
 
   List<GetSONumber> _soNumber = [];
   _getSONumber(){
-    SODataServices.getSONumber(widget.services.id, widget.selectedDay).then((getSONumber) {
+    SODataServices.getSONumber(widget.services.id, widget.selectedDay, widget.appointment.id).then((getSONumber) {
       setState(() {
         _soNumber = getSONumber;
         if (_soNumber.isNotEmpty) {
@@ -354,6 +356,20 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
             Colors.green,
             Icons.check_box
         );
+
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SOPdfPreviewPage(soId: _soNumber[0].soId),
+            ),
+          ).then((value) {
+            // Refresh the services once the StatusPage is popped
+            _getPositions();
+            _getAccounts();
+            _getSONumber();
+            setState(() {});
+          });
+        });
       } else {
         _custSnackbar(
             context,
@@ -375,10 +391,6 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
         txtConforme.text, imageName, imageData
     ).then((result) {
       if('success' == result){
-        // sendPushNotifications();
-        // _getServices();
-        // clearFields();
-        // Navigator.of(context).pop();
 
         _custSnackbar(
             context,
@@ -386,6 +398,20 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
             Colors.green,
             Icons.check_box
         );
+
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SOPdfPreviewPage(soId: _soNumber[0].soId),
+            ),
+          ).then((value) {
+            // Refresh the services once the StatusPage is popped
+            _getPositions();
+            _getAccounts();
+            _getSONumber();
+            setState(() {});
+          });
+        });
       } else {
         _custSnackbar(
             context,
@@ -428,7 +454,6 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                       _getSONumber();
                       _getPositions();
                       _getAccounts();
-                      _getSONumber();
                     });
                   },
                   child: ListView(
@@ -759,7 +784,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> with TickerProvider
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => SOPdfPreviewPage(serviceOrder: _serviceOrder[0]),
+                                builder: (context) => SOPdfPreviewPage(soId: _serviceOrder[0].soId),
                               ),
                             );
                             // rootBundle.
