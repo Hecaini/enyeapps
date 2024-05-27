@@ -78,3 +78,5 @@ export 'ec_calendar/calendar_svc.dart';
 export 'schedule/schedule_page.dart';
 export 'schedule/events_data.dart';
 export 'schedule/schedule_svc.dart';
+export 'schedule/tsis_data.dart';
+export 'schedule/schedule_tasktile.dart';

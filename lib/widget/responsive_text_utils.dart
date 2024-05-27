@@ -23,7 +23,7 @@ class ResponsiveTextUtils {
 
   static double getSmallFontSize(double width) {
     if (width <= 500) {
-      return 12.0;
+      return 13.0;
     } else if (width > 500 && width <= 800) {
       return 15.0;
     } else if (width > 800 && width <= 1100) {

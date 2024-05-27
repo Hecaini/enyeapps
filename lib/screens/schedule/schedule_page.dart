@@ -1,6 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,7 +10,6 @@ import '../../../widget/widgets.dart';
 import '../../config/config.dart';
 import '../screens.dart';
 
-// ignore: must_be_immutable
 class SchedulePage extends StatefulWidget {
   static const String routeName = '/appointment';
 
@@ -31,10 +32,15 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
   bool? userSessionFuture;
 
   bool _isLoadingPendingEvents = true;
+  bool _isLoadingTSIS = true;
 
   @override
   void initState(){
     super.initState();
+    _pendingEvents = [];
+    _tsis = [];
+    _selectedDay = _focusedDay;
+
     //calling session data
     CheckSessionData().getUserSessionStatus().then((userSession) {
       if (userSession == true) {
@@ -42,6 +48,7 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
           setState(() {
             userInfo = value;
           });
+          _getTsis();
           _getPendingEvents();
         });
         userSessionFuture = userSession;
@@ -71,15 +78,42 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
     }
   }
 
-  //below this are for technical datas get to server
-  List<EventsData> _pendingEvents = [];
+  late List<EventsData> _pendingEvents;
   _getPendingEvents(){
-    ScheduleDataServices.getPendingEvents().then((pendingEvent){
-      setState(() {
-        _pendingEvents = pendingEvent;
+    if(userInfo?.status == "Employee") {
+      ScheduleDataServices.getPendingEvents().then((pendingEvent){
+        setState(() {
+          _pendingEvents = pendingEvent.where((e) => e.technician.contains(userInfo!.username) || e.engineer.contains(userInfo!.username)).toList();
+        });
+        _isLoadingPendingEvents = false;
       });
-      _isLoadingPendingEvents = false;
-    });
+    } else {
+      ScheduleDataServices.getPendingEvents().then((pendingEvent){
+        setState(() {
+          _pendingEvents = pendingEvent;
+        });
+        _isLoadingPendingEvents = false;
+      });
+    }
+  }
+
+  late List<TSISData> _tsis;
+  _getTsis(){
+    if(userInfo?.status == "Employee") {
+      ScheduleDataServices.getTSIS().then((tsis){
+        setState(() {
+          _tsis = tsis.where((e) => e.personCharge.contains(userInfo!.username) || e.technician.contains(userInfo!.username)).toList();
+        });
+        _isLoadingTSIS = false;
+      });
+    } else {
+      ScheduleDataServices.getTSIS().then((tsis){
+        setState(() {
+          _tsis = tsis;
+        });
+        _isLoadingTSIS = false;
+      });
+    }
   }
 
   late final AnimationController _controller = AnimationController(
@@ -100,7 +134,7 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
     return Scaffold(
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
       resizeToAvoidBottomInset: true,
-      body: _isLoadingPendingEvents
+      body: _isLoadingPendingEvents || _isLoadingTSIS
           ? Center(child: SpinningContainer(controller: _controller),)
           : RefreshIndicator(
         onRefresh: () async {
@@ -116,45 +150,50 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
             _addDateBar(),
 
             const SizedBox(height: 10,),
-            // Expanded(
-            //   child: ListView.builder(
-            //       itemCount: _opAppointment.length,
-            //       itemBuilder: (_, index){
-            //         AppointmentData appointment = _opAppointment[index];
-            //
-            //         TechnicalData services = _services.where((service) => service.id == appointment.svcId).elementAt(0);
-            //
-            //         if(services.status == "Completed"){
-            //           return Container();
-            //         } else {
-            //           if (DateFormat.yMd().format(DateTime.parse(appointment.startDatetime)) == DateFormat.yMd().format(_selectedDay!)
-            //               || DateFormat.yMd().format(DateTime.parse(appointment.endDatetime)) == DateFormat.yMd().format(_selectedDay!)
-            //               || (_selectedDay!.isAfter(DateTime.parse(appointment.startDatetime)) && _selectedDay!.isBefore(DateTime.parse(appointment.endDatetime)))){
-            //             return AnimationConfiguration.staggeredList(
-            //               position: index,
-            //               child: SlideAnimation(
-            //                 child: FadeInAnimation(
-            //                   child: Row(
-            //                     children: [
-            //                       GestureDetector(
-            //                         onTap: (){
-            //                           print('selected Date: ${_selectedDay.toString()}');
-            //                           _showBottomSheet(context, services, _selectedDay.toString(), appointment);
-            //                         },
-            //                         child: TaskTile(services: services, appointment: appointment),
-            //                       )
-            //                     ],
-            //                   ),
-            //                 ),
-            //               ),
-            //             );
-            //           } else {
-            //             return Container();
-            //           }
-            //         }
-            //       }
-            //   ),
-            // ),
+            Expanded(
+              child: ListView.builder(
+                  itemCount: _pendingEvents.length,
+                  itemBuilder: (_, index){
+
+                    EventsData event = _pendingEvents[index];
+                    List<TSISData> tsisList = _tsis.where((tsis) => tsis.tsisId == event.tsisId).toList();
+                    if (tsisList.isNotEmpty) {
+                      TSISData tsis = tsisList[0];
+
+                      if (DateFormat.yMd().format(DateTime.parse(event.start)) == DateFormat.yMd().format(_selectedDay!)
+                          || DateFormat.yMd().format(DateTime.parse(event.end)) == DateFormat.yMd().format(_selectedDay!)
+                          || (_selectedDay!.isAfter(DateTime.parse(event.start)) && _selectedDay!.isBefore(DateTime.parse(event.end)))){
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          child: SlideAnimation(
+                            child: FadeInAnimation(
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: (){
+                                      print('selected Date: ${_selectedDay.toString()}');
+                                      // _showBottomSheet(context, services, _selectedDay.toString(), appointment);
+                                    },
+                                    child: ScheduleTaskTile(tsis: tsis, event: event,),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+
+                    } else {
+                      return Container();
+                    }
+
+
+
+                  }
+              ),
+            ),
           ],
         ),
       ),
