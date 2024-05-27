@@ -73,7 +73,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
         //CatalogsPage(),
 
         //QuotationPage(),
-        TechSchedPage(message: message as RemoteMessage),
+        // TechSchedPage(message: message as RemoteMessage),
+        SchedulePage(message: message as RemoteMessage),
         CompletedPage(message: message as RemoteMessage),
         AccountPage(),
         WebViewPage(),

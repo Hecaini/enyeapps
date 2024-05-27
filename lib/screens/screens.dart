@@ -74,3 +74,7 @@ export 'unread/booking_tasktile.dart';
 
 export 'ec_calendar/calendar.dart';
 export 'ec_calendar/calendar_svc.dart';
+
+export 'schedule/schedule_page.dart';
+export 'schedule/events_data.dart';
+export 'schedule/schedule_svc.dart';

@@ -66,4 +66,7 @@ class API {
 
   //booking
   static const ec_calendar = "$hostConnect/ec_calendar.php"; //calendar disable holidays and events
+
+  //schedule
+  static const ec_schedule = "$hostConnect/admin/engineering_tsis/schedule.php";
 }
