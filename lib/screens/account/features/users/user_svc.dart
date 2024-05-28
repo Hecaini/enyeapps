@@ -8,6 +8,7 @@ class UsersInfoServices {
   //this is same as in PHP code action made by the user CRUD
   static const GET_ALL_USERS = 'get_all_users';
   static const EDIT_STATUS = 'edit_status';
+  static const GET_ENG_USERS = 'get_eng_users';
 
   //get data categories from database
   static Future <List<UsersInfo>> getUsersInfo() async {
@@ -57,6 +58,33 @@ class UsersInfoServices {
     } catch (e) {
       return "error";
     }
+  }
+
+  static Future <List<EngUsers>> getEngUsers() async {
+    try{
+      var map = Map<String, dynamic>();
+      map['action'] = GET_ENG_USERS;
+
+      final res = await http.post(Uri.parse(API.engUsers), body: map); //passing value to result
+      print('getEngUsers Response: ${res.body}');
+
+      if(res.statusCode == 200){
+        List<EngUsers> list = parseResEngUsers(res.body);
+        return list;
+      } else {
+        throw Exception('Failed to retrieve Eng Users Info');
+        //return List<Categories>();
+      }
+    } catch (e) {
+      throw Exception('Failed to retrieve Eng Users Info');
+      //return List<Categories>();
+    }
+  }
+
+  static List<EngUsers> parseResEngUsers(String responseBody){
+    //conversion from web server into data by using categories.dart
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<EngUsers>((json) => EngUsers.fromJson(json)).toList();
   }
 
 }

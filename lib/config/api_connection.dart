@@ -69,4 +69,9 @@ class API {
 
   //schedule
   static const ec_schedule = "$hostConnect/admin/engineering_tsis/schedule.php";
+  static const so_tsis = "$hostConnect/admin/engineering_tsis/service_order.php";
+  static const ec_conformeSig = "https://enyecontrols.com/enyecontrols_engineering/signs_conforme_by/";
+
+  //engineering users
+  static const engUsers = "$hostConnect/admin/engineering_tsis/engineering_users.php";
 }

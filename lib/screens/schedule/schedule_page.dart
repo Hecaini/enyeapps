@@ -83,7 +83,7 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
     if(userInfo?.status == "Employee") {
       ScheduleDataServices.getPendingEvents().then((pendingEvent){
         setState(() {
-          _pendingEvents = pendingEvent.where((e) => e.technician.contains(userInfo!.username) || e.engineer.contains(userInfo!.username)).toList();
+          _pendingEvents = pendingEvent.where((e) => _isUserAssigned(e.engineer, userInfo!.username) || _isUserAssigned(e.technician, userInfo!.username)).toList();
         });
         _isLoadingPendingEvents = false;
       });
@@ -102,7 +102,7 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
     if(userInfo?.status == "Employee") {
       ScheduleDataServices.getTSIS().then((tsis){
         setState(() {
-          _tsis = tsis.where((e) => e.personCharge.contains(userInfo!.username) || e.technician.contains(userInfo!.username)).toList();
+          _tsis = tsis.where((e) => _isUserAssigned(e.personCharge, userInfo!.username) || _isUserAssigned(e.technician, userInfo!.username)).toList();
         });
         _isLoadingTSIS = false;
       });
@@ -114,6 +114,14 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
         _isLoadingTSIS = false;
       });
     }
+  }
+
+  bool _isUserAssigned(String usersInCharge, String userId) {
+    if (usersInCharge != null || usersInCharge != "") {
+      List<String> userInChargeList = usersInCharge.split(',').map((e) => e.trim()).toList();
+      return userInChargeList.contains(userId);
+    }
+    return false;
   }
 
   late final AnimationController _controller = AnimationController(
@@ -137,66 +145,162 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
       body: _isLoadingPendingEvents || _isLoadingTSIS
           ? Center(child: SpinningContainer(controller: _controller),)
           : RefreshIndicator(
-        onRefresh: () async {
-          await Future.delayed(Duration(seconds: 2));
-          setState(() {
-            _getPendingEvents();
-          });
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            //_addTaskBar(),
-            _addDateBar(),
+              onRefresh: () async {
+                await Future.delayed(Duration(seconds: 2));
+                setState(() {
+                  _getPendingEvents();
+                });
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  //_addTaskBar(),
+                  _addDateBar(),
 
-            const SizedBox(height: 10,),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: _pendingEvents.length,
-                  itemBuilder: (_, index){
+                  const SizedBox(height: 10,),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: _pendingEvents.length,
+                        itemBuilder: (_, index){
 
-                    EventsData event = _pendingEvents[index];
-                    List<TSISData> tsisList = _tsis.where((tsis) => tsis.tsisId == event.tsisId).toList();
-                    if (tsisList.isNotEmpty) {
-                      TSISData tsis = tsisList[0];
+                          EventsData event = _pendingEvents[index];
+                          List<TSISData> tsisList = _tsis.where((tsis) => tsis.tsisId == event.tsisId).toList();
+                          if (tsisList.isNotEmpty) {
+                            TSISData tsis = tsisList[0];
 
-                      if (DateFormat.yMd().format(DateTime.parse(event.start)) == DateFormat.yMd().format(_selectedDay!)
-                          || DateFormat.yMd().format(DateTime.parse(event.end)) == DateFormat.yMd().format(_selectedDay!)
-                          || (_selectedDay!.isAfter(DateTime.parse(event.start)) && _selectedDay!.isBefore(DateTime.parse(event.end)))){
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          child: SlideAnimation(
-                            child: FadeInAnimation(
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: (){
-                                      print('selected Date: ${_selectedDay.toString()}');
-                                      // _showBottomSheet(context, services, _selectedDay.toString(), appointment);
-                                    },
-                                    child: ScheduleTaskTile(tsis: tsis, event: event,),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
+                            if (DateFormat.yMd().format(DateTime.parse(event.start)) == DateFormat.yMd().format(_selectedDay!)
+                                || DateFormat.yMd().format(DateTime.parse(event.end)) == DateFormat.yMd().format(_selectedDay!)
+                                || (_selectedDay!.isAfter(DateTime.parse(event.start)) && _selectedDay!.isBefore(DateTime.parse(event.end)))){
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                child: SlideAnimation(
+                                  child: FadeInAnimation(
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: (){
+                                            print('selected Date: ${_selectedDay.toString()}');
+                                            _showBottomSheet(context, tsis, _selectedDay.toString(), event);
+                                          },
+                                          child: ScheduleTaskTile(tsis: tsis, event: event,),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Container();
+                            }
 
-                    } else {
-                      return Container();
-                    }
-
-
-
-                  }
+                          } else {
+                            return Container();
+                          }
+                        }
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+    );
+  }
+
+  _showBottomSheet (BuildContext context, TSISData tsis, String selectedDay, EventsData event) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useRootNavigator: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            padding: const EdgeInsets.only(top: 4),
+            height: (_isUserAssigned(tsis.personCharge, userInfo!.username) || _isUserAssigned(tsis.technician, userInfo!.username) ||
+                _isUserAssigned(event.engineer, userInfo!.username) || _isUserAssigned(event.technician, userInfo!.username))
+                ? MediaQuery.of(context).size.height * 0.34
+                : MediaQuery.of(context).size.height * 0.24,
+            color: Colors.white,
+            child: Column(
+              children: [
+                Container(
+                  height: 6,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300]
+                  ),
+                ),
+
+                const Spacer(),
+                Container(),
+
+                (_isUserAssigned(tsis.personCharge, userInfo!.username) || _isUserAssigned(tsis.technician, userInfo!.username) ||
+                    _isUserAssigned(event.engineer, userInfo!.username) || _isUserAssigned(event.technician, userInfo!.username))
+                ? _bottomSheetButton(
+                  label: "Service Order",
+                  onTap: (){
+                    setState(() {
+                      // Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => SOPage(tsis: tsis, selectedDay: selectedDay, event: event)),
+                      );
+                    });
+                  },
+                  clr: Colors.blueAccent,
+                  context:context,
+                ): Container(),
+
+                // (services.status == "On Process" && userInfo?.status != "Employee") ?
+                // _bottomSheetButton(
+                //   label: "Task Completed",
+                //   onTap: (){
+                //     setState(() {
+                //       Navigator.pop(context);
+                //       // _showAnotherBottomSheet(context, services, "Task Completed", appointment);
+                //       Navigator.of(context).push(
+                //         MaterialPageRoute(builder: (context) => TaskCompletedPage(services: services, appointment: appointment, selectedDay: selectedDay)),
+                //       ).then((value) {
+                //         // Refresh the services once the StatusPage is popped
+                //         _getServices();
+                //         _getOnProcessAppointment();
+                //         _getAccounts();
+                //         _getPositions();
+                //         _getServiceOrder();
+                //         setState(() {});
+                //       });
+                //     });
+                //   },
+                //   clr: Colors.green,
+                //   context:context,
+                // ): Container(),
+
+                const SizedBox(height: 10,),
+                _bottomSheetButton(
+                  label: "View",
+                  onTap: (){
+                    setState(() {
+                      Navigator.pop(context);
+                      // _showAnotherBottomSheet(context, services, "View", appointment);
+                    });
+                  },
+                  clr: Colors.orangeAccent,
+                  context:context,
+                ),
+
+                const SizedBox(height: 20,),
+                _bottomSheetButton(
+                  label: "Close",
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  clr: Colors.orangeAccent,
+                  context:context,
+                  isClose: true,
+                ),
+
+                const SizedBox(height: 10,),
+              ],
+            ),
+          );
+        }
     );
   }
 
