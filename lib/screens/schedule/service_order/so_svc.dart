@@ -65,17 +65,17 @@ class SOServices {
     return parsed.map<SOData>((json) => SOData.fromJson(json)).toList();
   }
 
-  static Future<List<ServiceOrder>> getAllServiceOrder() async {
+  static Future<List<SOData>> getAllServiceOrder() async {
 
     var map = Map<String, dynamic>();
     map['action'] = GET_ALL_SO;
 
     //get all data of categories
-    final res = await http.post(Uri.parse(API.serviceOrderData), body: map); //passing value to result
+    final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
     print('getSO Response: ${res.body}');
 
     if(res.statusCode == 200){
-      List<ServiceOrder> list = parseResponseAllSO(res.body);
+      List<SOData> list = parseResponseAllSO(res.body);
       return list;
     } else {
       throw Exception('Failed to retrieve Technical Data');
@@ -83,10 +83,10 @@ class SOServices {
     }
   }
 
-  static List<ServiceOrder> parseResponseAllSO(String responseBody){
+  static List<SOData> parseResponseAllSO(String responseBody){
     //conversion from web server into data by using categories.dart
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-    return parsed.map<ServiceOrder>((json) => ServiceOrder.fromJson(json)).toList();
+    return parsed.map<SOData>((json) => SOData.fromJson(json)).toList();
   }
 
   static Future<String> saveSO(

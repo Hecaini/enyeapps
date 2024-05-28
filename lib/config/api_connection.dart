@@ -72,6 +72,7 @@ class API {
   static const so_tsis = "$hostConnect/admin/engineering_tsis/service_order.php";
   static const ec_conformeSig = "https://enyecontrols.com/enyecontrols_engineering/signs_conforme_by/";
   static const ec_usersSig = "https://enyecontrols.com/enyecontrols_engineering/images/signatures/";
+  static const ec_usersImg = "https://enyecontrols.com/enyecontrols_engineering/images/main_users/";
 
   //engineering users
   static const engUsers = "$hostConnect/admin/engineering_tsis/engineering_users.php";
