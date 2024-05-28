@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import '../../../config/config.dart';
 import '../../screens.dart';
 
-Future<Uint8List> pdfBuilderECSO(SOData serviceOrder, TSISData tsis) async {
+Future<Uint8List> pdfBuilderECSO(SOData serviceOrder, TSISData tsis, String serviceBySign) async {
   final pdf = Document();
   final imageLogo = MemoryImage(
       (await rootBundle.load('assets/logo/enyecontrols.png')).buffer.asUint8List());
@@ -21,6 +21,7 @@ Future<Uint8List> pdfBuilderECSO(SOData serviceOrder, TSISData tsis) async {
       (await rootBundle.load('assets/icons/clipboard.png')).buffer.asUint8List());
 
   final imgConSign = await loadSignatureImage(API.ec_conformeSig, serviceOrder.conformeSignature);
+  final imgUserSign = await loadSignatureImage(API.ec_usersSig, serviceBySign);
 
   pdf.addPage(
     MultiPage(
@@ -355,14 +356,14 @@ Future<Uint8List> pdfBuilderECSO(SOData serviceOrder, TSISData tsis) async {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 tableTextTitleStart("Service by : "),
-                // if (imgUserSign != null)
-                //   Container(
-                //       width: 200,
-                //       height: 30,
-                //       alignment: Alignment.center,
-                //       child: Image(imgUserSign, height: 50, width: 50)
-                //   )
-                // else
+                if (imgUserSign != null)
+                  Container(
+                      width: 200,
+                      height: 30,
+                      alignment: Alignment.center,
+                      child: Image(imgUserSign, height: 50, width: 50, fit: BoxFit.fill)
+                  )
+                else
                   Container(
                     width: 200,
                     height: 30,

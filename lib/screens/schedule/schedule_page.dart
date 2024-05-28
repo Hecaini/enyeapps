@@ -99,21 +99,12 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
 
   late List<TSISData> _tsis;
   _getTsis(){
-    if(userInfo?.status == "Employee") {
-      ScheduleDataServices.getTSIS().then((tsis){
-        setState(() {
-          _tsis = tsis.where((e) => _isUserAssigned(e.personCharge, userInfo!.username) || _isUserAssigned(e.technician, userInfo!.username)).toList();
-        });
-        _isLoadingTSIS = false;
+    ScheduleDataServices.getTSIS().then((tsis){
+      setState(() {
+        _tsis = tsis;
       });
-    } else {
-      ScheduleDataServices.getTSIS().then((tsis){
-        setState(() {
-          _tsis = tsis;
-        });
-        _isLoadingTSIS = false;
-      });
-    }
+      _isLoadingTSIS = false;
+    });
   }
 
   bool _isUserAssigned(String usersInCharge, String userId) {
