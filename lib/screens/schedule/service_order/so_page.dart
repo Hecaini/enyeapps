@@ -58,13 +58,21 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
     'Parts need to be Replaced'
   ];
 
-  List<UsersInfo> _servicedBy = [];
+  List<EngUsers> _servicedBy = [];
   String servicedByIds = '';
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 60),
     vsync: this,
   )..repeat();
+
+  bool _isUserAssigned(String usersInCharge, String userId) {
+    if (usersInCharge != null || usersInCharge != "") {
+      List<String> userInChargeList = usersInCharge.split(',').map((e) => e.trim()).toList();
+      return userInChargeList.contains(userId);
+    }
+    return false;
+  }
 
   final SignatureController controller = SignatureController(
     penStrokeWidth: 3,
@@ -305,6 +313,12 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
           selSysProd = _serviceOrder[0].service;
           txtConforme.text = _serviceOrder[0].conforme;
           selSvcBy = _serviceOrder[0].servicedBy;
+
+          for (var engUser in _engUsers) {
+            if (_isUserAssigned(_serviceOrder[0].servicedBy, engUser.username)) {
+              _servicedBy.add(engUser);
+            }
+          }
 
         } else {
           // Handle the case where no SO numbers are retrieved.
@@ -679,101 +693,114 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                   ),
 
                   SizedBox(height: screenHeight * 0.03),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                  //   child: ElevatedButton(
-                  //     onPressed: () {
-                  //       _unfocusAll();
-                  //       showDialog(
-                  //         context: context,
-                  //         builder: (BuildContext context) {
-                  //           return MultipleUsersDialogWidget(users: _users, position: _position, chosenPosition: "Engineer & Technician");
-                  //         },
-                  //       ).then((selectedItems) {
-                  //         setState(() {
-                  //           if (selectedItems != null) {
-                  //             // Display selected items
-                  //             _servicedBy = selectedItems;
-                  //           }
-                  //         });
-                  //       });
-                  //     },
-                  //     style: ButtonStyle(
-                  //       backgroundColor: MaterialStateProperty.all<Color>(Colors.deepOrange.shade300),
-                  //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  //         RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(5.0),
-                  //           side: BorderSide(color: Colors.white),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     child: Text(
-                  //       'Serviced By : ',
-                  //       style: TextStyle(
-                  //         fontSize: fontNormalSize,
-                  //         letterSpacing: 0.8,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // if (_servicedBy != null)
-                  //   Center(
-                  //     child: Padding(
-                  //       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                  //       child: Wrap(
-                  //         children: _servicedBy.map((eng_tech) {
-                  //           return Padding(
-                  //             padding: const EdgeInsets.symmetric(horizontal: 2.5),
-                  //             child: Chip(
-                  //               label: Text(
-                  //                 eng_tech.username,
-                  //                 style: TextStyle(color: Colors.grey.shade800, fontSize: fontXSmallSize),
-                  //               ),
-                  //               backgroundColor: Colors.deepOrange.shade50,
-                  //               deleteIcon: Icon(Icons.cancel, size: (screenHeight + screenWidth) / 70,), // Add delete icon
-                  //               deleteIconColor: Colors.deepOrange,
-                  //               onDeleted: () {
-                  //                 setState(() {
-                  //                   _servicedBy.remove(eng_tech); // Remove item from the list
-                  //                 });
-                  //               },
-                  //             ),
-                  //           );
-                  //         }).toList(),
-                  //       ),
-                  //     ),
-                  //   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _unfocusAll();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return MultipleECUsersDialogWidget(users: _engUsers, chosenPosition: "Engineer & Technician", initiallySelectedUsers: _servicedBy);
+                          },
+                        ).then((selectedItems) {
+                          setState(() {
+                            if (selectedItems != null) {
+                              // Display selected items
+                              _servicedBy = selectedItems;
+                            }
+                          });
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.deepOrange.shade300),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Serviced By : ',
+                        style: TextStyle(
+                          fontSize: fontNormalSize,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_servicedBy != null)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                        child: Wrap(
+                          children: _servicedBy.map((eng_tech) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                              child: Chip(
+                                label: Text(
+                                  eng_tech.username,
+                                  style: TextStyle(color: Colors.grey.shade800, fontSize: fontXSmallSize),
+                                ),
+                                backgroundColor: Colors.deepOrange.shade50,
+                                deleteIcon: Icon(Icons.cancel, size: (screenHeight + screenWidth) / 70,), // Add delete icon
+                                deleteIconColor: Colors.deepOrange,
+                                onDeleted: () {
+                                  setState(() {
+                                    _servicedBy.remove(eng_tech); // Remove item from the list
+                                  });
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
 
                   SizedBox(height: screenHeight * 0.04),
-                  // if (_serviceOrder.isNotEmpty)
-                  //   editButton(
-                  //       onTap: () {
-                  //         _updateSO();
-                  //       },
-                  //       text: 'UPDATE'
-                  //   )
-                  // else
-                  //   addButton(
-                  //       onTap: () {
-                  //         if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
-                  //             txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                  //             txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
-                  //           _custSnackbar(
-                  //               context,
-                  //               "Kindly fill out the fields and select service by !",
-                  //               Colors.redAccent,
-                  //               Icons.error
-                  //           );
-                  //         } else {
-                  //           servicedByIds = _servicedBy.map((serviceBy) => serviceBy.user_id.toString()).join(', ');
-                  //           print(servicedByIds);
-                  //
-                  //           _saveSO();
-                  //         }
-                  //
-                  //       },
-                  //       text: 'SAVE'
-                  //   ),
+                  if (_serviceOrder.isNotEmpty && _serviceOrder[0].stat == "Save")
+                    editButton(
+                        onTap: () {
+                          if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
+                              txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
+                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                            _custSnackbar(
+                                context,
+                                "Kindly fill out the fields and select service by !",
+                                Colors.redAccent,
+                                Icons.error
+                            );
+                          } else {
+                            servicedByIds = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
+                            print(servicedByIds);
+
+                            // _updateSO();
+                          }
+                        },
+                        text: 'UPDATE'
+                    )
+                  else
+                    addButton(
+                        onTap: () {
+                          if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
+                              txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
+                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                            _custSnackbar(
+                                context,
+                                "Kindly fill out the fields and select service by !",
+                                Colors.redAccent,
+                                Icons.error
+                            );
+                          } else {
+                            servicedByIds = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
+                            print(servicedByIds);
+
+                            // _saveSO();
+                          }
+                        },
+                        text: 'SAVE'
+                    ),
 
                   SizedBox(height: screenHeight * 0.04),
                   if (_serviceOrder.isNotEmpty)
@@ -836,3 +863,168 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
     );
   }
 }
+
+class MultipleECUsersDialogWidget extends StatefulWidget {
+  final List<EngUsers> users;
+  final String chosenPosition;
+  final List<EngUsers> initiallySelectedUsers;
+
+  MultipleECUsersDialogWidget({super.key, required this.users, required this.chosenPosition, required this.initiallySelectedUsers,});
+
+  @override
+  _MultipleECUsersDialogWidgetState createState() => _MultipleECUsersDialogWidgetState();
+}
+
+class _MultipleECUsersDialogWidgetState extends State<MultipleECUsersDialogWidget> {
+
+  List<EngUsers> _users = [];
+  List<EngUsers> _filteredUsers = [];
+  Map<EngUsers, bool> _checkedUsers = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.chosenPosition == "Engineer & Technician") {
+      _users = widget.users.where((user) =>
+        (user.roleType == "Engineer") || (user.roleType == "Technician")).toList();
+    } else {
+      _users = widget.users;
+    }
+
+    _filteredUsers = List.from(_users);
+    _users.forEach((user) {
+      _checkedUsers[user] = widget.initiallySelectedUsers.contains(user);
+    });
+  }
+
+  void _filterSearchResults(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        _filteredUsers = List.from(_users);
+      });
+    } else {
+      setState(() {
+        _filteredUsers = _users.where((user) => user.username.toLowerCase().contains(query.toLowerCase()) ||
+            user.roleType.toLowerCase().contains(query.toLowerCase())).toList();
+      });
+    }
+  }
+
+  List<EngUsers> getSelectedItems() {
+    List<EngUsers> selectedItems = [];
+    _checkedUsers.forEach((key, value) {
+      if (value) {
+        selectedItems.add(key);
+      }
+    });
+    return selectedItems;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+    var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
+
+    return AlertDialog(
+      contentPadding: EdgeInsets.all(2.0),
+      title: Text(widget.chosenPosition),
+      content: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: TextField(
+              onChanged: _filterSearchResults,
+              decoration: InputDecoration(
+                labelText: "Search",
+                labelStyle: TextStyle(
+                  fontSize: fontNormalSize,
+                ),
+                hintText: "Search",
+                hintStyle: TextStyle(
+                  fontSize: fontSmallSize,
+                ),
+                prefixIcon: Icon(Icons.search, size: fontNormalSize * 1.5,),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _filteredUsers.length,
+              itemBuilder: (context, index) {
+                EngUsers user = _filteredUsers[index];
+                return CheckboxListTile(
+                  title: Text(
+                    "${user.username} - ${user.roleType}",
+                    style: TextStyle(
+                        fontSize: fontNormalSize
+                    ),
+                  ),
+                  value: _checkedUsers[user],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _checkedUsers[user] = value!;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                side: BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
+          child: Text(
+            'Cancel',
+            style: TextStyle(
+                fontSize: fontNormalSize
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // Get selected items and return them to the caller
+            List<EngUsers> selectedItems = getSelectedItems();
+            Navigator.of(context).pop(selectedItems); // Close the dialog and return selected items
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                side: BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
+          child: Text(
+            'Submit',
+            style: TextStyle(
+                fontSize: fontNormalSize
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
