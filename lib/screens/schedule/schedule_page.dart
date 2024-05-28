@@ -453,7 +453,7 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${DateFormat.yMMMMd().format(DateTime.parse(event.start))} TO ${DateFormat.yMMMMd().format(DateTime.parse(event.end))}',
+                            '${DateFormat.yMMMd().format(DateTime.parse(event.start))} TO ${DateFormat.yMMMd().format(DateTime.parse(event.end))}',
                             style: GoogleFonts.poppins(
                               textStyle: TextStyle(
                                 fontSize: fontSmallSize,

@@ -652,7 +652,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                             ),
                           )
                         else
-                          if (_serviceOrder[0].conformeSignature.isNotEmpty)
+                          if (_serviceOrder.isNotEmpty)
                             InkWell(
                               onTap: () => _showSignatureDialog(context),
                               child: Container(
