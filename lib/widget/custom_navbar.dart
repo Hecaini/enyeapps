@@ -75,7 +75,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
         //QuotationPage(),
         // TechSchedPage(message: message as RemoteMessage),
         SchedulePage(message: message as RemoteMessage),
-        CompletedPage(message: message as RemoteMessage),
+        ECCompletedPage(message: message as RemoteMessage),
         AccountPage(),
         WebViewPage(),
       ];

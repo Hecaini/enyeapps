@@ -155,54 +155,54 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
       appBar: const CustomAppBar(title: 'Technical Schedule', imagePath: 'assets/logo/enyecontrols.png',),
       resizeToAvoidBottomInset: true,
       body: _isLoadingPendingEvents || _isLoadingTSIS
-          ? Center(child: SpinningContainer(controller: _controller),)
-          : RefreshIndicator(
-              onRefresh: () async {
-                await Future.delayed(Duration(seconds: 2));
-                setState(() {
-                  _getPendingEvents();
-                });
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  //_addTaskBar(),
-                  _addDateBar(),
+        ? Center(child: SpinningContainer(controller: _controller),)
+        : RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(Duration(seconds: 2));
+              setState(() {
+                _getPendingEvents();
+              });
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                //_addTaskBar(),
+                _addDateBar(),
 
-                  const SizedBox(height: 10,),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: _pendingEvents.length,
-                        itemBuilder: (_, index){
+                const SizedBox(height: 10,),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: _pendingEvents.length,
+                      itemBuilder: (_, index){
 
-                          EventsData event = _pendingEvents[index];
-                          List<TSISData> tsisList = _tsis.where((tsis) => tsis.tsisId == event.tsisId).toList();
-                          if (tsisList.isNotEmpty) {
-                            TSISData tsis = tsisList[0];
+                        EventsData event = _pendingEvents[index];
+                        List<TSISData> tsisList = _tsis.where((tsis) => tsis.tsisId == event.tsisId).toList();
+                        if (tsisList.isNotEmpty) {
+                          TSISData tsis = tsisList[0];
 
-                            if (DateFormat.yMd().format(DateTime.parse(event.start)) == DateFormat.yMd().format(_selectedDay!)
-                                || DateFormat.yMd().format(DateTime.parse(event.end)) == DateFormat.yMd().format(_selectedDay!)
-                                || (_selectedDay!.isAfter(DateTime.parse(event.start)) && _selectedDay!.isBefore(DateTime.parse(event.end)))){
-                              return GestureDetector(
-                                onTap: (){
-                                  print('selected Date: ${_selectedDay.toString()}');
-                                  _showBottomSheet(context, tsis, _selectedDay.toString(), event);
-                                },
-                                child: ScheduleTaskTile(tsis: tsis, event: event,),
-                              );
-                            } else {
-                              return Container();
-                            }
-
+                          if (DateFormat.yMd().format(DateTime.parse(event.start)) == DateFormat.yMd().format(_selectedDay!)
+                              || DateFormat.yMd().format(DateTime.parse(event.end)) == DateFormat.yMd().format(_selectedDay!)
+                              || (_selectedDay!.isAfter(DateTime.parse(event.start)) && _selectedDay!.isBefore(DateTime.parse(event.end)))){
+                            return GestureDetector(
+                              onTap: (){
+                                print('selected Date: ${_selectedDay.toString()}');
+                                _showBottomSheet(context, tsis, _selectedDay.toString(), event);
+                              },
+                              child: ScheduleTaskTile(tsis: tsis, event: event,),
+                            );
                           } else {
                             return Container();
                           }
+
+                        } else {
+                          return Container();
                         }
-                    ),
+                      }
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
     );
   }
 

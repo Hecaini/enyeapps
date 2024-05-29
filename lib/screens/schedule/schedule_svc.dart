@@ -6,6 +6,7 @@ import '../screens.dart';
 
 class ScheduleDataServices {
   static const GET_PENDING_EVENTS = 'get_pending_events';
+  static const GET_COMPLETE_EVENTS = 'get_complete_events';
   static const GET_TSIS = 'get_tsis';
 
   static Future <List<EventsData>> getPendingEvents() async {
@@ -31,6 +32,34 @@ class ScheduleDataServices {
   }
 
   static List<EventsData> parseResponse(String responseBody){
+    //conversion from web server into data by using categories.dart
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<EventsData>((json) => EventsData.fromJson(json)).toList();
+  }
+
+  static Future <List<EventsData>> getCompleteEvents() async {
+    try{
+      var map = Map<String, dynamic>();
+      map['action'] = GET_COMPLETE_EVENTS;
+
+      //get all data of categories
+      final res = await http.post(Uri.parse(API.ec_schedule), body: map); //passing value to result
+      print('getEventsData Response: ${res.body}');
+
+      if(res.statusCode == 200){
+        List<EventsData> list = parseResCompleteEvents(res.body);
+        return list;
+      } else {
+        throw Exception('Failed to retrieve Technical Data');
+        //return List<Categories>();
+      }
+    } catch (e) {
+      throw Exception('Failed to retrieve Technical Data');
+      //return List<Categories>();
+    }
+  }
+
+  static List<EventsData> parseResCompleteEvents(String responseBody){
     //conversion from web server into data by using categories.dart
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<EventsData>((json) => EventsData.fromJson(json)).toList();

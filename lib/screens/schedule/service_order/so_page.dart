@@ -966,7 +966,7 @@ class _MultipleECUsersDialogWidgetState extends State<MultipleECUsersDialogWidge
                   title: Text(
                     "${user.username} - ${user.roleType}",
                     style: TextStyle(
-                        fontSize: fontNormalSize
+                      fontSize: fontNormalSize
                     ),
                   ),
                   value: _checkedUsers[user],

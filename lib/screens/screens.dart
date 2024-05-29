@@ -63,6 +63,8 @@ export 'technical_schedule/service_order/serviceOrderPDF_helper.dart';
 
 export 'completed/completed.dart';
 export 'completed/view_page.dart';
+export 'completed/ec_completed_page.dart';
+export 'completed/ec_view_page.dart';
 
 export 'unread/unread_page.dart';
 export 'unread/set_service_page.dart';
