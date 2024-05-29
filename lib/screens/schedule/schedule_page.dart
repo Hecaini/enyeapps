@@ -183,23 +183,12 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
                             if (DateFormat.yMd().format(DateTime.parse(event.start)) == DateFormat.yMd().format(_selectedDay!)
                                 || DateFormat.yMd().format(DateTime.parse(event.end)) == DateFormat.yMd().format(_selectedDay!)
                                 || (_selectedDay!.isAfter(DateTime.parse(event.start)) && _selectedDay!.isBefore(DateTime.parse(event.end)))){
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                child: SlideAnimation(
-                                  child: FadeInAnimation(
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (){
-                                            print('selected Date: ${_selectedDay.toString()}');
-                                            _showBottomSheet(context, tsis, _selectedDay.toString(), event);
-                                          },
-                                          child: ScheduleTaskTile(tsis: tsis, event: event,),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                              return GestureDetector(
+                                onTap: (){
+                                  print('selected Date: ${_selectedDay.toString()}');
+                                  _showBottomSheet(context, tsis, _selectedDay.toString(), event);
+                                },
+                                child: ScheduleTaskTile(tsis: tsis, event: event,),
                               );
                             } else {
                               return Container();
