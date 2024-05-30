@@ -636,6 +636,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                           disabling: disabling,
                         ),
 
+                        SizedBox(height: screenHeight * 0.015),
                         NormalTextField(
                           controller: txtConformeEmail,
                           hintText: 'Conforme Email',
