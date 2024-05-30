@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'widgets.dart';
+
 class NoInternetHandler extends StatefulWidget {
   final Widget child;
 
@@ -77,6 +79,16 @@ class NoInternetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+    var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
+    var fontXSize = ResponsiveTextUtils.getXFontSize(screenWidth);
+    var fontXXSize = ResponsiveTextUtils.getXXFontSize(screenWidth);
+    var fontXXXSize = ResponsiveTextUtils.getXXXFontSize(screenWidth);
+
     return GestureDetector(
       onTap: (){
         exit(0); // Exit the application
@@ -85,20 +97,20 @@ class NoInternetPage extends StatelessWidget {
           backgroundColor: Colors.deepOrange.shade200,
           body: Padding(
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.1,
-              left: MediaQuery.of(context).size.width * 0.08,
-              right: MediaQuery.of(context).size.width * 0.08,
-              bottom: MediaQuery.of(context).size.height * 0.05,
+              top: screenHeight * 0.1,
+              left: screenWidth * 0.08,
+              right: screenWidth * 0.08,
+              bottom: screenHeight * 0.05,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Lottie.asset(
-                  'assets/lottie/Animation - 1693291610842.json',
-                  frameRate: FrameRate.max,
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 0.84
+                    'assets/lottie/no_internet.json',
+                    frameRate: FrameRate.max,
+                    alignment: Alignment.center,
+                    height: screenHeight * 0.5,
+                    width: screenWidth * 0.84
                 ),
 
                 Column(
@@ -106,21 +118,21 @@ class NoInternetPage extends StatelessWidget {
                     Text(
                       //if error = true ibig sabihin may error sa server
                       //if error = false ibig sabihin may Walang Internet
-                        error ? "We are Under Maintenance." : "No Internet Connection",
-                        textAlign: TextAlign.center,
-                        style: error ? GoogleFonts.paytoneOne(
-                          textStyle: TextStyle(
-                              fontSize: 24,
-                              letterSpacing: 1.2,
-                              color: Colors.deepOrange.shade700
-                          ),
-                        ) : TextStyle(
-                            fontFamily: 'Rowdies',
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
+                      error ? "We are Under Maintenance." : "No Internet Connection",
+                      textAlign: TextAlign.center,
+                      style: error ? GoogleFonts.paytoneOne(
+                        textStyle: TextStyle(
+                            fontSize: fontXSize,
                             letterSpacing: 1.2,
                             color: Colors.deepOrange.shade700
                         ),
+                      ) : TextStyle(
+                          fontFamily: 'Rowdies',
+                          fontSize: fontXSize,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                          color: Colors.deepOrange.shade700
+                      ),
                     ),
 
                     const SizedBox(height: 15,),
@@ -128,12 +140,12 @@ class NoInternetPage extends StatelessWidget {
                       textAlign: TextAlign.center,
                       error ? "Sorry for the inconvenience, will be back soon !" : "Please check your internet connection and try again.",
                       style: error ? GoogleFonts.alata(
-                        textStyle: const TextStyle(
-                            fontSize: 16,
+                        textStyle: TextStyle(
+                            fontSize: fontSmallSize,
                             color: Colors.white
                         ),
                       ) : TextStyle(
-                          fontSize: 17,
+                          fontSize: fontSmallSize,
                           letterSpacing: 0.8,
                           color: Colors.white
                       ),
@@ -141,11 +153,11 @@ class NoInternetPage extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                SizedBox(height: screenHeight * 0.1),
 
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: screenHeight * 0.04,
+                  width: screenWidth * 0.7,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage("assets/logo/enyecontrols.png"),

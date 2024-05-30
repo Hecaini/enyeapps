@@ -315,6 +315,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
           txtConforme.text = _serviceOrder[0].conforme;
           selSvcBy = _serviceOrder[0].servicedBy;
 
+          _servicedBy.clear();
           for (var engUser in _engUsers) {
             if (_isUserAssigned(_serviceOrder[0].servicedBy, engUser.username)) {
               _servicedBy.add(engUser);
@@ -344,12 +345,12 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
     DateTime now = DateTime.now();
 
     SOServices.saveSO(
-        widget.tsis.tsisId, widget.event.id, _soNumber[0].soId,
+        widget.tsis.tsisId, widget.event.id, _soNumber[0].soId, _soNumber[0].dayCount, _soNumber[0].soNo, _soNumber[0].soStatus,
         txtTimeIn.text, txtTimeOut.text, txtSysProduct.text, txtLocation.text, txtComplaint.text,
         txtStatus.text, txtRemarks.text, selSysProd!, servicedByUsername, widget.selectedDay,
         txtConforme.text, txtConformeEmail.text, imageName, imageData
     ).then((result) {
-      if('success' == result){
+      if(result.contains("Successfully saved !")){
         // sendPushNotifications();
         // _getServices();
         // clearFields();
@@ -365,7 +366,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
         Future.delayed(Duration(seconds: 2), () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => SOPdfPreviewPage(soId: _soNumber[0].soId),
+              builder: (context) => SOPdfPage(soId: _soNumber[0].soId),
             ),
           ).then((value) {
             // Refresh the services once the StatusPage is popped
@@ -386,15 +387,13 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   }
 
   _updateSO(){
-    SODataServices.updateSO(
-        _soNumber[0].soId, txtTimeIn.text,
-        txtTimeOut.text, txtSysProduct.text,
-        txtLocation.text, txtComplaint.text,
-        txtStatus.text, txtRemarks.text,
-        selSysProd!, selSvcBy!,
+    SOServices.updateSO(
+        widget.tsis.tsisId, widget.event.id, _soNumber[0].soId, _soNumber[0].dayCount, _soNumber[0].soNo, _soNumber[0].soStatus,
+        txtTimeIn.text, txtTimeOut.text, txtSysProduct.text, txtLocation.text, txtComplaint.text,
+        txtStatus.text, txtRemarks.text, selSysProd!, servicedByUsername, widget.selectedDay,
         txtConforme.text, imageName, imageData
     ).then((result) {
-      if('success' == result){
+      if(result.contains("Successfully updated !")){
 
         _custSnackbar(
             context,
@@ -406,7 +405,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
         Future.delayed(Duration(seconds: 2), () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => SOPdfPreviewPage(soId: _soNumber[0].soId),
+              builder: (context) => SOPdfPage(soId: _soNumber[0].soId),
             ),
           ).then((value) {
             // Refresh the services once the StatusPage is popped
@@ -794,7 +793,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                         onTap: () {
                           if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
                               txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || txtConformeEmail.text.isEmpty || _servicedBy == null){
+                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
                             _custSnackbar(
                                 context,
                                 "Kindly fill out the fields and select service by !",
@@ -805,7 +804,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                             servicedByUsername = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
                             print(servicedByUsername);
 
-                            // _updateSO();
+                            _updateSO();
                           }
                         },
                         text: 'UPDATE'

@@ -90,7 +90,7 @@ class SOServices {
   }
 
   static Future<String> saveSO(
-      String tsisId, String eventId, String so_id,
+      String tsisId, String eventId, String so_id, String dayCount, String soNo, String soStatus,
       String time_in, String time_out, String system_product, String location, String complaint,
       String status, String remark, String service, String serviced_by, String selectedDay,
       String conforme, String conformeEmail, String signCon, String signDataCon) async {
@@ -102,6 +102,9 @@ class SOServices {
       map['tsis_id'] = tsisId;
       map['event_id'] = eventId;
       map['so_id'] = so_id;
+      map['dayCount'] = dayCount;
+      map['soNo'] = soNo;
+      map['soStatus'] = soStatus;
       map['time_in'] = time_in;
       map['time_out'] = time_out;
       map['system_product'] = system_product;
@@ -134,18 +137,21 @@ class SOServices {
   }
 
   static Future<String> updateSO(
-      String so_id, String time_in,
-      String time_out, String system_product,
-      String location, String complaint,
-      String status, String remark,
-      String service, String serviced_by,
-      String conforme, String conformeEmail, String signCon, String signDataCon) async {
+      String tsisId, String eventId, String so_id, String dayCount, String soNo, String soStatus,
+      String time_in, String time_out, String system_product, String location, String complaint,
+      String status, String remark, String service, String serviced_by, String selectedDay,
+      String conforme, String signCon, String signDataCon) async {
     try{
       var map = Map<String, dynamic>();
       //get the action do by the user transfer it to POST method
       map['action'] = UPDATE_SO;
       //name of category entered by user
+      map['tsis_id'] = tsisId;
+      map['event_id'] = eventId;
       map['so_id'] = so_id;
+      map['dayCount'] = dayCount;
+      map['soNo'] = soNo;
+      map['soStatus'] = soStatus;
       map['time_in'] = time_in;
       map['time_out'] = time_out;
       map['system_product'] = system_product;
@@ -155,14 +161,14 @@ class SOServices {
       map['remark'] = remark;
       map['service'] = service;
       map['serviced_by'] = serviced_by;
+      map['selectedDay'] = selectedDay;
       map['conforme'] = conforme;
-      map['conformeEmail'] = conformeEmail;
       map['signCon'] = signCon;
       map['signDataCon'] = signDataCon;
 
       //config API to connect web server
-      final res = await http.post(Uri.parse(API.serviceOrderData), body: map); //passing value to result
-      print('Update SO Response: ${res.body}');
+      final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
+      print('Update SO Response UPDATE: ${res.body}');
 
       //if status is okay in web server
       if(res.statusCode == 200){

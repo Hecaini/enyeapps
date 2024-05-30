@@ -163,7 +163,7 @@ class _ECViewCompletePageState extends State<ECViewCompletePage> with TickerProv
           SizedBox(height: screenHeight * 0.03),
           Center(
             child: Text(
-                "#${widget.tsis.tsisNo}",
+                "TSIS# ${widget.tsis.tsisNo}",
                 style: GoogleFonts.rowdies(
                     textStyle: TextStyle(
                         fontSize: fontXSize,
