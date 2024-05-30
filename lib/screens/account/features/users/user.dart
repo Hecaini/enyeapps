@@ -52,6 +52,7 @@ class EngUsers {
   String roleType;
   String picture;
   String signature;
+  String status;
 
   EngUsers({
     required this.id,
@@ -65,6 +66,7 @@ class EngUsers {
     required this.roleType,
     required this.picture,
     required this.signature,
+    required this.status,
   });
 
   factory EngUsers.fromJson(Map<String, dynamic> json) {
@@ -80,6 +82,7 @@ class EngUsers {
       roleType: json['role_type'] as String? ?? '',
       picture: json['picture'] as String? ?? '',
       signature: json['signature'] as String? ?? '',
+      status: json['Status'] as String? ?? '',
     );
   }
 }

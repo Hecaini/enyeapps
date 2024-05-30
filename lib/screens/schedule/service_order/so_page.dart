@@ -334,7 +334,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   _getEngAccounts(){
     UsersInfoServices.getEngUsers().then((accountInfo){
       setState(() {
-        _engUsers = accountInfo;
+        _engUsers = accountInfo.where((e) => e.status != 'Resigned').toList();
       });
     });
   }
