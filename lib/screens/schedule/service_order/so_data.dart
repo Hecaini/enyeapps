@@ -19,7 +19,6 @@ class SOData {
   String service;
   String servicedBy;
   String conforme;
-  String conformeEmail;
   String conformeSignature;
   String coc;
   String stat;
@@ -45,7 +44,6 @@ class SOData {
     required this.service,
     required this.servicedBy,
     required this.conforme,
-    required this.conformeEmail,
     required this.conformeSignature,
     required this.coc,
     required this.stat
@@ -73,7 +71,6 @@ class SOData {
       service: json['service'] as String? ?? '',
       servicedBy: json['serviced_by'] as String? ?? '',
       conforme: json['conforme'] as String? ?? '',
-      conformeEmail: json['conformeEmail'] as String ?? '',
       conformeSignature: json['conforme_signature'] as String? ?? '',
       coc: json['coc'] as String? ?? '',
       stat: json['stat'] as String? ?? '',

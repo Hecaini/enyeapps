@@ -90,18 +90,17 @@ class SOServices {
   }
 
   static Future<String> saveSO(
-      String svc_id, String so_id,
-      String time_in, String time_out,
-      String system_product, String location, String complaint,
-      String status, String remark,
-      String service, String serviced_by, String selectedDay,
+      String tsisId, String eventId, String so_id,
+      String time_in, String time_out, String system_product, String location, String complaint,
+      String status, String remark, String service, String serviced_by, String selectedDay,
       String conforme, String conformeEmail, String signCon, String signDataCon) async {
     try{
       var map = Map<String, dynamic>();
       //get the action do by the user transfer it to POST method
       map['action'] = SAVE_SO;
       //name of category entered by user
-      map['svc_id'] = svc_id;
+      map['tsis_id'] = tsisId;
+      map['event_id'] = eventId;
       map['so_id'] = so_id;
       map['time_in'] = time_in;
       map['time_out'] = time_out;
@@ -119,8 +118,8 @@ class SOServices {
       map['signDataCon'] = signDataCon;
 
       //config API to connect web server
-      final res = await http.post(Uri.parse(API.serviceOrderData), body: map); //passing value to result
-      print('Update SO Response: ${res.body}');
+      final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
+      print('Update SO Response to Save: ${res.body}');
 
       //if status is okay in web server
       if(res.statusCode == 200){

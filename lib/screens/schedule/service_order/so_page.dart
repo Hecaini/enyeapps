@@ -60,7 +60,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   ];
 
   List<EngUsers> _servicedBy = [];
-  String servicedByIds = '';
+  String servicedByUsername = '';
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 60),
@@ -343,13 +343,11 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   _saveSO(){
     DateTime now = DateTime.now();
 
-    SODataServices.saveSO(
-        widget.tsis.tsisId, _soNumber[0].soId,
-        txtTimeIn.text, txtTimeOut.text,
-        txtSysProduct.text, txtLocation.text, txtComplaint.text,
-        txtStatus.text, txtRemarks.text,
-        selSysProd!, selSvcBy!, widget.selectedDay,
-        txtConforme.text, imageName, imageData
+    SOServices.saveSO(
+        widget.tsis.tsisId, widget.event.id, _soNumber[0].soId,
+        txtTimeIn.text, txtTimeOut.text, txtSysProduct.text, txtLocation.text, txtComplaint.text,
+        txtStatus.text, txtRemarks.text, selSysProd!, servicedByUsername, widget.selectedDay,
+        txtConforme.text, txtConformeEmail.text, imageName, imageData
     ).then((result) {
       if('success' == result){
         // sendPushNotifications();
@@ -780,8 +778,8 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                                 Icons.error
                             );
                           } else {
-                            servicedByIds = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
-                            print(servicedByIds);
+                            servicedByUsername = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
+                            print(servicedByUsername);
 
                             // _updateSO();
                           }
@@ -801,10 +799,10 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                                 Icons.error
                             );
                           } else {
-                            servicedByIds = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
-                            print(servicedByIds);
+                            servicedByUsername = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
+                            print(servicedByUsername);
 
-                            // _saveSO();
+                            _saveSO();
                           }
                         },
                         text: 'SAVE'
