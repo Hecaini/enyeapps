@@ -636,6 +636,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                           disabling: disabling,
                         ),
 
+                        SizedBox(height: screenHeight * 0.04),
                         NormalTextField(
                           controller: txtConformeEmail,
                           hintText: 'Conforme Email',
@@ -658,7 +659,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                           )
                         else
                           if (_serviceOrder.isNotEmpty)
-                            if (_serviceOrder[0].conformeSignature.isNotEmpty || _serviceOrder[0].conformeSignature != "")
+                            if (_serviceOrder[0].conformeSignature.isNotEmpty || _serviceOrder[0].conformeSignature != "" || _serviceOrder[0].conformeSignature != null)
                               InkWell(
                                 onTap: () => _showSignatureDialog(context),
                                 child: Container(
@@ -668,6 +669,29 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                                   child: Image.network(
                                     API.ec_conformeSig + _serviceOrder[0].conformeSignature,
                                     fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                            else
+                              InkWell(
+                                onTap: () => _showSignatureDialog(context),
+                                child: Container(
+                                  width: screenWidth * 0.83,
+                                  height: screenHeight * 0.13,
+                                  color: Colors.grey.shade300,
+                                  child: Center(
+                                    child: Text(
+                                      "No Signature Captured.\nTap to sign",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: fontSmallSize,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 1.2,
+                                            color: Colors.black54
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               )
@@ -693,7 +717,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                                   ),
                                 ),
                               ),
-                            ),
+                            )
                       ],
                     ),
                   ),
