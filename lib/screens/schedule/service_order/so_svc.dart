@@ -95,7 +95,7 @@ class SOServices {
       String system_product, String location, String complaint,
       String status, String remark,
       String service, String serviced_by, String selectedDay,
-      String conforme, String signCon, String signDataCon) async {
+      String conforme, String conformeEmail, String signCon, String signDataCon) async {
     try{
       var map = Map<String, dynamic>();
       //get the action do by the user transfer it to POST method
@@ -114,6 +114,7 @@ class SOServices {
       map['serviced_by'] = serviced_by;
       map['selectedDay'] = selectedDay;
       map['conforme'] = conforme;
+      map['conformeEmail'] = conformeEmail;
       map['signCon'] = signCon;
       map['signDataCon'] = signDataCon;
 
@@ -139,7 +140,7 @@ class SOServices {
       String location, String complaint,
       String status, String remark,
       String service, String serviced_by,
-      String conforme, String signCon, String signDataCon) async {
+      String conforme, String conformeEmail, String signCon, String signDataCon) async {
     try{
       var map = Map<String, dynamic>();
       //get the action do by the user transfer it to POST method
@@ -156,6 +157,7 @@ class SOServices {
       map['service'] = service;
       map['serviced_by'] = serviced_by;
       map['conforme'] = conforme;
+      map['conformeEmail'] = conformeEmail;
       map['signCon'] = signCon;
       map['signDataCon'] = signDataCon;
 

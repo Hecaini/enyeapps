@@ -43,6 +43,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   final txtStatus = TextEditingController();
   final txtRemarks = TextEditingController();
   final txtConforme = TextEditingController();
+  final txtConformeEmail = TextEditingController();
 
   @override
   void initState() {
@@ -637,6 +638,12 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                           disabling: disabling,
                         ),
 
+                        NormalTextField(
+                          controller: txtConformeEmail,
+                          hintText: 'Conforme Email',
+                          disabling: disabling,
+                        ),
+
                         SizedBox(height: screenHeight * 0.01),
                         if (exportedImage != null)
                           InkWell(
@@ -765,7 +772,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                         onTap: () {
                           if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
                               txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || txtConformeEmail.text.isEmpty || _servicedBy == null){
                             _custSnackbar(
                                 context,
                                 "Kindly fill out the fields and select service by !",
@@ -786,7 +793,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                         onTap: () {
                           if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
                               txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || txtConformeEmail.text.isEmpty || _servicedBy == null){
                             _custSnackbar(
                                 context,
                                 "Kindly fill out the fields and select service by !",

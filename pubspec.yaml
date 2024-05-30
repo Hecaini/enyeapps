@@ -67,6 +67,8 @@ dependencies:
   pinput:
   flutter_local_notifications:
   flutter_inappwebview:
+  pull_to_refresh:
+
 
   firebase_messaging:
   firebase_core:
