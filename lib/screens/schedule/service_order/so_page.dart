@@ -176,7 +176,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
             children: [
               Signature(
                 controller: controller,
-                width: screenWidth * 0.9,
+                width: screenWidth * 0.65,
                 height: screenHeight * 0.25,
                 backgroundColor: Colors.lightBlue[100]!,
               ),

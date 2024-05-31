@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:signature/signature.dart';
 import 'dart:io';
 import 'dart:convert';
 
@@ -25,7 +29,7 @@ class AccountPage extends StatefulWidget {
   State<AccountPage> createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class _AccountPageState extends State<AccountPage> with TickerProviderStateMixin {
   //text editing controllers
   final nameController = TextEditingController();
   final contactController = TextEditingController();
@@ -40,11 +44,13 @@ class _AccountPageState extends State<AccountPage> {
 
   bool _isUpdating = false;
 
-  File? imagepath;
-  String? imagename;
-  String? imagedata;
   String? showimage;
-  ImagePicker imagePicker = ImagePicker();
+
+  String? selSysProd;
+  String? selSvcBy;
+  bool _isLoading = true;
+  String imageName = '';
+  String imageData = '';
 
   UserLogin? userInfo; //users session
   bool? userSessionFuture;
@@ -68,17 +74,8 @@ class _AccountPageState extends State<AccountPage> {
     });
   }
 
-  Future<void> selectImage() async {
-    var getimage = await imagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      imagepath = File(getimage!.path);
-      imagename = getimage.path.split('/').last;
-      imagedata = base64Encode(imagepath!.readAsBytesSync());
-      print(imagepath);
-    });
-  }
-
   _showValues(UserLogin user){
+    imageName = user.signature;
     showimage = user.image;
     nameController.text = user.name;
     contactController.text = user.contact;
@@ -86,8 +83,178 @@ class _AccountPageState extends State<AccountPage> {
     positionController.text = user.position;
   }
 
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 60),
+    vsync: this,
+  )..repeat();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  final SignatureController controller = SignatureController(
+    penStrokeWidth: 3,
+    penColor: Colors.black,
+    exportBackgroundColor: Colors.white,
+  );
+
+  Uint8List? exportedImage;
+
+  processImage(Uint8List? exportedImage) {
+    if (exportedImage != null) {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
+      imageName = "IMG_$formattedDate.png"; // Image name with date-time
+      imageData = base64Encode(exportedImage);
+      print('File name: $imageName');
+      print('Base64 data: $imageData');
+    } else {
+      imageName = ""; // Image name with date-time
+      imageData = "";
+      print("Failed to capture image");
+      print('File name: $imageName');
+      print('Base64 data: $imageData');
+    }
+  }
+
+  void _showSignatureDialog(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+    var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Signature Pad",
+            style: GoogleFonts.poppins(
+              textStyle: TextStyle(
+                  fontSize: fontExtraSize,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.2
+              ),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Signature(
+                controller: controller,
+                width: screenWidth * 0.65,
+                height: screenHeight * 0.25,
+                backgroundColor: Colors.lightBlue[100]!,
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      exportedImage = await controller.toPngBytes();
+                      processImage(exportedImage);
+                      controller.clear();
+                      Navigator.of(context).pop(); // Close the dialog
+                      setState(() {});
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "SAVE",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: fontExtraSize,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: screenWidth * 0.05,),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.clear();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "CLEAR",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: fontExtraSize,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                controller.clear();
+                Navigator.of(context).pop();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.white),
+                  ),
+                ),
+              ),
+              child: Text(
+                "CLOSE",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: fontExtraSize,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
 
     return Scaffold(
         appBar: const CustomAppBar(title: 'Account', imagePath: 'assets/logo/enyecontrols.png',),
@@ -99,48 +266,30 @@ class _AccountPageState extends State<AccountPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 10,),
-                    InkWell(
-                      onTap: (){
-                        if(disabling != true){
-                          selectImage();
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          imagepath != null
-                          ? CircleAvatar(
-                              radius: 64,
-                              backgroundImage: FileImage(imagepath!),
-                            )
-                          : showimage != null && showimage != ""
-                            ? CircleAvatar(
-                              radius: 64,
-                              backgroundImage: NetworkImage(API.usersImages + showimage!),
-                              )
-                            : const CircleAvatar(
-                                radius: 64,
-                                foregroundColor: Colors.deepOrange,
-                                child: Icon(Icons.photo, color: Colors.deepOrange, size: 50,),
-                              ),
-
-                          disabling == false
-                            ? const Positioned(bottom: 2, left: 90,child: Icon(Icons.add_a_photo, color: Colors.deepOrange,),)
-                            : const SizedBox.shrink(),
-                        ],
+                    SizedBox(height: screenHeight * 0.02,),
+                    showimage != null && showimage != ""
+                    ? CircleAvatar(
+                      radius: fontNormalSize * 4,
+                      backgroundImage: NetworkImage(
+                        API.ec_usersImg + showimage!
                       ),
+                    )
+                    : CircleAvatar(
+                      radius: fontNormalSize * 4,
+                      foregroundColor: Colors.deepOrange,
+                      child: Icon(Icons.person, color: Colors.deepOrange, size: fontNormalSize * 3.5,),
                     ),
 
                     //fullname textfield
-                    const SizedBox(height: 25,),
+                    SizedBox(height: screenHeight * 0.03,),
                     PersonNameTextField(
                       controller: nameController,
                       hintText: 'Fullname',
-                      disabling: disabling,
+                      disabling: true,
                     ),
 
                     //contact textfield
-                    const SizedBox(height: 10,),
+                    SizedBox(height: screenHeight * 0.015,),
                     ContactTextField(
                       controller: contactController,
                       hintText: 'Contact No (11-digit no.)',
@@ -148,15 +297,15 @@ class _AccountPageState extends State<AccountPage> {
                     ),
 
                     //email textfield
-                    const SizedBox(height: 10,),
+                    SizedBox(height: screenHeight * 0.015,),
                     EmailTextField(
                       controller: emailController,
                       hintText: 'Email',
-                      disabling: disabling,
+                      disabling: true,
                     ),
 
                     //position textfield
-                    const SizedBox(height: 10,),
+                    SizedBox(height: screenHeight * 0.015,),
                     NormalTextField(
                       controller: positionController,
                       hintText: 'Position',
@@ -165,6 +314,69 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
+
+              if (_isUpdating == false)
+                SizedBox.shrink()
+              else
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                  child: Column(
+                    children: [
+                      SizedBox(height: screenHeight * 0.015,),
+                      if (exportedImage != null)
+                        InkWell(
+                          onTap: () => _showSignatureDialog(context),
+                          child: Container(
+                            padding: EdgeInsets.all(fontNormalSize * 1.5),
+                            width: screenWidth * 0.83,
+                            height: screenHeight * 0.15,
+                            color: Colors.white,
+                            child: Image.memory(
+                              exportedImage!,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        )
+                      else if (userInfo!.signature.isNotEmpty || userInfo!.signature != "" || userInfo!.signature != null)
+                          InkWell(
+                            onTap: () => _showSignatureDialog(context),
+                            child: Container(
+                              padding: EdgeInsets.all(fontNormalSize * 1.5),
+                              width: screenWidth * 0.83,
+                              height: screenHeight * 0.15,
+                              color: Colors.white,
+                              child: Image.network(
+                                API.ec_usersSig + userInfo!.signature,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          )
+                        else
+                          InkWell(
+                            onTap: () => _showSignatureDialog(context),
+                            child: Container(
+                              width: screenWidth * 0.83,
+                              height: screenHeight * 0.13,
+                              color: Colors.grey.shade300,
+                              child: Center(
+                                child: Text(
+                                  "No Signature Captured.\nTap to sign",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: fontSmallSize,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 1.2,
+                                        color: Colors.black54
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                    ],
+                  ),
+                ),
 
               //edit cancel save
               _isUpdating == false
@@ -195,7 +407,9 @@ class _AccountPageState extends State<AccountPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            onTap: (){},
+                            onTap: (){
+
+                            },
                             child: CircleAvatar(
                               radius: 24,
                               backgroundColor: Colors.green,
@@ -210,7 +424,6 @@ class _AccountPageState extends State<AccountPage> {
                               setState(() {
                                 _isUpdating = false;
                                 disabling = true;
-                                imagepath = null;
                                 _showValues(userInfo!);
                               });
                             },

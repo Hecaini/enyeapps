@@ -61,12 +61,13 @@ class _LoginPageState extends State<LoginPage> {
           var userData = resBodyOfLogin["user_data"];
           await SessionManager().set("user_data",  UserLogin(
               userId: userData["user_id"],
+              empIdNo: userData["emp_id_no"],
               name: userData["name"],
               contact: userData["contact"],
               username: userData["username"],
               email: userData["email"],
               image: userData["image"],
-              department: userData["department"],
+              signature: userData["signature"],
               position: userData["position"],
               status: userData["status"]
           ));
