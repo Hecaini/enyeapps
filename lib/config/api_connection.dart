@@ -15,6 +15,7 @@ class API {
   //user infos
   static const users = "$hostConnect/admin/features/users.php";
   static const usersImages = "$hostConnect/admin/users_img/";
+  static const updateUserSign = "$hostConnect/admin/editUserInfo.php";
 
   //department data's
   static const department = "$hostConnect/admin/features/department.php";

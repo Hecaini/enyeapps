@@ -453,16 +453,16 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
             appBar: const CustomAppBar(title: 'Booking System', imagePath: 'assets/logo/enyecontrols.png'),
             resizeToAvoidBottomInset: true,
             body: _isLoading
-                ? Center(child: SpinningContainer(controller: _controller),)
-                : RefreshIndicator(
-              onRefresh: () async {
-                await Future.delayed(Duration(seconds: 2));
-                setState(() {
-                  _getSONumber();
-                  _getEngAccounts();
-                });
-              },
-              child: ListView(
+              ? Center(child: SpinningContainer(controller: _controller),)
+              : RefreshIndicator(
+                onRefresh: () async {
+                  await Future.delayed(Duration(seconds: 2));
+                  setState(() {
+                    _getSONumber();
+                    _getEngAccounts();
+                  });
+                },
+                child: ListView(
                 children: [
                   SizedBox(height: screenHeight * 0.03),
                   Center(

@@ -1,13 +1,11 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
-import 'dart:io';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import '../../config/config.dart';
 import '../../widget/widgets.dart';
@@ -59,6 +57,10 @@ class _AccountPageState extends State<AccountPage> with TickerProviderStateMixin
     super.initState();
 
     //calling session data
+    _sessionData();
+  }
+
+  _sessionData(){
     CheckSessionData().getUserSessionStatus().then((bool) {
       if (bool == true) {
         CheckSessionData().getClientsData().then((value) {
@@ -81,6 +83,8 @@ class _AccountPageState extends State<AccountPage> with TickerProviderStateMixin
     contactController.text = user.contact;
     emailController.text = user.email;
     positionController.text = user.position;
+
+    _isLoading = false;
   }
 
   late final AnimationController _controller = AnimationController(
@@ -120,12 +124,114 @@ class _AccountPageState extends State<AccountPage> with TickerProviderStateMixin
     }
   }
 
+  Future<void> _updateInfo() async {
+    var map = Map<String, dynamic>();
+    map['action'] = 'update_info';
+    map['emp_id_no'] = userInfo!.empIdNo;
+    map['contact'] = contactController.text;
+    map['sign_name'] = imageName;
+    map['sign_data'] = imageData;
+
+    var res = await http.post(Uri.parse(API.updateUserSign), body: map, );
+
+    var responseData = jsonDecode(res.body);
+
+    var response = responseData['response'];
+    var contact = responseData['contact'];
+    var signature = responseData['signature'];
+    if (res.statusCode == 200) {
+      if(response.contains("Successfully updated !")){
+        UserLogin userData = UserLogin.fromJson(await SessionManager().get("user_data"));
+
+        if (userData != null) {
+          // Update the contact and signature fields
+          userData.contact = contact;
+          userData.signature = signature;
+
+          // Save the updated user data back to the session
+          await SessionManager().set("user_data", userData);
+        }
+
+        _custSnackbar(
+            context,
+            "Successfully updated !",
+            Colors.green,
+            Icons.check_box
+        );
+
+        _isUpdating = false;
+        disabling = true;
+        _sessionData();
+      } else {
+        _custSnackbar(
+            context,
+            "Error occured... $response",
+            Colors.redAccent,
+            Icons.dangerous_rounded
+        );
+      }
+    } else {
+      _custSnackbar(
+          context,
+          "Error occured... $response",
+          Colors.redAccent,
+          Icons.dangerous_rounded
+      );
+    }
+  }
+
+  _custSnackbar(context, message, Color color, IconData iconData){
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 3),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(left: screenWidth * 0.05, right: screenWidth * 0.05, bottom: screenHeight * 0.82),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        content: Row(
+          children: [
+            Icon(
+              iconData,
+              color: Colors.white,
+              size: fontNormalSize * 1.8,
+            ),
+            SizedBox(width: screenWidth * 0.03,),
+            Expanded(
+              child: RichText(
+                softWrap: true,
+                textAlign: TextAlign.start,
+                text: TextSpan(children: <TextSpan>
+                [
+                  TextSpan(
+                    text: message,
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: fontNormalSize,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
+                          color: Colors.white
+                      ),
+                    ),
+                  ),
+                ]
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showSignatureDialog(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
-    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
     var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
 
     showDialog(
@@ -258,7 +364,15 @@ class _AccountPageState extends State<AccountPage> with TickerProviderStateMixin
 
     return Scaffold(
         appBar: const CustomAppBar(title: 'Account', imagePath: 'assets/logo/enyecontrols.png',),
-        body: Center(
+        body: _isLoading
+        ? Center(child: SpinningContainer(controller: _controller),)
+        : RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(Duration(seconds: 2));
+            setState(() {
+              _sessionData();
+            });
+          },
           child: ListView(
             children: [
               Form(
@@ -408,7 +522,7 @@ class _AccountPageState extends State<AccountPage> with TickerProviderStateMixin
                         children: [
                           GestureDetector(
                             onTap: (){
-
+                              _updateInfo();
                             },
                             child: CircleAvatar(
                               radius: 24,
