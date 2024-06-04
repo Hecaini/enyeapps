@@ -87,3 +87,4 @@ export 'schedule/service_order/so_svc.dart';
 export 'schedule/service_order/so_data.dart';
 export 'schedule/service_order/soPDF.dart';
 export 'schedule/service_order/soPDF_helper.dart';
+export 'schedule/service_order/multipleFile_data.dart';

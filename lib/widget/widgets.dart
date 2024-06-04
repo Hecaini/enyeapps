@@ -13,3 +13,5 @@ export 'toastmessage.dart';
 export 'utils.dart';
 
 export 'responsive_text_utils.dart';
+
+export 'image_zoom.dart';

@@ -77,3 +77,29 @@ class SOData {
     );
   }
 }
+
+class SOFilesData {
+  String id;
+  String soId;
+  String name;
+  String code;
+  String location;
+
+  SOFilesData({
+    required this.id,
+    required this.soId,
+    required this.name,
+    required this.code,
+    required this.location,
+  });
+
+  factory SOFilesData.fromJson(Map<String, dynamic> json) {
+    return SOFilesData(
+      id: json['id'] as String? ?? '',
+      soId: json['so_id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      code: json['code'] as String? ?? '',
+      location: json['location'] as String? ?? '',
+    );
+  }
+}

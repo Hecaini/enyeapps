@@ -43,6 +43,7 @@ dependencies:
   fluttertoast:
   image_picker:
   file_picker:
+  photo_view:
 
   # advance_pdf_viewer_fork: any
   flutter_file_downloader:

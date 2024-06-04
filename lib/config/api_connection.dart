@@ -30,6 +30,7 @@ class API {
   static const technicalData = "$hostConnect/admin/technical/technical.php";
   static const completeAttachment = "$hostConnect/admin/attachment/";
   static const ECcompAtt = "https://enyecontrols.com/enyecontrols_engineering/attachment/";
+  static const ECsoAttach = "https://enyecontrols.com/enyecontrols_engineering/upload/";
 
   //service order data's
   static const serviceOrderData = "$hostConnect/admin/technical/service_order.php";

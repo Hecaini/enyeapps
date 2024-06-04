@@ -8,7 +8,10 @@ class SOServices {
   //this is same as in PHP code action made by the user CRUD
   static const GET_SO = 'get_so';
   static const GET_SO_DATA = 'get_so_data';
+  static const GET_SO_FILES = 'get_so_files';
   static const SAVE_SO = 'save_so';
+  static const SAVE_SO_FILES = 'save_so_files';
+  static const DELETE_SO_FILES = 'delete_so_files';
   static const UPDATE_SO = 'update_so';
   static const GET_ALL_SO = 'get_all_so';
 
@@ -63,6 +66,31 @@ class SOServices {
     //conversion from web server into data by using categories.dart
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<SOData>((json) => SOData.fromJson(json)).toList();
+  }
+
+  static Future<List<SOFilesData>> getServiceOrderFiles(String so_id) async {
+
+    var map = Map<String, dynamic>();
+    map['action'] = GET_SO_FILES;
+    map['so_id'] = so_id;
+
+    //get all data of categories
+    final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
+    print('getSO Files Response: ${res.body}');
+
+    if(res.statusCode == 200){
+      List<SOFilesData> list = parseResponseSOFiles(res.body);
+      return list;
+    } else {
+      throw Exception('Failed to retrieve Technical Data');
+      //return List<Categories>();
+    }
+  }
+
+  static List<SOFilesData> parseResponseSOFiles(String responseBody){
+    //conversion from web server into data by using categories.dart
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<SOFilesData>((json) => SOFilesData.fromJson(json)).toList();
   }
 
   static Future<List<SOData>> getAllServiceOrder() async {
@@ -169,6 +197,57 @@ class SOServices {
       //config API to connect web server
       final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
       print('Update SO Response UPDATE: ${res.body}');
+
+      //if status is okay in web server
+      if(res.statusCode == 200){
+        //return result from PHP backend
+        return res.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
+
+  static Future<String> saveSOFiles(String soId, String fileName, String fileData) async {
+    try{
+      var map = Map<String, dynamic>();
+      //get the action do by the user transfer it to POST method
+      map['action'] = SAVE_SO_FILES;
+      //name of category entered by user
+      map['so_id'] = soId;
+      map['file_name'] = fileName;
+      map['file_data'] = fileData;
+
+      //config API to connect web server
+      final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
+      print('Update SO Files : ${res.body}');
+
+      //if status is okay in web server
+      if(res.statusCode == 200){
+        //return result from PHP backend
+        return res.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
+
+  static Future<String> deleteSOFiles(String fileId, String soId) async {
+    try{
+      var map = Map<String, dynamic>();
+      //get the action do by the user transfer it to POST method
+      map['action'] = DELETE_SO_FILES;
+      //name of category entered by user
+      map['file_id'] = fileId;
+      map['so_id'] = soId;
+
+      //config API to connect web server
+      final res = await http.post(Uri.parse(API.so_tsis), body: map); //passing value to result
+      print('Update SO Files : ${res.body}');
 
       //if status is okay in web server
       if(res.statusCode == 200){

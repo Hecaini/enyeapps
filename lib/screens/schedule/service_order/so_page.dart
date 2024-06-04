@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
+import 'package:path/path.dart' as path;
 
 import '../../../config/config.dart';
 import '../../../widget/widgets.dart';
@@ -32,8 +35,11 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   String? selSysProd;
   String? selSvcBy;
   bool _isLoading = true;
+  bool _isLoadingFiles = true;
   String imageName = '';
   String imageData = '';
+  double? _progress;
+  Map<int, double?> _fileProgress = {};
 
   final txtTimeIn = TextEditingController();
   final txtTimeOut = TextEditingController();
@@ -284,6 +290,8 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
         if (_soNumber.isNotEmpty) {
           if(_soNumber[0].soStatus == "Save"){
             _getServiceOrder();
+            _getSOFiles();
+            disabling = true;
           } else {
             _isLoading = false;
           }
@@ -297,6 +305,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
   }
 
   List<SOData> _serviceOrder = [];
+  List<SOFilesData> _serviceOrderFiles = [];
   _getServiceOrder(){
     SOServices.getServiceOrder(_soNumber[0].soId).then((getServiceOrder) {
       setState(() {
@@ -327,6 +336,15 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
           _isLoading = false;
           print("No service order retrieved");
         }
+      });
+    });
+  }
+
+  _getSOFiles(){
+    SOServices.getServiceOrderFiles(_soNumber[0].soId).then((serviceOrderFile) {
+      setState(() {
+        _serviceOrderFiles = serviceOrderFile;
+        _isLoadingFiles = false;
       });
     });
   }
@@ -421,6 +439,39 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
             Colors.redAccent,
             Icons.dangerous_rounded
         );
+      }
+    });
+  }
+
+  List<FileInfo> selectedFiles = [];
+  Future<void> selectFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null) {
+      setState(() {
+        result.files.forEach((file) {
+          String fileName = file.name;
+          File filePath = File(file.path!); // Get file path
+          String fileData = base64Encode(filePath.readAsBytesSync()); // Get file data
+
+          if (fileData != null) {
+            selectedFiles.add(FileInfo(fileName, fileData)); // Add file details to the list
+            SOServices.saveSOFiles(_soNumber[0].soId, fileName, fileData).then((result) {
+              if(result.contains("Successfully saved !")) {
+                _getSOFiles();
+              }
+            });
+          } else {
+            print('Failed to read file: $fileName');
+          }
+        });
+      });
+    }
+  }
+
+  _deleteFile(String fileId, String soId){
+    SOServices.deleteSOFiles(fileId, soId).then((result) {
+      if(result.contains("Successfully deleted !")) {
+        _getSOFiles();
       }
     });
   }
@@ -595,7 +646,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                             iconEnabledColor: Colors.deepOrange,
                             isExpanded: true,
                             value: selSysProd, // Ensures the selected item is shown
-                            onChanged: (String? newValue) {
+                            onChanged: disabling ? null : (String? newValue) {
                               setState(() {
                                 selSysProd = newValue;
                               });
@@ -645,7 +696,11 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                         SizedBox(height: screenHeight * 0.01),
                         if (exportedImage != null)
                           InkWell(
-                            onTap: () => _showSignatureDialog(context),
+                            onTap: () {
+                              if(disabling == false){
+                                _showSignatureDialog(context);
+                              }
+                            },
                             child: Container(
                               width: screenWidth * 0.83,
                               height: screenHeight * 0.2,
@@ -660,7 +715,11 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                           if (_serviceOrder.isNotEmpty)
                             if (_serviceOrder[0].conformeSignature.isNotEmpty || _serviceOrder[0].conformeSignature != "" || _serviceOrder[0].conformeSignature != null)
                               InkWell(
-                                onTap: () => _showSignatureDialog(context),
+                                onTap: () {
+                                  if(disabling == false){
+                                    _showSignatureDialog(context);
+                                  }
+                                },
                                 child: Container(
                                   width: screenWidth * 0.83,
                                   height: screenHeight * 0.2,
@@ -673,7 +732,11 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                               )
                             else
                               InkWell(
-                                onTap: () => _showSignatureDialog(context),
+                                onTap: () {
+                                  if(disabling == false){
+                                    _showSignatureDialog(context);
+                                  }
+                                },
                                 child: Container(
                                   width: screenWidth * 0.83,
                                   height: screenHeight * 0.13,
@@ -726,20 +789,25 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                     child: ElevatedButton(
                       onPressed: () {
-                        _unfocusAll();
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return MultipleECUsersDialogWidget(users: _engUsers, chosenPosition: "Engineer & Technician", initiallySelectedUsers: _servicedBy);
-                          },
-                        ).then((selectedItems) {
-                          setState(() {
-                            if (selectedItems != null) {
-                              // Display selected items
-                              _servicedBy = selectedItems;
-                            }
+                        if(disabling == false) {
+                          _unfocusAll();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return MultipleECUsersDialogWidget(
+                                  users: _engUsers,
+                                  chosenPosition: "Engineer & Technician",
+                                  initiallySelectedUsers: _servicedBy);
+                            },
+                          ).then((selectedItems) {
+                            setState(() {
+                              if (selectedItems != null) {
+                                // Display selected items
+                                _servicedBy = selectedItems;
+                              }
+                            });
                           });
-                        });
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(Colors.deepOrange.shade300),
@@ -775,7 +843,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                                 backgroundColor: Colors.deepOrange.shade50,
                                 deleteIcon: Icon(Icons.cancel, size: (screenHeight + screenWidth) / 70,), // Add delete icon
                                 deleteIconColor: Colors.deepOrange,
-                                onDeleted: () {
+                                onDeleted: disabling ? null : () {
                                   setState(() {
                                     _servicedBy.remove(eng_tech); // Remove item from the list
                                   });
@@ -787,28 +855,148 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                       ),
                     ),
 
+                  SizedBox(height: screenHeight * 0.03),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if(disabling == false) {
+                          _unfocusAll();
+                          selectFile();
+                        }
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.deepOrange.shade300),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Attach File',
+                        style: TextStyle(
+                          fontSize: fontNormalSize,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_serviceOrderFiles != null)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                        child: Wrap(
+                          children: _serviceOrderFiles.map((file) {
+                            double? fileProgress = _fileProgress[int.parse(file.id)];
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                              child: fileProgress != null
+                              ? SizedBox(
+                                width: screenWidth * 0.1,
+                                height: screenHeight * 0.1,
+                                child: const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                              : InkWell(
+                                onTap: disabling ? (){
+                                  String filename = path.basename(file.location);
+                                  print(filename);
+                                  String url = API.ECsoAttach + filename;
+
+                                  FileDownloader.downloadFile(
+                                      url: url.trim(),
+                                      onProgress: (name, progress) {
+                                        setState(() {
+                                          _fileProgress[int.parse(file.id)] = progress;
+                                        });
+                                      },
+                                      onDownloadCompleted: (value) {
+                                        print('path  $value ');
+                                        _custSnackbar(
+                                            context,
+                                            "File successfully downloaded.",
+                                            Colors.green,
+                                            Icons.check_box
+                                        );
+                                        setState(() {
+                                          _fileProgress[int.parse(file.id)] = null;
+                                        });
+                                      });
+                                } : null ,
+                                child: Chip(
+                                  label: Text(
+                                    file.name,
+                                    style: TextStyle(color: Colors.grey.shade800, fontSize: fontXSmallSize),
+                                  ),
+                                  backgroundColor: Colors.deepOrange.shade50,
+                                  deleteIcon: Icon(Icons.cancel, size: (screenHeight + screenWidth) / 70,), // Add delete icon
+                                  deleteIconColor: Colors.deepOrange,
+                                  onDeleted: disabling ? null : () {
+                                    setState(() {
+                                      _deleteFile(file.id, file.soId);
+                                      selectedFiles.remove(file); // Remove item from the list
+                                    });
+                                  },
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+
                   SizedBox(height: screenHeight * 0.04),
                   if (_serviceOrder.isNotEmpty && _serviceOrder[0].stat == "Save")
-                    editButton(
-                        onTap: () {
-                          if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
-                              txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
-                            _custSnackbar(
-                                context,
-                                "Kindly fill out the fields and select service by !",
-                                Colors.redAccent,
-                                Icons.error
-                            );
-                          } else {
-                            servicedByUsername = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
-                            print(servicedByUsername);
+                    if (disabling == true)
+                      editButton(
+                          onTap: () {
+                            setState(() {
+                              disabling = false;
+                            });
+                          },
+                          text: 'EDIT'
+                      )
+                    else
+                      Column(
+                        children: [
+                          addButton(
+                              onTap: () {
+                                if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
+                                    txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
+                                    txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                                  _custSnackbar(
+                                      context,
+                                      "Kindly fill out the fields and select service by !",
+                                      Colors.redAccent,
+                                      Icons.error
+                                  );
+                                } else {
+                                  servicedByUsername = _servicedBy.map((serviceBy) => serviceBy.username.toString()).join(', ');
+                                  print(servicedByUsername);
 
-                            _updateSO();
-                          }
-                        },
-                        text: 'UPDATE'
-                    )
+                                  _updateSO();
+                                }
+                              },
+                              text: 'UPDATE'
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02),
+                          delButton(
+                            onTap: () {
+                              disabling = true;
+                              _isLoading = true;
+                              _getEngAccounts();
+                              _getSONumber();
+                              setState(() {});
+                            },
+                            text: "CANCEL"
+                          )
+                        ],
+                      )
                   else
                     addButton(
                         onTap: () {

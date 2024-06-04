@@ -83,11 +83,7 @@ class NoInternetPage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     var fontSmallSize = ResponsiveTextUtils.getSmallFontSize(screenWidth);
-    var fontNormalSize = ResponsiveTextUtils.getNormalFontSize(screenWidth);
-    var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
     var fontXSize = ResponsiveTextUtils.getXFontSize(screenWidth);
-    var fontXXSize = ResponsiveTextUtils.getXXFontSize(screenWidth);
-    var fontXXXSize = ResponsiveTextUtils.getXXXFontSize(screenWidth);
 
     return GestureDetector(
       onTap: (){
