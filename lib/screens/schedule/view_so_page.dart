@@ -27,7 +27,7 @@ class ViewSOPage extends StatefulWidget {
 }
 
 class _ViewSOPageState extends State<ViewSOPage> with TickerProviderStateMixin {
-  bool disabling = false;
+  bool disabling = true;
   String? selSysProd;
   String? selSvcBy;
   bool _isLoading = true;
@@ -543,14 +543,14 @@ class _ViewSOPageState extends State<ViewSOPage> with TickerProviderStateMixin {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 2.5),
                               child: fileProgress != null
-                                  ? SizedBox(
+                              ? SizedBox(
                                 width: screenWidth * 0.1,
                                 height: screenHeight * 0.1,
                                 child: const Center(
                                   child: CircularProgressIndicator(),
                                 ),
                               )
-                                  : InkWell(
+                              : InkWell(
                                 onTap: disabling ? (){
                                   String filename = path.basename(file.location);
                                   print(filename);
