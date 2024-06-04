@@ -783,7 +783,7 @@ class _SchedulePageState extends State<SchedulePage> with TickerProviderStateMix
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => SOPdfPage(soId: serviceOrder.soId),
+                                    builder: (context) => ViewSOPage(soId: serviceOrder.soId),
                                   ),
                                 );
                               },

@@ -82,6 +82,8 @@ export 'schedule/events_data.dart';
 export 'schedule/schedule_svc.dart';
 export 'schedule/tsis_data.dart';
 export 'schedule/schedule_tasktile.dart';
+export 'schedule/view_so_page.dart';
+
 export 'schedule/service_order/so_page.dart';
 export 'schedule/service_order/so_svc.dart';
 export 'schedule/service_order/so_data.dart';

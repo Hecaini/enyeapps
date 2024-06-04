@@ -162,3 +162,45 @@ class delButton extends StatelessWidget {
   }
 }
 
+class whiteButton extends StatelessWidget {
+  final Function()? onTap;
+  final String text;
+
+  const whiteButton({super.key, required this.onTap, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    var fontExtraSize = ResponsiveTextUtils.getExtraFontSize(screenWidth);
+    var fontXExtraSize = ResponsiveTextUtils.getXFontSize(screenWidth);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all((screenWidth + screenHeight) / 90),
+        margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.transparent,
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.lato(
+              textStyle: TextStyle(
+                  fontSize: fontXExtraSize,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  letterSpacing: 0.8
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
