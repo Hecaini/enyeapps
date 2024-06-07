@@ -713,24 +713,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                           )
                         else
                           if (_serviceOrder.isNotEmpty)
-                            if (_serviceOrder[0].conformeSignature.isNotEmpty || _serviceOrder[0].conformeSignature != "" || _serviceOrder[0].conformeSignature != null)
-                              InkWell(
-                                onTap: () {
-                                  if(disabling == false){
-                                    _showSignatureDialog(context);
-                                  }
-                                },
-                                child: Container(
-                                  width: screenWidth * 0.83,
-                                  height: screenHeight * 0.2,
-                                  color: Colors.white,
-                                  child: Image.network(
-                                    API.ec_conformeSig + _serviceOrder[0].conformeSignature,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              )
-                            else
+                            if (_serviceOrder[0].conformeSignature.isEmpty || _serviceOrder[0].conformeSignature == "" || _serviceOrder[0].conformeSignature == null)
                               InkWell(
                                 onTap: () {
                                   if(disabling == false){
@@ -747,13 +730,30 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.poppins(
                                         textStyle: TextStyle(
-                                            fontSize: fontSmallSize,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 1.2,
-                                            color: Colors.black54
-                                        ),
+                                        fontSize: fontSmallSize,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 1.2,
+                                        color: Colors.black54
+                                      ),
                                       ),
                                     ),
+                                  ),
+                                ),
+                              )
+                            else
+                              InkWell(
+                                onTap: () {
+                                  if(disabling == false){
+                                    _showSignatureDialog(context);
+                                  }
+                                },
+                                child: Container(
+                                  width: screenWidth * 0.83,
+                                  height: screenHeight * 0.2,
+                                  color: Colors.white,
+                                  child: Image.network(
+                                    API.ec_conformeSig + _serviceOrder[0].conformeSignature,
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
                               )
@@ -967,7 +967,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                               onTap: () {
                                 if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
                                     txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                                    txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null){
+                                    txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || _servicedBy == null || _servicedBy.isEmpty){
                                   _custSnackbar(
                                       context,
                                       "Kindly fill out the fields and select service by !",
@@ -1002,7 +1002,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
                         onTap: () {
                           if(txtTimeIn.text.isEmpty || txtTimeOut.text.isEmpty || txtSysProduct.text.isEmpty ||
                               txtLocation.text.isEmpty || txtComplaint.text.isEmpty || txtStatus.text.isEmpty ||
-                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || txtConformeEmail.text.isEmpty || _servicedBy == null){
+                              txtRemarks.text.isEmpty || selSysProd == null || txtConforme.text.isEmpty || txtConformeEmail.text.isEmpty || _servicedBy == null || _servicedBy.isEmpty){
                             _custSnackbar(
                                 context,
                                 "Kindly fill out the fields and select service by !",
