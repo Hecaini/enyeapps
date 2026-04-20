@@ -445,7 +445,7 @@ class _SOPageState extends State<SOPage> with TickerProviderStateMixin {
 
   List<FileInfo> selectedFiles = [];
   Future<void> selectFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result = await FilePicker.pickFiles(allowMultiple: true);
     if (result != null) {
       setState(() {
         result.files.forEach((file) {

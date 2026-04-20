@@ -142,17 +142,19 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               GestureDetector(
                 onTap: () async {
                   Navigator.of(context).pop(); // Close the dialog
-                  if (await myauth.verifyOTP(otp: pin.text)) {
+                  if (EmailOTP.verifyOTP(otp: pin.text)) {
                     setState(() {
                       verified = true;
                       disabling = false;
                     });
+
                     _successSnackbar(context, "OTP has been verified! ✅");
                   } else {
                     setState(() {
                       disabling = false;
                       pin.clear();
                     });
+
                     _errorSnackbar(context, "Invalid OTP !");
                   }
                 },
@@ -333,20 +335,19 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
 
                                 //if email is already taken
                                 if (resBodyOfSignUp['email_taken'] == true) {
-                                  myauth.setConfig(
-                                    appEmail: "ronfrancia.enye@gmail.com",
-                                    appName: "ADMIN : ENYE CONTROLS",
-                                    userEmail: emailController.text,
-                                    otpLength: 6,
-                                    otpType: OTPType.digitsOnly,
+
+                                  bool sent = await EmailOTP.sendOTP(
+                                    email: emailController.text.trim(),
                                   );
-                                  if (await myauth.sendOTP() == true) {
+
+                                  if (sent) {
                                     _successSnackbar(context, "OTP has been sent");
                                     _showOTPDialog();
                                   } else {
                                     _errorSnackbar(context, "Oops, OTP send failed");
                                     disabling = false;
                                   }
+
                                 } else {
                                   _errorSnackbar(context, "Email NOT Found !");
                                   disabling = false;

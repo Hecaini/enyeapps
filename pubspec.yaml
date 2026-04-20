@@ -53,7 +53,7 @@ dependencies:
   dio:
   permission_handler:
   path_provider:
-  open_file_plus:
+  open_file:
 
   lottie:
   sizer:

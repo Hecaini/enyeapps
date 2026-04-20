@@ -32,7 +32,7 @@ class _WebViewPageState extends State<WebViewPage> {
       body: Stack(
         children:[ InAppWebView(
           key: webViewKey,
-          initialUrlRequest: URLRequest(url: Uri.parse(url)),
+          initialUrlRequest: URLRequest(url: WebUri(url)),
           initialOptions: InAppWebViewGroupOptions(
             crossPlatform: InAppWebViewOptions(
               useShouldOverrideUrlLoading: true,

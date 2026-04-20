@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 import '../../config/config.dart';
 import '../../widget/widgets.dart';

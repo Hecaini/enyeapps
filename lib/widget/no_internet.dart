@@ -19,7 +19,7 @@ class NoInternetHandler extends StatefulWidget {
 }
 
 class _NoInternetHandlerState extends State<NoInternetHandler> {
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   bool _hasConnection = true;
   bool _errorServer = false;
 
@@ -28,9 +28,11 @@ class _NoInternetHandlerState extends State<NoInternetHandler> {
     super.initState();
     _loadConnectionStatus(); // Load previous connection status
     _connectivitySubscription =
-        Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-          _checkInternetConnection(); // Check connection status
-        });
+        Connectivity().onConnectivityChanged.listen(
+              (List<ConnectivityResult> results) {
+            _checkInternetConnection();
+          },
+        );
   }
 
   @override

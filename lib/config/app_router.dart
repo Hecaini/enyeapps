@@ -18,8 +18,6 @@ class AppRouter{
         return OrdersPage.route();
       case AppointmentPage.routeName:
         return AppointmentPage.route();
-      case CatalogsPage.routeName:
-        return CatalogsPage.route();
       case AccountPage.routeName:
         return AccountPage.route();
 

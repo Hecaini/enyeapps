@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import '../../../config/api_connection.dart';
 import '../../../widget/widgets.dart';
 import '../../screens.dart';
@@ -46,7 +45,7 @@ class _CatalogsFilePageState extends State<CatalogsFilePage> {
   String? showfile;
 
   Future<void> selectFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.pickFiles();
 
     setState(() {
       if(result != null){

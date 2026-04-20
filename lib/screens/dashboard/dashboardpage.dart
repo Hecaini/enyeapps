@@ -1,11 +1,8 @@
-import 'package:enye_app/main.dart';
 import 'package:enye_app/widget/widgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
-import '../../config/app_session.dart';
 import '../screens.dart';
 
 class DashboardPage extends StatefulWidget {

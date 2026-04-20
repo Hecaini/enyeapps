@@ -2,7 +2,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 import '../screens/screens.dart';
 import '../screens/webview/webview_system.dart';
@@ -136,25 +136,14 @@ class _CustomNavBarState extends State<CustomNavBar> {
             controller: _controller,
             screens: _buildScreens(),
             items: _navBarsItems(),
-            confineInSafeArea: true,
+            confineToSafeArea: true,
             backgroundColor: Colors.deepOrange, // Default is Colors.white.
             handleAndroidBackButtonPress: true, // Default is true.
             resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
             stateManagement: true, // Default is true.
-            hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+            hideNavigationBarWhenKeyboardAppears: true,
             decoration: const NavBarDecoration(
               colorBehindNavBar: Colors.white,
-            ),
-            popAllScreensOnTapOfSelectedTab: true,
-            popActionScreens: PopActionScreensType.all,
-            itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
-              duration: Duration(milliseconds: 200),
-              curve: Curves.ease,
-            ),
-            screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
-              animateTabTransition: true,
-              curve: Curves.ease,
-              duration: Duration(milliseconds: 200),
             ),
             navBarStyle: NavBarStyle.style9, // Choose the nav bar style with this property.
           ) : LoginPage();
